@@ -1,6 +1,7 @@
 <div align="center">
 
-<img width="100%" alt="BarberCloud Banner" src="https://github.com/user-attachments/assets/111701f8-2274-4e08-a667-c4963af1c8e4" />
+<img width="100%" alt="BarberCloud Banner" src="<img width="1983" height="793" alt="BarberCloud-baner dark mode" src="https://github.com/user-attachments/assets/4605d3e4-5db8-48e7-b631-e7f072c83c37" />
+" />
 
 <br/>
 <br/>
