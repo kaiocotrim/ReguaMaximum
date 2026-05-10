@@ -2,8 +2,6 @@
 
 <br/>
 
-# barberCLOUD
-
 Modern cloud platform for barbershops ✂️☁️
 
 Sistema SaaS para gerenciamento de barbearias, agendamentos e clientes.
