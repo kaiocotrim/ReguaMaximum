@@ -19,14 +19,3 @@ Sistema SaaS para gerenciamento de barbearias, agendamentos e clientes.
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-20232A?style=for-the-badge&logo=postgresql&logoColor=336791)
 
 </div>
-
----
-
-## ✨ Features
-
-- 📅 Online scheduling
-- 👤 Client management
-- ✂️ Barber control
-- ☁️ Cloud synchronization
-- 📊 Dashboard analytics
-- 🔔 Smart notifications
