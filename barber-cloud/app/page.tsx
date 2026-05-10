@@ -3,13 +3,12 @@ import { Button } from "@/app/_components/ui/button";
 import { text } from "stream/consumers";
 
 
-const name = 'ext'
 
 export default function Home() {
   return (
     <div>
       <h1>Welcome to BarberCloud</h1>
-      <Button>Get Started</Button>
+            <Button>Get Started</Button>
     </div>
   );
 }
