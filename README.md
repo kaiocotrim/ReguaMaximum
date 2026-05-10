@@ -1,8 +1,5 @@
 <img width="1947" height="808" alt="BarberCloud-baner dark mode" src="https://github.com/user-attachments/assets/41b715fb-f521-4645-b88d-b5f8efb7a57e" /><div align="center">
 
-
-
-<br/>
 <br/>
 
 # barberCLOUD
