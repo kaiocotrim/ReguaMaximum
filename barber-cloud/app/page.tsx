@@ -1,5 +1,9 @@
 import Image from "next/image";
 import { Button } from "@/app/_components/ui/button";
+import { text } from "stream/consumers";
+
+
+const name = 'ext'
 
 export default function Home() {
   return (
