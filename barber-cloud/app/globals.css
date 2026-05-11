@@ -3,6 +3,10 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -51,7 +55,7 @@
 
 :root {
   --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --foreground: oklch(0% 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -87,7 +91,7 @@
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0% 0 0 / 0);
+  --card: oklch(18.22% 0.00002 271.152);
   --card-foreground: oklch(100% 0.00011 271.152);
   --popover: oklch(98.297% 0.00532 16.091);
   --popover-foreground: oklch(0.985 0 0);
