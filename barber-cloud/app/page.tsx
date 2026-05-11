@@ -22,9 +22,9 @@ export default function Home() {
         {/* Search Bar */}
         <div className="flex items-center gap-2 mt-6">
           <Input placeholder="Pesquisar..." className="h-10" />
-          <Button size="icon" variant="outline" className="h-10 w-10">
-            <SearchIcon />
-          </Button>
+       <Button size="icon" variant="outline" className="!bg-blue-800 h-10 w-10">
+  <SearchIcon />
+</Button>
         </div>
         
         {/* Banner Image */}
