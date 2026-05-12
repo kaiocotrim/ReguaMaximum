@@ -31,9 +31,9 @@ export default async function Home() {
           <Button
             size="icon"
             variant="outline"
-            className="h-10 w-10 shrink-0 bg-black-800!"
+            className="h-10 w-10 shrink-0 bg-green-600"
           >
-            <SearchIcon className="text-white" />
+            <SearchIcon className="text-white " />
           </Button>
         </div>
 
@@ -85,7 +85,7 @@ export default async function Home() {
             </CardContent>
           </Card>
 
-          <h2>recomendações</h2>
+           <h2 className="text-xs font-bold  uppercase">Recomendações</h2>
           <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
             {barbershops.map((barbershop) => (
               <BarbershopItem key={barbershop.id} barbershop={barbershop} />
