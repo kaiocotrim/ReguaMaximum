@@ -14,9 +14,9 @@ import { db } from "./_lib/prisma";
 
 export default async function Home() {
 
-  const users = await db.barbeshopService.findMany();
+  const barbershops = await db.barbershop.findMany();
 
-  console.log("Usuarios do banco:", users);
+  console.log("Usuarios do banco:", barbershops);
 
 
   return (
@@ -57,7 +57,7 @@ export default async function Home() {
           <h2 className="text-xs font-bold uppercase text-gray-400">
             Agendamentos
           </h2>
-
+    
           <Card>
             <CardContent className="flex justify-between p-0">
               {/* DIV esquerda */}
@@ -85,7 +85,17 @@ export default async function Home() {
               </div>
             </CardContent>
           </Card>
-  
+          
+          <h2>
+            recomendações
+          </h2>
+          <div>
+            {barbershops.map((barbershop) => (
+              <div key={barbershop.id}>
+                <h1>{barbershop.name}</h1>
+              </div>
+              ))}
+            </div>
         </div>
       </div>
     </div>
