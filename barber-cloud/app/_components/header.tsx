@@ -5,10 +5,10 @@ import Image from "next/image";
 
 const Header = () => {
     return (  
-        <Card className="rounded-none ">
+        <Card className="rounded-none bg-black opacity-100 ">
             <CardContent className="flex flex-row items-center justify-between">
                 <Image src="/logoBarber1.png" alt="BarberCloud Logo" width={150} height={50} />
-                     <Button size="icon" variant="outline" className="!bg-blue-800 h-10 w-10 shrink-0">
+                     <Button size="icon" variant="outline" className=" h-10 w-10 shrink-0">
                 <MenuIcon />
             </Button>
             </CardContent>
