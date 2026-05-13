@@ -1,12 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
+body {
+  font-family: "General Sans", sans-serif;
+  font-weight: 010;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+
+}
+
+body {
+  font-family: 'Satoshi', 'Inter', 'General Sans', sans-serif;
+}
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -91,7 +106,7 @@ body {
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(16.842% 0.00002 271.152);
+  --card: oklch(19.532% 0.00195 106.76);
   --card-foreground: oklch(100% 0.00011 271.152);
   --popover: oklch(98.297% 0.00532 16.091);
   --popover-foreground: oklch(0.985 0 0);
@@ -131,5 +146,36 @@ body {
   }
   html {
     @apply font-sans;
+  }
+}
+.shine-text {
+  display: inline-block;
+
+  background: linear-gradient(
+    90deg,
+    #84cc16 0%,
+    #84cc16 42%,
+    #ffffff 50%,
+    #84cc16 58%,
+    #84cc16 100%
+  );
+
+  background-size: 300% 100%;
+  background-position: 100% center;
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  color: transparent;
+  animation: shine 5s linear infinite;
+}
+
+@keyframes shine {
+  from {
+    background-position: 200% center;
+  }
+
+  to {
+    background-position: -200% center;
   }
 }

@@ -21,7 +21,10 @@ export default async function Home() {
       <div className="space-y-6 px-6 py-6">
         {/* Saudação */}
         <div className="space-y-1">
-          <h2 className="text-xl font-bold">Olá, Bruno Odorissi Campaner!</h2>
+          <h2 className="text-xl font-bold">
+            Olá, <span className="shine-text">Bruno Odorissi Campaner.</span>
+          </h2>
+
           <p className="text-sm text-gray-500">Segunda-feira, 12 de junho</p>
         </div>
 
@@ -33,14 +36,14 @@ export default async function Home() {
             variant="outline"
             className="h-10 w-10 shrink-0 bg-green-600"
           >
-            <SearchIcon className="text-white " />
+            <SearchIcon className="text-white" />
           </Button>
         </div>
 
         {/* Banner Image */}
         <div className="relative h-37.5 w-full overflow-hidden rounded-xl">
           <Image
-            src="/BannerBlack.png"
+            src="/bannerReguaM.png"
             alt="Banner-barberCloud"
             fill
             className="object-cover"
@@ -49,9 +52,7 @@ export default async function Home() {
 
         {/* Agendamentos */}
         <div className="space-y-4">
-          <h2 className="text-xs font-bold  uppercase">
-            Agenda
-          </h2>
+          <h2 className="text-xs font-bold uppercase">Agenda</h2>
 
           <Card>
             <CardContent className="flex justify-between p-0">
@@ -65,12 +66,15 @@ export default async function Home() {
                 </Avatar>
 
                 <div className="flex flex-col gap-2">
-                  <Badge variant="outline" className="w-fit bg-green-600">
+                  <Badge
+                    variant="outline"
+                    className="w-fit bg-[#C3F32C] font-bold text-[#254F50]"
+                  >
                     Confirmado
                   </Badge>
                   <h3 className="font-semibold">Corte de cabelo</h3>
                   <span className="inline-flex items-center gap-1 text-sm">
-                     <MapPin size={14} />
+                    <MapPin size={14} />
                     <span>Las Vegas Barbearia</span>
                   </span>
                 </div>
@@ -78,14 +82,14 @@ export default async function Home() {
 
               {/* DIV direita */}
               <div className="flex flex-col items-center justify-center border-l-2 border-solid px-5">
-                <p className="text-sm ">Maio</p>
-                <p className="text-2xl ">12</p>
+                <p className="text-sm">Maio</p>
+                <p className="text-2xl font-bold">12</p>
                 <p className="text-sm font-bold">16:00</p>
               </div>
             </CardContent>
           </Card>
 
-           <h2 className="text-xs font-bold  uppercase">Recomendações</h2>
+          <h2 className="text-xs font-bold uppercase">Recomendações</h2>
           <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
             {barbershops.map((barbershop) => (
               <BarbershopItem key={barbershop.id} barbershop={barbershop} />

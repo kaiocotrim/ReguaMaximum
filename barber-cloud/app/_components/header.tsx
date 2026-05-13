@@ -7,7 +7,7 @@ const Header = () => {
     return (  
         <Card className="rounded-none bg-black opacity-100 ">
             <CardContent className="flex flex-row items-center justify-between">
-                <Image src="/logoNuvem.png" alt="BarberCloud Logo" width={70} height={50} />
+                <Image src="/LogoMComBorder2.png" alt="BarberCloud Logo" width={60} height={50} />
                      <Button size="icon" variant="outline" className=" h-10 w-10 shrink-0">
                 <MenuIcon />
             </Button>
