@@ -14,6 +14,12 @@ export default async function Home() {
 
   console.log("Usuarios do banco:", barbershops)
 
+  const poularesBarber = await db.barbershop.findMany({
+    orderBy: {
+      name: "desc",
+    },
+  })
+
   return (
     <div>
       <Header />
@@ -95,8 +101,17 @@ export default async function Home() {
               <BarbershopItem key={barbershop.id} barbershop={barbershop} />
             ))}
           </div>
+           <h2 className="text-xs font-bold uppercase">Populares</h2>
+          <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
+            {poularesBarber.map((barbershop) => (
+              <BarbershopItem key={barbershop.id} barbershop={barbershop} />
+            ))}
+          </div>
+
         </div>
+
       </div>
+            
     </div>
   )
 }
