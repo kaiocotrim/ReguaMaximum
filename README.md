@@ -1,4 +1,4 @@
-<img width="1947" height="808" alt="BarberCloud-baner dark mode" src="https://github.com/user-attachments/assets/41b715fb-f521-4645-b88d-b5f8efb7a57e" /><div align="center">
+<img width="1947" height="808" alt="BarberCloud-baner dark mode" src="https://github.com/user-attachments/assets/7f7d1f7f-7f26-4903-985b-c9f312d51588" /><div align="center">
 
 <br/>
 
