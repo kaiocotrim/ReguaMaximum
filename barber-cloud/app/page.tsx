@@ -45,6 +45,64 @@ export default async function Home() {
             <SearchIcon className="text-white" />
           </Button>
         </div>
+        {/* Busca rapida*/}
+        <div className="flex gap-3 mt-6 overflow-x-scroll [&::-webkit-scrollbar]:hidden">
+          <Button className="gap-1" variant='secondary'>
+            <Image
+              src="/cabeloIcon.png"
+              alt="Ícone de barbearia"
+              width={16}
+              height={16}
+            />
+            <span className="ml-2">Cabelo</span>
+
+          </Button>
+
+          <Button className="gap-1" variant='secondary'>
+            <Image
+              src="/barbarIcon.png"
+              alt="Ícone de barbearia"
+              width={16}
+              height={16}
+            />
+            <span className="ml-2">Barba</span>
+
+          </Button>
+
+          <Button className="gap-1" variant='secondary'>
+            <Image
+              src="/acabamentoIcon.png"
+              alt="Ícone de barbearia"
+              width={16}
+              height={16}
+            />
+            <span className="ml-2">Acabamento</span>
+
+          </Button>
+
+          <Button className="gap-1" variant='secondary'>
+            <Image
+              src="/acabamentoIcon.png"
+              alt="Ícone de barbearia"
+              width={16}
+              height={16}
+            />
+            <span className="ml-2">Barberia perto de voce</span>
+
+          </Button>
+
+          <Button className="gap-1" variant='secondary'>
+            <Image
+              src="/acabamentoIcon.png"
+              alt="Ícone de barbearia"
+              width={16}
+              height={16}
+            />
+            <span className="ml-2">Luzes</span>
+
+          </Button>
+        </div>
+
 
         {/* Banner Image */}
         <div className="relative h-37.5 w-full overflow-hidden rounded-xl">
