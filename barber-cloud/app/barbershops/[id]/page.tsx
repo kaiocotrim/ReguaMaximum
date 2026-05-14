@@ -1,7 +1,7 @@
 import { db } from "../../_lib/prisma"
 import Image from "next/image"
 import { Button } from "../../_components/ui/button"
-import { ChevronLeft, MapIcon, MenuIcon, Star, StarIcon } from "lucide-react"
+import { ChevronLeft, MapIcon, MenuIcon, StarIcon } from "lucide-react"
 import Link from "next/link"
 import { Card } from "@/app/_components/ui/card"
 
@@ -9,14 +9,19 @@ import { Card } from "@/app/_components/ui/card"
 interface BarbershopPageProps {
   params: {
     id: string
-  }
+  };
+
 }
+
+
 
 const BarbershopPage = async ({ params }: BarbershopPageProps) => {
   const { id } = await params
 
   const barbershop = await db.barbershop.findUnique({
     where: { id },
+
+
   })
 
   if (!barbershop) return <p>Barbearia não encontrada.</p>
@@ -53,28 +58,38 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
           </Link>
         </Button>
 
+
       </div>
+
+             {/* <h2 className="text-xl font-bold">
+            Olá, <span className="shine-text">Bruno Odorissi Campaner.</span>
+          </h2> */}
+
       {/* Exibir nome da barbearia */}      
       <div className="relative p-5 pb-0">
-        <h1 className="mb-3 text-2xl font-bold text-[#C3F32C]">{barbershop.name}</h1>
+        <h1 className="mb-3 text-2xl font-bold text-[#C3F32C]"><span className="shine-text">{barbershop.name}</span> </h1>
 
         <div className="mb-2 flex items-center gap-1">
-          <MapIcon className="h-4 w-4 text-gray-400 size={18}" />
+          <MapIcon className="h-4 w-4 text-[#254F50] size={18}" />
           <p className="text-sm text-white">{barbershop.address}</p>
         </div>
         {/* Exibir endereço da barbearia */} 
         <div className="mb-2 flex items-center gap-1">
-          <StarIcon className="h-4 w-4 text-yellow-400 fill-yellow-400"  />
+          <StarIcon className="h-4 w-4 text-[#254F50] fill-[#254F50]"  />
           <p className=" text-sm text-white">4,8 (899 avaliações)</p>
         </div>
 
       </div>
       {/* Exibir descrição da barbearia */}
-      <div className="p-2 bg-black rounded-lg mb-4  ">
+      <div className="p-4 rounded-lg mb-4  ">
+       
         <Card className=" border-none p-4 mb-4">
-          <p className="text-[13px] font-[Arial]  text-white">{barbershop.description}</p>
+           <h2 className="uppercase text-[#C3F32C] pl-1 pb-0" >Sobre nós. . .</h2>
+          <p className="text-[13px] font-[Arial] text-white">{barbershop.description}</p>
         </Card>
       </div>
+      
+     
     </div>
   )
 }

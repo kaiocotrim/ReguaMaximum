@@ -38,6 +38,7 @@ const BarbershopItem = ({ barbershop }: BarbershopItemProps) => {
             <ChevronRight />
           </Button>
         </div>
+        
       </CardContent>
     </Card>
   )
