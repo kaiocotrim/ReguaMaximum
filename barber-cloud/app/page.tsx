@@ -116,7 +116,7 @@ export default async function Home() {
 
         {/* Agendamentos */}
         <div className="space-y-4">
-          <h2 className="text-xs font-bold uppercase">Agenda</h2>
+          <h2 className="text-xs font-bold uppercase">Agendado</h2>
 
           <Card>
             <CardContent className="flex justify-between p-0">
