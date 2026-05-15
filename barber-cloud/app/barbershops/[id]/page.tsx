@@ -5,7 +5,8 @@ import { ChevronLeft, MapIcon, MenuIcon, StarIcon } from "lucide-react"
 import Link from "next/link"
 import { Card } from "@/app/_components/ui/card"
 import ServiceItem from "@/app/_components/service-item"
-import { User } from "lucide-react"
+import { User,Copy } from "lucide-react"
+import { Smartphone } from "lucide-react"
 
 interface BarbershopPageProps {
   params: {
@@ -29,13 +30,13 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
   console.log("Barbearia encontrada:", barbershop.services)
 
   return (
-    <div >
+    <div>
       {/* Exibir img da barbearia */}
       <div className="relative h-[250px] w-full">
         <Image
           alt={`Imagem da barbearia ${barbershop.name}`}
           fill
-          className="object-cover rounded-b-2xl"
+          className="rounded-b-2xl object-cover"
           src={barbershop?.imageUrl}
         />
 
@@ -60,12 +61,8 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
         </Button>
       </div>
 
-      {/* <h2 className="text-xl font-bold">
-            Olá, <span className="shine-text">Bruno Odorissi Campaner.</span>
-          </h2> */}
-
       {/* Exibir nome da barbearia */}
-      <div className="relative p-5 pb-0 ">
+      <div className="relative p-5 pb-0">
         <h1 className="mb-3 text-2xl font-bold text-[#C3F32C]">
           <span className="shine-text">{barbershop.name}</span>{" "}
         </h1>
@@ -84,13 +81,13 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
       {/* Exibir descrição da barbearia */}
       <div className="mb-4 rounded-lg p-5 pb-0">
         <Card className="mb-4 border-none p-4">
-          <div className="flex items-center gap-1 h-4">
-            <h2 className="pl-1 text-[#C3F32C] uppercase m-0 pt-1">Sobre nós</h2>
-             <User className="text-[#C3F32C] h-5 w-5" />
+          <div className="flex h-4 items-center gap-1">
+            <h2 className="m-0 pt-1 pl-1 text-[#C3F32C] uppercase">
+              Sobre nós
+            </h2>
+            <User className="h-5 w-5 text-[#C3F32C]" />
           </div>
-          <p className="text-[15px] text-white ">
-            {barbershop.description}
-          </p>
+          <p className="text-[15px] text-white">{barbershop.description}</p>
         </Card>
       </div>
 
@@ -105,10 +102,29 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
         </div>
       </div>
 
+      {/* Exibir serviços da barbearia */}
       <div className="p-5">
-        <h2 className="text-xs font-bold uppercase p-3">Serviços</h2>
+        <h2 className="p-3 text-xs font-bold uppercase">Serviços</h2>
         {barbershop.services.map((service) => (
           <ServiceItem key={service.id} service={service} />
+        ))}
+      </div>
+
+      {/* Contato */}
+      <div className="p-5">
+        {barbershop.phones.map((phone) => (
+          <div key={phone} className="flex justify-between items-center gap-2 rounded-lg border p-4 mb-2">
+            <div className="flex items-center gap-2">
+              <Smartphone className=" text-[#C3F32C] " />
+              <p className="text-sm text-white">{phone}</p>
+             </div>
+             <div>
+              <Button size="sm" className="bg-[#C3F32C] text-[#254F50] hover:bg-[#C3F32C]/90 ">
+                Copiar
+                <Copy/> 
+              </Button>
+             </div>
+          </div>
         ))}
       </div>
     </div>
