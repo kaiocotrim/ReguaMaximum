@@ -9,10 +9,10 @@ import { Avatar, AvatarImage } from "./_components/ui/avatar"
 import BarbershopItem from "./_components/barbershop-item"
 import { db } from "./_lib/prisma"
 
+
+{/*  Este componente é a página inicial da aplicação BarberCloud. Ele exibe um cabeçalho, uma saudação personalizada, uma barra de pesquisa, botões de busca rápida para diferentes categorias de serviços, um banner promocional, seções para agendamentos e recomendações de barbearias, além de um rodapé. A página utiliza o Prisma para buscar dados das barbearias no banco de dados e exibi-los usando componentes personalizados para criar uma interface atraente e funcional.*/}
 export default async function Home() {
   const barbershops = await db.barbershop.findMany()
-
-  // console.log("Usuarios do banco:", barbershops)
 
   const poularesBarber = await db.barbershop.findMany({
     orderBy: {
@@ -24,14 +24,12 @@ export default async function Home() {
   return (
     <div>
       <Header />
-
       <div className="space-y-6 px-6 py-6">
         {/* Saudação */}
         <div className="space-y-1">
           <h2 className="text-xl font-bold">
             Olá, <span className="shine-text">Bruno Odorissi Campaner.</span>
           </h2>
-
           <p className="text-sm text-gray-500">Segunda-feira, 12 de junho</p>
         </div>
 
@@ -46,6 +44,7 @@ export default async function Home() {
             <SearchIcon className="text-white" />
           </Button>
         </div>
+
         {/* Busca rapida*/}
         <div className="flex gap-3 mt-6 overflow-x-scroll [&::-webkit-scrollbar]:hidden">
           <Button className="gap-1" variant='secondary'>
@@ -103,7 +102,6 @@ export default async function Home() {
 
           </Button>
         </div>
-
 
         {/* Banner Image */}
         <div className="relative h-37.5 w-full overflow-hidden rounded-xl">
@@ -168,6 +166,7 @@ export default async function Home() {
           </div>
         </div>
 
+        {/* Footer */}
         <footer>
           <Card>
             <CardContent className="">

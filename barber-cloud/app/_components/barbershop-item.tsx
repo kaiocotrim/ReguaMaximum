@@ -11,7 +11,10 @@ interface BarbershopItemProps {
   barbershop: Barbershop
 }
 
+{/*este componente é responsável por exibir as informações de uma barbearia em um formato de cartão, incluindo a imagem, nome, endereço e uma avaliação. Ele recebe um objeto do tipo `Barbershop` como prop e utiliza o Next.js Image para exibir a imagem da barbearia, além de estilizar o layout para apresentar as informações de forma clara e atraente. O componente também inclui um botão que direciona o usuário para a página de detalhes da barbearia.*/}
+
 const BarbershopItem = ({ barbershop }: BarbershopItemProps) => {
+  
   return (
     <Card className="min-w-[167px] p-1 rounded-2xl">
       <CardContent className="p-0 px-1 pt-0 ">

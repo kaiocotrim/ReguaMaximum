@@ -1,17 +1,32 @@
 import { db } from "../../_lib/prisma"
 import Image from "next/image"
 import { Button } from "../../_components/ui/button"
-import { ChevronLeft, MapIcon, MenuIcon, StarIcon } from "lucide-react"
+import {
+  ChevronLeft,
+  MapIcon,
+  MenuIcon,
+  StarIcon,
+  User,
+  Copy,
+  Smartphone,
+  Heart,
+  Share,
+  CircleUser,
+} from "lucide-react"
 import Link from "next/link"
 import { Card } from "@/app/_components/ui/card"
 import ServiceItem from "@/app/_components/service-item"
-import { User,Copy } from "lucide-react"
-import { Smartphone } from "lucide-react"
 
 interface BarbershopPageProps {
   params: {
     id: string
   }
+}
+
+{
+  /*
+  Este componente é responsável por exibir os detalhes de uma barbearia específica, incluindo sua imagem, nome, endereço, descrição, serviços oferecidos e informações de contato. Ele utiliza o Prisma para buscar os dados da barbearia no banco de dados com base no ID fornecido nos parâmetros da URL. A interface do usuário é construída usando componentes personalizados e ícones para melhorar a experiência visual.
+*/
 }
 
 const BarbershopPage = async ({ params }: BarbershopPageProps) => {
@@ -62,19 +77,38 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
       </div>
 
       {/* Exibir nome da barbearia */}
-      <div className="relative p-5 pb-0">
-        <h1 className="mb-3 text-2xl font-bold text-[#C3F32C]">
-          <span className="shine-text">{barbershop.name}</span>{" "}
-        </h1>
-
-        <div className="mb-2 flex items-center gap-1">
-          <MapIcon className="size={18} h-4 w-4 text-[#254F50]" />
-          <p className="text-sm text-white">{barbershop.address}</p>
+      <div className="flex p-6 pb-0">
+        <div className="">
+          <h1 className="mb-3 text-2xl font-bold text-[#C3F32C]">
+            <span className="shine-text">{barbershop.name}</span>{" "}
+          </h1>
+          <div className="mb-2 flex items-center gap-1">
+            <MapIcon className="size={18} h-4 w-4 text-[#254F50]" />
+            <p className="text-sm text-white">{barbershop.address}</p>
+          </div>
+          {/* Exibir endereço da barbearia */}
+          <div className="mb-2 flex items-center gap-1">
+            <StarIcon className="h-4 w-4 fill-[#254F50] text-[#254F50]" />
+            <p className="text-sm text-white">4,8 (899 avaliações)</p>
+          </div>
         </div>
-        {/* Exibir endereço da barbearia */}
-        <div className="mb-2 flex items-center gap-1">
-          <StarIcon className="h-4 w-4 fill-[#254F50] text-[#254F50]" />
-          <p className="text-sm text-white">4,8 (899 avaliações)</p>
+
+        {/* Mini ações */}
+        <div className="ml-auto flex flex-col items-stretch gap-2">
+          <Button className="bg-black/10" variant="secondary">
+            <Heart className="h-2 w-2 text-[#C3F32C]" />
+            Favoritar
+          </Button>
+
+          <Button className="bg-black/10" variant="secondary">
+            <Share className="h-2 w-2 text-[#C3F32C]" />
+            Compartilhar
+          </Button>
+
+          <Button className="bg-black/10" variant="secondary">
+            <CircleUser className="h-2 w-2 text-[#C3F32C]" />
+            Barbeiros: 3
+          </Button>
         </div>
       </div>
 
@@ -113,17 +147,23 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
       {/* Contato */}
       <div className="p-5">
         {barbershop.phones.map((phone) => (
-          <div key={phone} className="flex justify-between items-center gap-2 rounded-lg border p-4 mb-2">
+          <div
+            key={phone}
+            className="mb-2 flex items-center justify-between gap-2 rounded-lg border p-4"
+          >
             <div className="flex items-center gap-2">
-              <Smartphone className=" text-[#C3F32C] " />
+              <Smartphone className="text-[#C3F32C]" />
               <p className="text-sm text-white">{phone}</p>
-             </div>
-             <div>
-              <Button size="sm" className="bg-[#C3F32C] text-[#254F50] hover:bg-[#C3F32C]/90 ">
+            </div>
+            <div>
+              <Button
+                size="sm"
+                className="bg-[#C3F32C] text-[#254F50] hover:bg-[#C3F32C]/90"
+              >
                 Copiar
-                <Copy/> 
+                <Copy />
               </Button>
-             </div>
+            </div>
           </div>
         ))}
       </div>

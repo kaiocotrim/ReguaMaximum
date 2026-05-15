@@ -6,6 +6,7 @@ interface ServiceItemProps {
   service: BarbeshopService;
 }
 
+
 const ServiceItem = ({ service }: ServiceItemProps) => {
     return (
         <div className="flex items-center gap-3 p-3 border  mb-3 rounded-tl-full rounded-bl-full bg- ">
