@@ -1,5 +1,4 @@
-<img width="1947" height="808" alt="BarberCloud-baner dark mode" src="<img width="1536" height="1024" alt="ChatGPT Image 15 de mai  de 2026, 16_11_42" src="https://github.com/user-attachments/assets/66bb4ab6-06f2-418e-866c-a7170410cc5e" />
-" /><div align="center">
+src="<img width="1536" height="1024" alt="ChatGPT Image 15 de mai  de 2026, 16_11_42" src="https://github.com/user-attachments/assets/66bb4ab6-06f2-418e-866c-a7170410cc5e" />
 
 <br/>
 
