@@ -12,7 +12,7 @@ import { db } from "./_lib/prisma"
 export default async function Home() {
   const barbershops = await db.barbershop.findMany()
 
-  console.log("Usuarios do banco:", barbershops)
+  // console.log("Usuarios do banco:", barbershops)
 
   const poularesBarber = await db.barbershop.findMany({
     orderBy: {
