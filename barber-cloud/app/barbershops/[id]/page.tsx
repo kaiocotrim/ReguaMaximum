@@ -35,7 +35,7 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
         <Image
           alt={`Imagem da barbearia ${barbershop.name}`}
           fill
-          className="object-cover"
+          className="object-cover rounded-b-2xl"
           src={barbershop?.imageUrl}
         />
 
@@ -65,7 +65,7 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
           </h2> */}
 
       {/* Exibir nome da barbearia */}
-      <div className="relative p-4 pb-0">
+      <div className="relative p-5 pb-0 ">
         <h1 className="mb-3 text-2xl font-bold text-[#C3F32C]">
           <span className="shine-text">{barbershop.name}</span>{" "}
         </h1>
@@ -82,7 +82,7 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
       </div>
 
       {/* Exibir descrição da barbearia */}
-      <div className="mb-4 rounded-lg p-4 pb-0">
+      <div className="mb-4 rounded-lg p-5 pb-0">
         <Card className="mb-4 border-none p-4">
           <div className="flex items-center gap-1 h-4">
             <h2 className="pl-1 text-[#C3F32C] uppercase m-0 pt-1">Sobre nós</h2>
