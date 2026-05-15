@@ -8,7 +8,7 @@ interface ServiceItemProps {
 
 const ServiceItem = ({ service }: ServiceItemProps) => {
     return (
-        <div className="flex items-center gap-3 p-3 border rounded-lg mb-3">
+        <div className="flex items-center gap-3 p-3 border  mb-3 rounded-tl-full rounded-bl-full bg- ">
             {/* Exibir imagem do serviço */}
             <div className="relative max-h-[110px] max-w-[110px] min-h-[110px] min-w-[110px] rounded-lg overflow-hidden">
                 <Image src={service.imageUrl} alt={service.name} fill className=" rounded-full border-2 border-white object-cover" />
