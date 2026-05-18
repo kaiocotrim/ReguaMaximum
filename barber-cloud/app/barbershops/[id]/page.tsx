@@ -7,12 +7,10 @@ import {
   MenuIcon,
   StarIcon,
   User,
-  Copy,
   Smartphone,
   Heart,
   Share,
   CircleUser,
-  PhoneIcon,
 } from "lucide-react"
 import Link from "next/link"
 import { Card } from "@/app/_components/ui/card"

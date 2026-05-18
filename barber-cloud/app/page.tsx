@@ -167,18 +167,7 @@ export default async function Home() {
         </div>
 
         {/* Footer */}
-        <footer>
-          <Card>
-            <CardContent className="">
-              <p className="font-sans text-sm text-gray-600">
-                @2026 Copyright{" "}
-                <span className=" text-[#C3F32C]">
-                  Regua-Maximum
-                </span>
-              </p>
-            </CardContent>
-          </Card>
-        </footer>
+
       </div>
     </div>
   )
