@@ -21,7 +21,9 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
                 {/* Exibir preço do serviço */}
                 <div className="flex items-center justify-between">
                     <p className="text-xl font-bold">R$ {service.price.toFixed(2)}</p>
-                    <Button size="sm" variant="" className="ml-auto b">Agendar</Button>
+                    <Button size="sm" variant="default" className="ml-auto">
+                        Agendar
+                    </Button>
                 </div>
             </div>
         </div>

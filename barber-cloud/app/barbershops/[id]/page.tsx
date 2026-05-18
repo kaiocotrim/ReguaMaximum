@@ -16,6 +16,9 @@ import Link from "next/link"
 import { Card } from "@/app/_components/ui/card"
 import ServiceItem from "@/app/_components/service-item"
 import PhoneItem from "@/app/_components/ui/phone-item"
+import { Sheet, SheetContent, SheetTrigger } from "@/app/_components/ui/sheet"
+
+import MenuBtn from "@/app/_components/ui/MenuBtn"
 
 interface BarbershopPageProps {
   params: {
@@ -55,25 +58,33 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
           src={barbershop?.imageUrl}
         />
 
+        {/* Botões de navegação */}
         <Button
           size="icon"
-          variant="secondary"
-          className="absolute top-4 left-4 bg-black"
+          variant="outline"
+          className="absolute top-4 left-4 h-10 w-10 bg-black"
         >
           <Link href="/">
             <ChevronLeft className="h-5 w-5 text-[#C3F32C]" />
           </Link>
         </Button>
 
-        <Button
-          size="icon"
-          variant="secondary"
-          className="absolute top-4 right-4 bg-black"
-        >
-          <Link href="/">
-            <MenuIcon className="h-5 w-5 text-[#C3F32C]" />
-          </Link>
-        </Button>
+        {/* <Sheet>
+          
+          <SheetTrigger asChild>
+            <Button
+              size="icon"
+              variant="outline"
+                        className="absolute top-4 right-4 h-10 w-10 bg-black text-[#C3F32C]"
+            >
+              <MenuIcon />
+            </Button>
+          </SheetTrigger>
+          <SheetContent className="bg-slate-900">
+            <p>Oi</p>
+          </SheetContent>
+        </Sheet> */}
+        <MenuBtn className="absolute top-4 right-4 h-10 w-10 bg-black text-[#C3F32C]" />
       </div>
 
       {/* Exibir nome da barbearia */}
