@@ -62,7 +62,7 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
         <Button
           size="icon"
           variant="outline"
-          className="absolute top-4 left-4 h-10 w-10 bg-black"
+          className="absolute top-4 left-4 h-10 w-10 !bg-black"
         >
           <Link href="/">
             <ChevronLeft className="h-5 w-5 text-[#C3F32C]" />
