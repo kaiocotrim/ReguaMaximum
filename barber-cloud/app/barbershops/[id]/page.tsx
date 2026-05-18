@@ -12,10 +12,12 @@ import {
   Heart,
   Share,
   CircleUser,
+  PhoneIcon,
 } from "lucide-react"
 import Link from "next/link"
 import { Card } from "@/app/_components/ui/card"
 import ServiceItem from "@/app/_components/service-item"
+import PhoneItem from "@/app/_components/ui/phone-item"
 
 interface BarbershopPageProps {
   params: {
@@ -156,13 +158,14 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
               <p className="text-sm text-white">{phone}</p>
             </div>
             <div>
-              <Button
+              {/* <Button
                 size="sm"
                 className="bg-[#C3F32C] text-[#254F50] hover:bg-[#C3F32C]/90"
               >
                 Copiar
                 <Copy />
-              </Button>
+              </Button> */}
+              <PhoneItem key={phone} phone={phone} />
             </div>
           </div>
         ))}
