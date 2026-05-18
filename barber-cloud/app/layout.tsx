@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
 import { Toaster } from "sonner"
-import { Card, CardContent } from "@/app/_components/ui/card"
+import Fotter from "./_components/ui/footer"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,15 +32,7 @@ export default function RootLayout({
       <body className="dark flex min-h-full flex-col">
         {children}
         <Toaster />
-        <footer className="border-border border-t py-4">
-          <div className="container mx-auto flex items-center justify-center">
-            <p className="text-muted-foreground text-sm">
-              © 2026{" "}
-              <span className="font-medium text-[#C3F32C]">RéguaMaximum</span>.
-              Todos os direitos reservados.
-            </p>
-          </div>
-        </footer>
+        <Fotter />
       </body>
     </html>
   )
