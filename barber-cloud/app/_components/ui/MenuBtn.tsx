@@ -9,11 +9,9 @@ import {
   SheetTrigger,
 } from "./sheet"
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "./avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "./avatar"
+
+
 
 import { Button } from "./button"
 
@@ -23,6 +21,7 @@ import {
   Clock,
   Crown,
   Heart,
+  LogInIcon,
   LogOut,
   Menu,
   ScissorsLineDashed,
@@ -30,7 +29,8 @@ import {
 } from "lucide-react"
 
 import { cn } from "@/lib/utils" // já vem com o shadcn
-
+import { Sign } from "crypto"
+import { Dialog } from "radix-ui"
 
 interface MenuBtnProps {
   className?: string
@@ -51,8 +51,15 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
 
       <SheetContent className="overflow-y-auto border-l border-[#C3F32C]/20 bg-black px-6 text-white backdrop-blur-xl">
         <SheetHeader className="mt-6">
-          {/* <div className="space-y-1 text-left">
-            <SheetTitle className="text-4xl font-black leading-tight tracking-tight text-white">
+          <div className="space-y-1 text-left">
+            <div className="flex items-center justify-between gap-4">
+              <h2 className="font-light">Olá, faça o seu login ! </h2>
+              <Dialog>
+              <Button variant="outline" className="border-[#C3F32C] text-[#C3F32C] hover:bg-[#C3F32C] hover:text-black">
+                <LogInIcon className="h-4 w-4" />
+              </Button>
+            </div>
+            {/* <SheetTitle className="text-4xl font-black leading-tight tracking-tight text-white">
               Vai deixar o cabelo
               <br />
               na{" "}
@@ -98,103 +105,94 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
             </h1>
             <p className="mt-1 text-sm text-zinc-500">
               Gerencie sua barbearia com precisão.
-            </p>
-          </div> */}
+            </p> */}
+          </div>
 
-          {/* <div className="mt-10">
-            <div className="mb-4 flex items-center gap-2">
-              <div className="h-5 w-1 rounded-full bg-[#C3F32C]" />
-              <h1 className="text-sm font-bold uppercase tracking-[0.2em] text-zinc-300">
+          <div className="mt-10">
+            <div className="mb-5 flex items-center gap-3">
+              <h1 className="text-[11px] font-semibold tracking-[0.25em] text-zinc-500 uppercase">
                 Menu
               </h1>
+              <div className="h-px flex-1 bg-zinc-900" />
             </div>
 
-            <div className="space-y-4">
-              <Button className="group h-20 w-full rounded-3xl border border-zinc-800 bg-zinc-950 px-5 hover:border-[#C3F32C]/40 hover:bg-zinc-900">
-                <div className="flex w-full items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#C3F32C]/20 bg-[#C3F32C]/10">
-                      <CalendarCheck2 className="h-7 w-7 text-[#C3F32C]" />
-                    </div>
-                    <div className="text-left">
-                      <h2 className="text-lg font-semibold text-white">Agendar</h2>
-                      <p className="text-sm text-zinc-500">Marque seus horários</p>
-                    </div>
+            <div className="overflow-hidden rounded-2xl border border-zinc-900 bg-zinc-950/40">
+              <Button className="group flex h-auto w-full items-center justify-between rounded-none bg-transparent px-5 py-4 hover:bg-zinc-900/50">
+                <div className="flex items-center gap-4">
+                  <CalendarCheck2 className="h-5 w-5 text-[#C3F32C]" />
+                  <div className="text-left">
+                    <h2 className="text-sm font-medium text-zinc-100">
+                      Agendar
+                    </h2>
+                    <p className="text-xs text-zinc-500">
+                      Marque seus horários
+                    </p>
                   </div>
-                  {/* <ChevronRight className="text-zinc-600 transition-all group-hover:translate-x-1 group-hover:text-[#C3F32C]"/> */}
                 </div>
+                <ChevronRight className="h-4 w-4 text-zinc-600 transition-all group-hover:translate-x-0.5 group-hover:text-[#C3F32C]" />
               </Button>
 
-              <Button className="group h-20 w-full rounded-3xl border border-zinc-800 bg-zinc-950 px-5 hover:border-[#C3F32C]/40 hover:bg-zinc-900">
-                <div className="flex w-full items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#C3F32C]/20 bg-[#C3F32C]/10">
-                      <ScissorsLineDashed className="h-7 w-7 text-[#C3F32C]" />
-                    </div>
-                    <div className="text-left">
-                      <h2 className="text-lg font-semibold text-white">Serviços</h2>
-                      <p className="text-sm text-zinc-500">Gerencie seus serviços</p>
-                    </div>
+              <Button className="group flex h-auto w-full items-center justify-between rounded-none border-t border-zinc-900 bg-transparent px-5 py-4 hover:bg-zinc-900/50">
+                <div className="flex items-center gap-4">
+                  <ScissorsLineDashed className="h-5 w-5 text-[#C3F32C]" />
+                  <div className="text-left">
+                    <h2 className="text-sm font-medium text-zinc-100">
+                      Serviços
+                    </h2>
+                    <p className="text-xs text-zinc-500">
+                      Gerencie seus serviços
+                    </p>
                   </div>
-                  {/* <ChevronRight className="text-zinc-600 transition-all group-hover:translate-x-1 group-hover:text-[#C3F32C]" /> */}
                 </div>
+                <ChevronRight className="h-4 w-4 text-zinc-600 transition-all group-hover:translate-x-0.5 group-hover:text-[#C3F32C]" />
               </Button>
 
-              <Button className="group h-20 w-full rounded-3xl border border-zinc-800 bg-zinc-950 px-5 hover:border-[#C3F32C]/40 hover:bg-zinc-900">
-                <div className="flex w-full items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#C3F32C]/20 bg-[#C3F32C]/10">
-                      <Heart className="h-7 w-7 text-[#C3F32C]" />
-                    </div>
-                    <div className="text-left">
-                      <h2 className="text-lg font-semibold text-white">Favoritos</h2>
-                      <p className="text-sm text-zinc-500">Seus favoritos</p>
-                    </div>
+              <Button className="group flex h-auto w-full items-center justify-between rounded-none border-t border-zinc-900 bg-transparent px-5 py-4 hover:bg-zinc-900/50">
+                <div className="flex items-center gap-4">
+                  <Heart className="h-5 w-5 text-[#C3F32C]" />
+                  <div className="text-left">
+                    <h2 className="text-sm font-medium text-zinc-100">
+                      Favoritos
+                    </h2>
+                    <p className="text-xs text-zinc-500">Seus favoritos</p>
                   </div>
-                  {/* <ChevronRight className="text-zinc-600 transition-all group-hover:translate-x-1 group-hover:text-[#C3F32C]" /> */}
                 </div>
+                <ChevronRight className="h-4 w-4 text-zinc-600 transition-all group-hover:translate-x-0.5 group-hover:text-[#C3F32C]" />
               </Button>
 
-              <Button className="group h-20 w-full rounded-3xl border border-zinc-800 bg-zinc-950 px-5 hover:border-[#C3F32C]/40 hover:bg-zinc-900">
-                <div className="flex w-full items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#C3F32C]/20 bg-[#C3F32C]/10">
-                      <Clock className="h-7 w-7 text-[#C3F32C]" />
-                    </div>
-                    <div className="text-left">
-                      <h2 className="text-lg font-semibold text-white">Histórico</h2>
-                      <p className="text-sm text-zinc-500">Veja seu progresso</p>
-                    </div>
+              <Button className="group flex h-auto w-full items-center justify-between rounded-none border-t border-zinc-900 bg-transparent px-5 py-4 hover:bg-zinc-900/50">
+                <div className="flex items-center gap-4">
+                  <Clock className="h-5 w-5 text-[#C3F32C]" />
+                  <div className="text-left">
+                    <h2 className="text-sm font-medium text-zinc-100">
+                      Histórico
+                    </h2>
+                    <p className="text-xs text-zinc-500">Veja seu progresso</p>
                   </div>
-                  {/* <ChevronRight className="text-zinc-600 transition-all group-hover:translate-x-1 group-hover:text-[#C3F32C]" /> */}
                 </div>
+                <ChevronRight className="h-4 w-4 text-zinc-600 transition-all group-hover:translate-x-0.5 group-hover:text-[#C3F32C]" />
               </Button>
 
-              <Button className="group h-20 w-full rounded-3xl border border-zinc-800 bg-zinc-950 px-5 hover:border-[#C3F32C]/40 hover:bg-zinc-900">
-                <div className="flex w-full items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#C3F32C]/20 bg-[#C3F32C]/10">
-                      <Settings className="h-7 w-7 text-[#C3F32C]" />
-                    </div>
-                    <div className="text-left">
-                      <h2 className="text-lg font-semibold text-white">Configurações</h2>
-                      <p className="text-sm text-zinc-500">Ajustes da conta</p>
-                    </div>
+              <Button className="group flex h-auto w-full items-center justify-between rounded-none border-t border-zinc-900 bg-transparent px-5 py-4 hover:bg-zinc-900/50">
+                <div className="flex items-center gap-4">
+                  <Settings className="h-5 w-5 text-[#C3F32C]" />
+                  <div className="text-left">
+                    <h2 className="text-sm font-medium text-zinc-100">
+                      Configurações
+                    </h2>
+                    <p className="text-xs text-zinc-500">Ajustes da conta</p>
                   </div>
-                  {/* <ChevronRight className="text-zinc-600 transition-all group-hover:translate-x-1 group-hover:text-[#C3F32C]" /> */}
                 </div>
+                <ChevronRight className="h-4 w-4 text-zinc-600 transition-all group-hover:translate-x-0.5 group-hover:text-[#C3F32C]" />
               </Button>
             </div>
           </div>
 
-          <Button className="mt-8 h-20 w-full rounded-3xl border border-[#C3F32C]/40 bg-transparent hover:bg-[#C3F32C]/10">
-            <div className="flex items-center gap-4">
-              <LogOut className="h-7 w-7 text-[#C3F32C]" />
-              <div className="text-left">
-                <h2 className="text-lg font-semibold text-[#C3F32C]">Sair da conta</h2>
-                <p className="text-sm text-zinc-500">Até logo!</p>
-              </div>
-            </div> */}
+          <Button className="mt-6 flex h-auto w-full items-center justify-center gap-3 rounded-2xl border border-[#C3F32C]/30 bg-transparent py-4 hover:bg-[#C3F32C]/10">
+            <LogOut className="h-4 w-4 text-[#C3F32C]" />
+            <span className="text-sm font-medium text-[#C3F32C]">
+              Sair da conta
+            </span>
           </Button>
         </SheetHeader>
       </SheetContent>
