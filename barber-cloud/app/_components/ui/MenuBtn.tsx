@@ -73,7 +73,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
 
               <Avatar className="relative h-52 w-52 border-[3px] border-[#C3F32C] shadow-[0_0_30px_#C3F32C50]">
                 <AvatarImage
-                  src="https://media.licdn.com/dms/image/v2/D4D03AQGYK5d8AjYKbw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1681474715614?e=1780531200&v=beta&t=JZmlZBjRfsOGiT9LymYKntOZca5q8n4AmoD1lIbrNF4"
+                  src="https://media-gru1-2.cdn.whatsapp.net/v/t61.24694-24/298631157_2497414770412095_7034573917029709764_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa4gGhbp6GiNwQHRm3PoSEw7vfw8sGN1finOJw_0G1mTnUsQ&oe=6A18563B&_nc_sid=5e03e0&_nc_cat=108  "
                   alt="@shadcn"
                   className="object-cover "
                 />
