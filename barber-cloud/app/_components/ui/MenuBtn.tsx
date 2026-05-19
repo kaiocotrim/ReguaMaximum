@@ -51,7 +51,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
 
       <SheetContent className="overflow-y-auto border-l border-[#C3F32C]/20 bg-black px-6 text-white backdrop-blur-xl">
         <SheetHeader className="mt-6">
-          <div className="space-y-1 text-left">
+          {/* <div className="space-y-1 text-left">
             <SheetTitle className="text-4xl font-black leading-tight tracking-tight text-white">
               Vai deixar o cabelo
               <br />
@@ -73,7 +73,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
 
               <Avatar className="relative h-52 w-52 border-[3px] border-[#C3F32C] shadow-[0_0_30px_#C3F32C50]">
                 <AvatarImage
-                  src="https://media-gru1-2.cdn.whatsapp.net/v/t61.24694-24/298631157_2497414770412095_7034573917029709764_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa4gGhbp6GiNwQHRm3PoSEw7vfw8sGN1finOJw_0G1mTnUsQ&oe=6A18563B&_nc_sid=5e03e0&_nc_cat=108  "
+                  src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                   alt="@shadcn"
                   className="object-cover "
                 />
@@ -99,9 +99,9 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
             <p className="mt-1 text-sm text-zinc-500">
               Gerencie sua barbearia com precisão.
             </p>
-          </div>
+          </div> */}
 
-          <div className="mt-10">
+          {/* <div className="mt-10">
             <div className="mb-4 flex items-center gap-2">
               <div className="h-5 w-1 rounded-full bg-[#C3F32C]" />
               <h1 className="text-sm font-bold uppercase tracking-[0.2em] text-zinc-300">
@@ -194,7 +194,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                 <h2 className="text-lg font-semibold text-[#C3F32C]">Sair da conta</h2>
                 <p className="text-sm text-zinc-500">Até logo!</p>
               </div>
-            </div>
+            </div> */}
           </Button>
         </SheetHeader>
       </SheetContent>
