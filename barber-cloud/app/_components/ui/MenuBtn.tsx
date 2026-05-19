@@ -11,8 +11,6 @@ import {
 
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar"
 
-
-
 import { Button } from "./button"
 
 import {
@@ -30,7 +28,15 @@ import {
 
 import { cn } from "@/lib/utils" // já vem com o shadcn
 import { Sign } from "crypto"
-import { Dialog } from "radix-ui"
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./dialog"
 
 interface MenuBtnProps {
   className?: string
@@ -54,10 +60,25 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
           <div className="space-y-1 text-left">
             <div className="flex items-center justify-between gap-4">
               <h2 className="font-light">Olá, faça o seu login ! </h2>
+
               <Dialog>
-              <Button variant="outline" className="border-[#C3F32C] text-[#C3F32C] hover:bg-[#C3F32C] hover:text-black">
-                <LogInIcon className="h-4 w-4" />
-              </Button>
+                <DialogTrigger>
+                  <Button
+                    variant="outline"
+                    className="border-[#C3F32C] text-[#C3F32C] hover:bg-[#C3F32C] hover:text-black"
+                  >
+                    <LogInIcon className="h-4 w-4" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle></DialogTitle>
+                    <DialogDescription>
+                        Em breve, a funcionalidade de login estará disponível. Fique atento às atualizações para acessar sua conta e aproveitar todos os recursos que estamos preparando para você!
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
             </div>
             {/* <SheetTitle className="text-4xl font-black leading-tight tracking-tight text-white">
               Vai deixar o cabelo
