@@ -42,6 +42,8 @@ interface MenuBtnProps {
   className?: string
 }
 
+import Image from "next/image"
+
 const MenuBtn = ({ className }: MenuBtnProps) => {
   return (
     <Sheet>
@@ -72,10 +74,26 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle></DialogTitle>
+                    <DialogTitle className="text-black">
+                      Faça login na plataforma
+                    </DialogTitle>
                     <DialogDescription>
-                        Em breve, a funcionalidade de login estará disponível. Fique atento às atualizações para acessar sua conta e aproveitar todos os recursos que estamos preparando para você!
+                      Conecte-se usando suas credenciais.
                     </DialogDescription>
+                    <Button className="mt-4 w-full bg-[#C3F32C] text-black hover:bg-[#C3F32C]/90">
+                      <Image src="/google-icon.svg" alt="Google Icon" width={16} height={16} className="inline-block mr-2" />
+                    </Button>
+                    <Button className="mt-2 w-full bg-[#C3F32C] text-black hover:bg-[#C3F32C]/90">
+                      <Image src="/facebook-icon.svg" alt="Facebook Icon" width={16} height={16} className="inline-block mr-2" />
+                    </Button>
+                    <Button className="mt-2 w-full bg-[#C3F32C] text-black hover:bg-[#C3F32C]/90">
+                      <Image src="/Apple-icon.svg" alt="Apple Icon" width={16} height={16} className="inline-block mr-2" />
+                      
+                    </Button>
+                    <Button className="mt-2 w-full bg-[#C3F32C] text-black hover:bg-[#C3F32C]/90">
+                      <Image src="/GitHub-icon.svg" alt="GitHub Icon" width={16} height={16} className="inline-block mr-2" />
+                      
+                    </Button>
                   </DialogHeader>
                 </DialogContent>
               </Dialog>
