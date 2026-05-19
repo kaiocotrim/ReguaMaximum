@@ -24,10 +24,12 @@ import {
   Menu,
   ScissorsLineDashed,
   Settings,
+  CircleUser
 } from "lucide-react"
 
 import { cn } from "@/lib/utils" // já vem com o shadcn
 import { Sign } from "crypto"
+
 
 import {
   Dialog,
@@ -37,6 +39,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./dialog"
+
+
 
 interface MenuBtnProps {
   className?: string
@@ -61,7 +65,11 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
         <SheetHeader className="mt-6">
           <div className="space-y-1 text-left">
             <div className="flex items-center justify-between gap-4">
-              <h2 className="font-light">Olá, faça o seu login ! </h2>
+              <div className="flex items-center gap-2">
+                <CircleUser className="h-8 w-8 text-[#ffffff]" />
+                <h2 className="font-light"> Olá, faça o seu login . . .</h2>
+              </div>
+              
 
               <Dialog>
                 <DialogTrigger>
