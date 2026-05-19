@@ -105,7 +105,16 @@
   }
   [data-theme="light"] .phone-body {
     box-shadow: -16px 28px 60px rgba(0,0,0,0.14), -6px 8px 20px rgba(0,0,0,0.08), 0 0 40px rgba(195,243,44,0.12) !important;
-    border-color: rgba(0,0,0,0.1);
+    background: linear-gradient(160deg, #c8c8c8 0%, #b0b0b0 30%, #a0a0a0 60%, #b8b8b8 100%);
+  }
+  [data-theme="light"] .phone-btn-vol-up,
+  [data-theme="light"] .phone-btn-vol-down,
+  [data-theme="light"] .phone-btn-action,
+  [data-theme="light"] .phone-btn-power {
+    background: linear-gradient(180deg, #b0b0b0 0%, #c0c0c0 50%, #b0b0b0 100%);
+  }
+  [data-theme="light"] .dynamic-island {
+    background: #1a1a1a;
   }
   [data-theme="light"] .cta-section {
     box-shadow: 0 2px 16px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
@@ -496,13 +505,14 @@
     animation: fadeUp 1s ease 0.6s both;
   }
 
-  .phone-scene { perspective: 1200px; width: 320px; height: 620px; }
+  .phone-scene { perspective: 1200px; width: 320px; height: 650px; }
 
   .phone-wrap {
     width: 100%; height: 100%;
     transform-style: preserve-3d;
     animation: float3d 6s ease-in-out infinite;
     transform: rotateY(-15deg) rotateX(5deg);
+    position: relative;
   }
 
   @keyframes float3d {
@@ -513,50 +523,200 @@
     100% { transform: rotateY(-15deg) rotateX(5deg) translateY(0px); }
   }
 
+  /* iPhone frame outer shell */
   .phone-body {
     width: 100%; height: 100%;
-    background: var(--phone-bg);
-    border-radius: 44px;
-    border: 1.5px solid var(--phone-border);
+    background: linear-gradient(160deg, #2a2a2a 0%, #1a1a1a 30%, #111 60%, #1c1c1c 100%);
+    border-radius: 50px;
+    border: none;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     box-shadow:
-      0 0 0 1px rgba(255,255,255,0.05),
-      -20px 30px 80px rgba(0,0,0,0.3),
-      -40px 60px 120px rgba(0,0,0,0.2),
-      0 0 60px rgba(195,243,44,0.08),
-      inset 0 0 0 1px rgba(255,255,255,0.04);
+      0 0 0 1px rgba(255,255,255,0.18),
+      0 0 0 2px rgba(0,0,0,0.9),
+      0 0 0 3.5px rgba(255,255,255,0.07),
+      -20px 30px 80px rgba(0,0,0,0.5),
+      -40px 60px 120px rgba(0,0,0,0.3),
+      0 0 60px rgba(195,243,44,0.1),
+      inset 0 1px 0 rgba(255,255,255,0.12),
+      inset 0 -1px 0 rgba(255,255,255,0.05);
+  }
+
+  /* Titanium edge highlight — top arc */
+  .phone-body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50px;
+    background: transparent;
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.2), inset 1px 0 1px rgba(255,255,255,0.06);
+    pointer-events: none;
+    z-index: 20;
+  }
+
+  /* Side buttons — volume up */
+  .phone-btn-vol-up {
+    position: absolute;
+    left: -3px; top: 120px;
+    width: 3px; height: 34px;
+    background: linear-gradient(180deg, #333 0%, #444 50%, #333 100%);
+    border-radius: 3px 0 0 3px;
+    box-shadow: -1px 0 0 rgba(255,255,255,0.1);
+  }
+  /* volume down */
+  .phone-btn-vol-down {
+    position: absolute;
+    left: -3px; top: 166px;
+    width: 3px; height: 34px;
+    background: linear-gradient(180deg, #333 0%, #444 50%, #333 100%);
+    border-radius: 3px 0 0 3px;
+    box-shadow: -1px 0 0 rgba(255,255,255,0.1);
+  }
+  /* action button */
+  .phone-btn-action {
+    position: absolute;
+    left: -3px; top: 74px;
+    width: 3px; height: 28px;
+    background: linear-gradient(180deg, #333 0%, #444 50%, #333 100%);
+    border-radius: 3px 0 0 3px;
+    box-shadow: -1px 0 0 rgba(255,255,255,0.1);
+  }
+  /* power/side button */
+  .phone-btn-power {
+    position: absolute;
+    right: -3px; top: 130px;
+    width: 3px; height: 64px;
+    background: linear-gradient(180deg, #333 0%, #444 50%, #333 100%);
+    border-radius: 0 3px 3px 0;
+    box-shadow: 1px 0 0 rgba(255,255,255,0.1);
   }
 
   .phone-screen {
     position: absolute;
-    inset: 0;
-    border-radius: 44px;
+    inset: 5px;
+    border-radius: 46px;
     overflow: hidden;
     background: var(--phone-screen);
+    z-index: 1;
+  }
+
+  /* Dynamic Island */
+  .dynamic-island {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 30px;
+    background: #000;
+    border-radius: 20px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    overflow: hidden;
+  }
+  .dynamic-island::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    box-shadow: inset 0 0 0 0.5px rgba(255,255,255,0.08);
+  }
+  /* camera dot */
+  .island-camera {
+    width: 10px; height: 10px;
+    background: #0a0a0a;
+    border-radius: 50%;
+    border: 1.5px solid #1a1a1a;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .island-camera::after {
+    content: '';
+    width: 3px; height: 3px;
+    background: #1e3a5f;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+  }
+  /* microphone dot */
+  .island-mic {
+    width: 4px; height: 10px;
+    background: #111;
+    border-radius: 2px;
+    flex-shrink: 0;
   }
 
   .status-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 14px 24px 8px;
+    padding: 16px 22px 4px;
     font-size: 11px;
     font-weight: 600;
-    color: var(--text-muted);
+    color: var(--text);
+    position: relative;
+    z-index: 5;
   }
-
-  .notch {
+  .status-bar-time {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .status-icons {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .status-signal {
+    display: flex;
+    align-items: flex-end;
+    gap: 1.5px;
+    height: 11px;
+  }
+  .signal-bar {
+    width: 2.5px;
+    background: var(--text);
+    border-radius: 1px;
+  }
+  .signal-bar:nth-child(1) { height: 3px; }
+  .signal-bar:nth-child(2) { height: 5px; }
+  .signal-bar:nth-child(3) { height: 7px; }
+  .signal-bar:nth-child(4) { height: 9px; opacity: 0.35; }
+  .status-wifi {
+    font-size: 9px;
+    opacity: 0.9;
+  }
+  .status-battery {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+  }
+  .battery-body {
+    width: 20px; height: 10px;
+    border: 1.5px solid var(--text);
+    border-radius: 2.5px;
+    position: relative;
+    overflow: hidden;
+  }
+  .battery-fill {
     position: absolute;
-    top: 0; left: 50%;
-    transform: translateX(-50%);
-    width: 120px; height: 28px;
-    background: var(--phone-screen);
-    border-radius: 0 0 20px 20px;
-    z-index: 10;
+    left: 1px; top: 1px; bottom: 1px;
+    width: 75%;
+    background: var(--text);
+    border-radius: 1px;
+  }
+  .battery-tip {
+    width: 2px; height: 5px;
+    background: var(--text);
+    border-radius: 0 1px 1px 0;
+    opacity: 0.5;
   }
 
-  .phone-content { padding: 12px 16px; height: 100%; }
+  .phone-content { padding: 4px 14px 12px; height: calc(100% - 50px); overflow: hidden; }
 
   .app-header {
     display: flex;
@@ -790,6 +950,179 @@
   .feat-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 10px; letter-spacing: -0.3px; }
   .feat-desc { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
 
+  /* PRICING */
+  .pricing {
+    padding: 100px 80px;
+    position: relative;
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+    align-items: start;
+  }
+  .plan-card {
+    background: var(--card);
+    border: 1px solid var(--slot-border);
+    border-radius: 28px;
+    padding: 40px 32px;
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
+  }
+  .plan-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(195,243,44,0.3);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2), 0 0 30px rgba(195,243,44,0.06);
+  }
+  .plan-card.featured {
+    border-color: rgba(195,243,44,0.4);
+    background: var(--card);
+    transform: translateY(-12px);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.25), 0 0 40px rgba(195,243,44,0.1);
+  }
+  .plan-card.featured:hover { transform: translateY(-18px); }
+  .plan-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(195,243,44,0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.3s !important;
+  }
+  .plan-card.featured::before { opacity: 1; }
+  .plan-card:hover::before { opacity: 1; }
+
+  .plan-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(195,243,44,0.12);
+    border: 1px solid rgba(195,243,44,0.3);
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--lime);
+    margin-bottom: 20px;
+  }
+  .plan-badge-placeholder { height: 26px; margin-bottom: 20px; }
+
+  .plan-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .plan-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+  .plan-price {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--text-thin);
+  }
+  .plan-currency {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .plan-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    line-height: 1;
+    letter-spacing: 1px;
+    color: var(--text);
+  }
+  .plan-card.featured .plan-amount { color: var(--lime); }
+  .plan-period {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  .plan-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 36px;
+  }
+  .plan-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .plan-feature-icon {
+    width: 18px; height: 18px;
+    background: rgba(195,243,44,0.1);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .plan-feature-icon svg { width: 10px; height: 10px; }
+  .plan-feature.off .plan-feature-icon {
+    background: rgba(255,255,255,0.04);
+  }
+  .plan-feature.off { color: var(--text-dim); }
+
+  .plan-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border: none;
+    cursor: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
+  }
+  .plan-btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--slot-border);
+  }
+  .plan-btn-ghost:hover {
+    border-color: var(--lime);
+    color: var(--lime);
+  }
+  .plan-btn-primary {
+    background: var(--lime);
+    color: #000;
+  }
+  .plan-btn-primary:hover {
+    background: var(--lime2);
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(195,243,44,0.35);
+  }
+
+  [data-theme="light"] .plan-card {
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    border-color: rgba(0,0,0,0.06);
+  }
+  [data-theme="light"] .plan-card.featured {
+    border-color: rgba(140,190,10,0.4);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.1), 0 0 40px rgba(195,243,44,0.12);
+  }
+
   /* CTA */
   .cta-section {
     margin: 0 80px 100px;
@@ -851,6 +1184,167 @@
   .reveal { opacity: 0; transform: translateY(30px); }
   .reveal.visible { opacity: 1; transform: translateY(0); transition: opacity 0.8s ease, transform 0.8s ease !important; }
 
+  /* INTERACTIVE PHONE */
+  .cal-day.pickable {
+    cursor: pointer;
+  }
+  .cal-day.pickable:hover {
+    background: rgba(195,243,44,0.15);
+    color: var(--lime);
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s !important;
+  }
+  .cal-day.active {
+    background: var(--lime);
+    color: #000;
+    font-weight: 700;
+    border-radius: 6px;
+  }
+  .slot.slot-pick {
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.15s !important;
+  }
+  .slot.slot-pick:hover {
+    border-color: rgba(195,243,44,0.5);
+    color: var(--lime);
+  }
+  .slot.slot-pick.selected {
+    background: var(--lime);
+    border-color: var(--lime);
+    color: #000;
+    font-weight: 700;
+    transform: scale(1.05);
+  }
+  .slots-grid.locked .slot-pick {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .confirm-btn {
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s !important;
+  }
+  .confirm-btn-disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .confirm-btn:not(.confirm-btn-disabled):hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(195,243,44,0.5);
+  }
+
+  /* SUCCESS SCREEN */
+  .phone-success {
+    position: absolute;
+    inset: 0;
+    background: var(--phone-screen);
+    border-radius: 46px;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(30px);
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16,1,0.3,1) !important;
+  }
+  .phone-success.visible {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+  }
+  .success-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 24px;
+    text-align: center;
+    gap: 10px;
+  }
+  .success-check {
+    width: 64px; height: 64px;
+    margin-bottom: 4px;
+  }
+  .success-check svg { width: 100%; height: 100%; }
+
+  /* SVG circle draw animation */
+  .check-circle {
+    stroke-dasharray: 151;
+    stroke-dashoffset: 151;
+    transition: none !important;
+  }
+  .check-mark {
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
+    transition: none !important;
+  }
+  .phone-success.visible .check-circle {
+    animation: drawCircle 0.5s ease forwards 0.1s !important;
+  }
+  .phone-success.visible .check-mark {
+    animation: drawCheck 0.35s ease forwards 0.55s !important;
+  }
+  @keyframes drawCircle {
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes drawCheck {
+    to { stroke-dashoffset: 0; }
+  }
+
+  .success-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 2px;
+    color: var(--lime);
+    margin-top: 4px;
+  }
+  .success-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .success-details {
+    background: var(--slot-bg);
+    border: 1px solid var(--slot-border);
+    border-radius: 14px;
+    padding: 12px 16px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 4px 0;
+  }
+  .success-detail-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--text);
+  }
+  .success-detail-icon {
+    font-size: 12px;
+    opacity: 0.7;
+    width: 16px;
+    text-align: center;
+  }
+  .success-back {
+    margin-top: 8px;
+    background: rgba(195,243,44,0.1);
+    border: 1px solid rgba(195,243,44,0.3);
+    border-radius: 100px;
+    padding: 10px 20px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--lime);
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s !important;
+  }
+  .success-back:hover {
+    background: rgba(195,243,44,0.2);
+    transform: scale(1.03);
+  }
+
   /* SCROLLBAR */
   ::-webkit-scrollbar { width: 10px; }
   ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
@@ -867,9 +1361,8 @@
 <nav>
   <div class="nav-logo">RÉGUA<span>MÁXIMA</span></div>
   <ul class="nav-links">
-    <li><a href="#features"></a></li>
-    <li><a href="#pricing"></a></li>
-    <li><a href="#about"></a></li>
+    <li><a href="#features">Recursos</a></li>
+    <li><a href="#pricing">Planos</a></li>
   </ul>
   <div class="nav-right">
     <!-- THEME TOGGLE -->
@@ -955,14 +1448,35 @@
     <div class="phone-scene">
       <div class="phone-wrap">
         <div class="phone-body">
+          <!-- Physical buttons -->
+          <div class="phone-btn-action"></div>
+          <div class="phone-btn-vol-up"></div>
+          <div class="phone-btn-vol-down"></div>
+          <div class="phone-btn-power"></div>
           <div class="phone-shine"></div>
-          <div class="notch"></div>
           <div class="phone-screen">
-            <div class="status-bar">
-              <span>9:41</span>
-              <span>●●●</span>
+            <!-- Dynamic Island -->
+            <div class="dynamic-island">
+              <div class="island-mic"></div>
+              <div class="island-camera"></div>
             </div>
-            <div class="phone-content">
+            <div class="status-bar">
+              <span class="status-bar-time">9:41</span>
+              <div class="status-icons">
+                <div class="status-signal">
+                  <div class="signal-bar"></div>
+                  <div class="signal-bar"></div>
+                  <div class="signal-bar"></div>
+                  <div class="signal-bar"></div>
+                </div>
+                <span class="status-wifi">WiFi</span>
+                <div class="status-battery">
+                  <div class="battery-body"><div class="battery-fill"></div></div>
+                  <div class="battery-tip"></div>
+                </div>
+              </div>
+            </div>
+            <div class="phone-content" id="phoneBooking">
               <div class="app-header">
                 <div class="app-logo-sm">RÉGUA<span style="color:#fff;opacity:0.4">MÁX</span></div>
                 <div class="app-avatar">BR</div>
@@ -974,23 +1488,29 @@
                   <div class="cal-day-name">Qui</div><div class="cal-day-name">Sex</div><div class="cal-day-name">Sáb</div><div class="cal-day-name">Dom</div>
                 </div>
                 <div class="cal-days">
-                  <div class="cal-day muted">28</div><div class="cal-day muted">29</div><div class="cal-day">1</div>
-                  <div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div>
+                  <div class="cal-day muted">28</div><div class="cal-day muted">29</div><div class="cal-day pickable" data-label="1 Jun">1</div>
+                  <div class="cal-day pickable" data-label="2 Jun">2</div><div class="cal-day pickable" data-label="3 Jun">3</div><div class="cal-day pickable" data-label="4 Jun">4</div><div class="cal-day pickable" data-label="5 Jun">5</div>
                 </div>
                 <div class="cal-days">
-                  <div class="cal-day">6</div><div class="cal-day">7</div><div class="cal-day">8</div>
-                  <div class="cal-day">9</div><div class="cal-day">10</div><div class="cal-day active">12</div><div class="cal-day">13</div>
+                  <div class="cal-day pickable" data-label="6 Jun">6</div><div class="cal-day pickable" data-label="7 Jun">7</div><div class="cal-day pickable" data-label="8 Jun">8</div>
+                  <div class="cal-day pickable" data-label="9 Jun">9</div><div class="cal-day pickable" data-label="10 Jun">10</div><div class="cal-day pickable" data-label="12 Jun">12</div><div class="cal-day pickable" data-label="13 Jun">13</div>
                 </div>
                 <div class="cal-days">
-                  <div class="cal-day">14</div><div class="cal-day">15</div><div class="cal-day">16</div>
-                  <div class="cal-day">17</div><div class="cal-day">18</div><div class="cal-day">19</div><div class="cal-day">20</div>
+                  <div class="cal-day pickable" data-label="14 Jun">14</div><div class="cal-day pickable" data-label="15 Jun">15</div><div class="cal-day pickable" data-label="16 Jun">16</div>
+                  <div class="cal-day pickable" data-label="17 Jun">17</div><div class="cal-day pickable" data-label="18 Jun">18</div><div class="cal-day pickable" data-label="19 Jun">19</div><div class="cal-day pickable" data-label="20 Jun">20</div>
                 </div>
               </div>
-              <div class="slots-label">Horários disponíveis</div>
-              <div class="slots-grid">
-                <div class="slot">08:00</div><div class="slot">09:00</div><div class="slot soon">10:00</div>
-                <div class="slot selected">10:00</div><div class="slot">11:00</div><div class="slot">14:00</div>
-                <div class="slot">15:00</div><div class="slot">16:00</div><div class="slot">17:00</div>
+              <div class="slots-label" id="slotsLabel">Selecione um dia primeiro</div>
+              <div class="slots-grid" id="slotsGrid">
+                <div class="slot slot-pick" data-time="08:00">08:00</div>
+                <div class="slot slot-pick" data-time="09:00">09:00</div>
+                <div class="slot slot-pick" data-time="10:00">10:00</div>
+                <div class="slot slot-pick" data-time="11:00">11:00</div>
+                <div class="slot slot-pick" data-time="14:00">14:00</div>
+                <div class="slot slot-pick" data-time="15:00">15:00</div>
+                <div class="slot slot-pick" data-time="16:00">16:00</div>
+                <div class="slot slot-pick" data-time="17:00">17:00</div>
+                <div class="slot slot-pick" data-time="18:00">18:00</div>
               </div>
               <div class="service-card">
                 <div class="svc-icon"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNDM0YzMkMiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yMCAxM2MwIDUtMy41IDcuNS03LjY2IDguOTVhMSAxIDAgMCAxLS42Ny0uMDFDNy41IDIwLjUgNCAxOCA0IDEzVjZhMSAxIDAgMCAxIDEtMWMyIDAgNC41LTEuMiA2LjI0LTIuNzJhMS4xNyAxLjE3IDAgMCAxIDEuNTIgMEMxNC41MSAzLjgxIDE3IDUgMTkgNWExIDEgMCAwIDEgMSAxeiIvPjxwYXRoIGQ9Im05IDEyIDIgMiA0LTQiLz48L3N2Zz4=" alt=""></div>
@@ -1000,7 +1520,36 @@
                 </div>
                 <div class="svc-dur">45 min</div>
               </div>
-              <div class="confirm-btn">Confirmar agendamento</div>
+              <div class="confirm-btn confirm-btn-disabled" id="confirmBtn">Confirmar agendamento</div>
+            </div>
+
+            <!-- SUCCESS SCREEN -->
+            <div class="phone-success" id="phoneSuccess">
+              <div class="success-inner">
+                <div class="success-check" id="successCheck">
+                  <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle class="check-circle" cx="26" cy="26" r="24" stroke="#C3F32C" stroke-width="2.5"/>
+                    <polyline class="check-mark" points="14,26 22,34 38,18" stroke="#C3F32C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="success-title">Reserva Concluída!</div>
+                <div class="success-sub">Seu horário foi confirmado</div>
+                <div class="success-details">
+                  <div class="success-detail-row">
+                    <span class="success-detail-icon"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNDM0YzMkMiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1zY2lzc29ycy1pY29uIGx1Y2lkZS1zY2lzc29ycyI+PGNpcmNsZSBjeD0iNiIgY3k9IjYiIHI9IjMiLz48cGF0aCBkPSJNOC4xMiA4LjEyIDEyIDEyIi8+PHBhdGggZD0iTTIwIDQgOC4xMiAxNS44OCIvPjxjaXJjbGUgY3g9IjYiIGN5PSIxOCIgcj0iMyIvPjxwYXRoIGQ9Ik0xNC44IDE0LjggMjAgMjAiLz48L3N2Zz4=" alt=""></span>
+                    <span class="success-detail-text">Corte + Barba</span>
+                  </div>
+                  <div class="success-detail-row">
+                    <span class="success-detail-icon"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNDM0YzMkMiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1jYWxlbmRhci1jaGVjazItaWNvbiBsdWNpZGUtY2FsZW5kYXItY2hlY2stMiI+PHBhdGggZD0iTTggMnY0Ii8+PHBhdGggZD0iTTE2IDJ2NCIvPjxwYXRoIGQ9Ik0yMSAxNFY2YTIgMiAwIDAgMC0yLTJINWEyIDIgMCAwIDAtMiAydjE0YTIgMiAwIDAgMCAyIDJoOCIvPjxwYXRoIGQ9Ik0zIDEwaDE4Ii8+PHBhdGggZD0ibTE2IDIwIDIgMiA0LTQiLz48L3N2Zz4=" alt=""></span>
+                    <span class="success-detail-text" id="successDay">—</span>
+                  </div>
+                  <div class="success-detail-row">
+                    <span class="success-detail-icon"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNDM0YzMkMiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1jbG9jay1pY29uIGx1Y2lkZS1jbG9jayI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiLz48cGF0aCBkPSJNMTIgNnY2bDQgMiIvPjwvc3ZnPg==" alt=""></span>
+                    <span class="success-detail-text" id="successTime">—</span>
+                  </div>
+                </div>
+                <div class="success-back" id="successBack">+ Novo agendamento</div>
+              </div>
             </div>
           </div>
         </div>
@@ -1079,6 +1628,133 @@
   </div>
 </section>
 
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="section-label reveal">Planos</div>
+  <h2 class="section-title reveal">ESCOLHA O PLANO<br><span class="lime">CERTO PRA VOCÊ</span></h2>
+
+  <div class="pricing-grid">
+
+    <!-- STARTER -->
+    <div class="plan-card reveal">
+      <div class="plan-badge-placeholder"></div>
+      <div class="plan-name">Starter</div>
+      <div class="plan-desc">Ideal para quem está começando e quer sair do caderninho de vez.</div>
+      <div class="plan-price">
+        <span class="plan-currency">R$</span>
+        <span class="plan-amount">89</span>
+        <span class="plan-period">/mês</span>
+      </div>
+      <ul class="plan-features">
+        <li class="plan-feature">
+          <div class="plan-feature-icon"><svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#C3F32C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Agendamento online ilimitado
+        </li>
+        <li class="plan-feature">
+          <div class="plan-feature-icon"><svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#C3F32C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Até 1 barbeiro cadastrado
+        </li>
+        <li class="plan-feature">
+          <div class="plan-feature-icon"><svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#C3F32C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Lembretes via WhatsApp
+        </li>
+        <li class="plan-feature">
+          <div class="plan-feature-icon"><svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#C3F32C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Relatórios básicos mensais
+        </li>
+        <li class="plan-feature off">
+          <div class="plan-feature-icon"><svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="2.5" y1="2.5" x2="7.5" y2="7.5" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linecap="round"/><line x1="7.5" y1="2.5" x2="2.5" y2="7.5" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          Comissões por barbeiro
+        </li>
+        <li class="plan-feature off">
+          <div class="plan-feature-icon"><svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="2.5" y1="2.5" x2="7.5" y2="7.5" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linecap="round"/><line x1="7.5" y1="2.5" x2="2.5" y2="7.5" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          Suporte prioritário
+        </li>
+      </ul>
+      <button class="plan-btn plan-btn-ghost">Começar grátis</button>
+    </div>
+
+    <!-- PRO (destaque) -->
+    <div class="plan-card featured reveal" style="transition-delay:0.1s">
+      <div class="plan-badge">✦ Mais popular</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-desc">Para barbearias que crescem rápido e precisam de controle total.</div>
+      <div class="plan-price">
+        <span class="plan-currency">R$</span>
+        <span class="plan-amount">189</span>
+        <span class="plan-period">/mês</span>
+      </div>
+      <ul class="plan-features">
+        <li class="plan-feature">
+          <div class="plan-feature-icon"><svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#C3F32C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Agendamento online ilimitado
+        </li>
+        <li class="plan-feature">
+          <div class="plan-feature-icon"><svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#C3F32C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Até 5 barbeiros cadastrados
+        </li>
+        <li class="plan-feature">
+          <div class="plan-feature-icon"><svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#C3F32C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Lembretes via WhatsApp + push
+        </li>
+        <li class="plan-feature">
+          <div class="plan-feature-icon"><svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#C3F32C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Relatórios avançados em tempo real
+        </li>
+        <li class="plan-feature">
+          <div class="plan-feature-icon"><svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#C3F32C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Comissões por barbeiro automáticas
+        </li>
+        <li class="plan-feature off">
+          <div class="plan-feature-icon"><svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="2.5" y1="2.5" x2="7.5" y2="7.5" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linecap="round"/><line x1="7.5" y1="2.5" x2="2.5" y2="7.5" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          Múltiplas unidades
+        </li>
+      </ul>
+      <button class="plan-btn plan-btn-primary">→ Assinar Pro</button>
+    </div>
+
+    <!-- PREMIUM -->
+    <div class="plan-card reveal" style="transition-delay:0.2s">
+      <div class="plan-badge-placeholder"></div>
+      <div class="plan-name">Premium</div>
+      <div class="plan-desc">Para redes de barbearias que precisam de escala e controle centralizado.</div>
+      <div class="plan-price">
+        <span class="plan-currency">R$</span>
+        <span class="plan-amount">349</span>
+        <span class="plan-period">/mês</span>
+      </div>
+      <ul class="plan-features">
+        <li class="plan-feature">
+          <div class="plan-feature-icon"><svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#C3F32C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Tudo do plano Pro
+        </li>
+        <li class="plan-feature">
+          <div class="plan-feature-icon"><svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#C3F32C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Barbeiros ilimitados
+        </li>
+        <li class="plan-feature">
+          <div class="plan-feature-icon"><svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#C3F32C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Múltiplas unidades (rede)
+        </li>
+        <li class="plan-feature">
+          <div class="plan-feature-icon"><svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#C3F32C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Dashboard centralizado
+        </li>
+        <li class="plan-feature">
+          <div class="plan-feature-icon"><svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#C3F32C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          API e integrações personalizadas
+        </li>
+        <li class="plan-feature">
+          <div class="plan-feature-icon"><svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#C3F32C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Suporte prioritário 24/7
+        </li>
+      </ul>
+      <button class="plan-btn plan-btn-ghost">Falar com vendas</button>
+    </div>
+
+  </div>
+</section>
+
 <!-- CTA -->
 <div class="cta-section reveal">
   <h2 class="cta-title">PRONTO PRA <span class="lime">DEIXAR NA RÉGUA?</span></h2>
@@ -1152,18 +1828,81 @@
     animCount(document.getElementById('stat2'), 58000, '+');
   }, 1400);
 
-  // SLOT CYCLE
-  const slots = document.querySelectorAll('.slot');
-  let activeSlot = 3;
-  function cycleSlots() {
-    slots.forEach(s => s.classList.remove('selected'));
-    activeSlot = (activeSlot + 1) % slots.length;
-    slots[activeSlot].classList.add('selected');
-    slots[activeSlot].style.animation = 'none';
-    slots[activeSlot].offsetHeight;
-    slots[activeSlot].style.animation = 'slotPop 0.3s ease';
+  // SLOT CYCLE — removed in favour of interactive mode
+
+  // ── INTERACTIVE PHONE ──
+  let selectedDay = null;
+  let selectedTime = null;
+
+  const pickableDays = document.querySelectorAll('.cal-day.pickable');
+  const slotPicks    = document.querySelectorAll('.slot.slot-pick');
+  const confirmBtn   = document.getElementById('confirmBtn');
+  const slotsLabel   = document.getElementById('slotsLabel');
+  const slotsGrid    = document.getElementById('slotsGrid');
+  const phoneSuccess = document.getElementById('phoneSuccess');
+  const successDay   = document.getElementById('successDay');
+  const successTime  = document.getElementById('successTime');
+  const successBack  = document.getElementById('successBack');
+
+  function updateConfirmBtn() {
+    if (selectedDay && selectedTime) {
+      confirmBtn.classList.remove('confirm-btn-disabled');
+    } else {
+      confirmBtn.classList.add('confirm-btn-disabled');
+    }
   }
-  setInterval(cycleSlots, 2200);
+
+  // Day click
+  pickableDays.forEach(day => {
+    day.addEventListener('click', () => {
+      pickableDays.forEach(d => d.classList.remove('active'));
+      day.classList.add('active');
+      selectedDay = day.dataset.label;
+      // Unlock slots
+      slotsGrid.classList.remove('locked');
+      slotsLabel.textContent = 'Horários disponíveis';
+      // Reset slot selection
+      slotPicks.forEach(s => s.classList.remove('selected'));
+      selectedTime = null;
+      updateConfirmBtn();
+    });
+  });
+
+  // Slot click
+  slotPicks.forEach(slot => {
+    slot.addEventListener('click', () => {
+      if (!selectedDay) return;
+      slotPicks.forEach(s => s.classList.remove('selected'));
+      slot.classList.add('selected');
+      selectedTime = slot.dataset.time;
+      updateConfirmBtn();
+    });
+  });
+
+  // Confirm
+  confirmBtn.addEventListener('click', () => {
+    if (!selectedDay || !selectedTime) return;
+    successDay.textContent  = selectedDay;
+    successTime.textContent = selectedTime;
+    phoneSuccess.classList.add('visible');
+  });
+
+  // Reset
+  successBack.addEventListener('click', () => {
+    phoneSuccess.classList.remove('visible');
+    setTimeout(() => {
+      pickableDays.forEach(d => d.classList.remove('active'));
+      slotPicks.forEach(s => s.classList.remove('selected'));
+      slotsGrid.classList.add('locked');
+      slotsLabel.textContent = 'Selecione um dia primeiro';
+      selectedDay  = null;
+      selectedTime = null;
+      updateConfirmBtn();
+    }, 350);
+  });
+
+  // Start with slots locked
+  slotsGrid.classList.add('locked');
 
   // SCROLL REVEAL
   const reveals = document.querySelectorAll('.reveal');
