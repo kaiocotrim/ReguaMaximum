@@ -30,8 +30,6 @@
 // import { cn } from "@/lib/utils" // já vem com o shadcn
 // import { sign, Sign } from "crypto"
 
-
-
 // import {
 //   Dialog,
 //   DialogContent,
@@ -40,8 +38,6 @@
 //   DialogTitle,
 //   DialogTrigger,
 // } from "./dialog"
-
-
 
 // interface MenuBtnProps {
 //   className?: string
@@ -56,7 +52,6 @@
 //   // const handleLoginWitchGoogleClick = () => signIn("google")
 
 //   // return (
-
 
 //   //           {data?.user ? (
 //   //              <SheetTitle className="text-4xl font-black leading-tight tracking-tight text-white">
@@ -128,7 +123,6 @@
 //   //               <CircleUser className="h-8 w-8 text-[#ffffff]" />
 //   //               <h2 className="font-light"> Olá, faça o seu login . . .</h2>
 //   //             </div>
-              
 
 //   //             <Dialog>
 //   //               <DialogTrigger>
@@ -155,11 +149,11 @@
 //   //                   </Button>
 //   //                   <Button className="mt-2 w-full bg-[#C3F32C] text-black hover:bg-[#C3F32C]/90">
 //   //                     <Image src="/Apple-icon.svg" alt="Apple Icon" width={16} height={16} className="inline-block mr-2" />
-                      
+
 //   //                   </Button>
 //   //                   <Button className="mt-2 w-full bg-[#C3F32C] text-black hover:bg-[#C3F32C]/90">
 //   //                     <Image src="/GitHub-icon.svg" alt="GitHub Icon" width={16} height={16} className="inline-block mr-2" />
-                      
+
 //   //                   </Button>
 //   //                 </DialogHeader>
 //   //               </DialogContent>
@@ -275,8 +269,6 @@
 //       </div>
 //     )}
 
-           
-
 //           <div className="mt-10">
 //             <div className="mb-5 flex items-center gap-3">
 //               <h1 className="text-[11px] font-semibold tracking-[0.25em] text-zinc-500 uppercase">
@@ -371,7 +363,6 @@
 
 // export default MenuBtn
 
-
 "use client"
 
 import Image from "next/image"
@@ -420,7 +411,13 @@ interface MenuBtnProps {
 const MenuBtn = ({ className }: MenuBtnProps) => {
   const { data } = useSession()
   const handleLoginWithGoogleClick = () => signIn("google")
-  const HandleLogoutClick = () => signOut()
+  const HandleLogoutClick = async () => {
+    await signOut({
+      redirect: false,
+    })
+
+    window.location.reload()
+  }
 
   return (
     <Sheet>
@@ -439,7 +436,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
           {data?.user ? (
             // Usuário logado
             <>
-              <SheetTitle className="text-4xl font-black leading-tight tracking-tight text-white">
+              <SheetTitle className="text-4xl leading-tight font-black tracking-tight text-white">
                 Vai deixar o cabelo
                 <br />
                 na{" "}
@@ -513,24 +510,44 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                     </DialogDescription>
                   </DialogHeader>
 
-                  <div className="flex flex-col gap-2 mt-4">
+                  <div className="mt-4 flex flex-col gap-2">
                     <Button
-                      className="w-full bg-[#C3F32C] text-black hover:bg-[#C3F32C]/90 flex items-center justify-center gap-2"
+                      className="flex w-full items-center justify-center gap-2 bg-[#C3F32C] text-black hover:bg-[#C3F32C]/90"
                       onClick={handleLoginWithGoogleClick}
                     >
-                      <Image src="/google-icon.svg" alt="Google" width={16} height={16} />
+                      <Image
+                        src="/google-icon.svg"
+                        alt="Google"
+                        width={16}
+                        height={16}
+                      />
                       Entrar com Google
                     </Button>
-                    <Button className="w-full bg-[#C3F32C] text-black hover:bg-[#C3F32C]/90 flex items-center justify-center gap-2">
-                      <Image src="/facebook-icon.svg" alt="Facebook" width={16} height={16} />
+                    <Button className="flex w-full items-center justify-center gap-2 bg-[#C3F32C] text-black hover:bg-[#C3F32C]/90">
+                      <Image
+                        src="/facebook-icon.svg"
+                        alt="Facebook"
+                        width={16}
+                        height={16}
+                      />
                       Entrar com Facebook
                     </Button>
-                    <Button className="w-full bg-[#C3F32C] text-black hover:bg-[#C3F32C]/90 flex items-center justify-center gap-2">
-                      <Image src="/Apple-icon.svg" alt="Apple" width={16} height={16} />
+                    <Button className="flex w-full items-center justify-center gap-2 bg-[#C3F32C] text-black hover:bg-[#C3F32C]/90">
+                      <Image
+                        src="/Apple-icon.svg"
+                        alt="Apple"
+                        width={16}
+                        height={16}
+                      />
                       Entrar com Apple
                     </Button>
-                    <Button className="w-full bg-[#C3F32C] text-black hover:bg-[#C3F32C]/90 flex items-center justify-center gap-2">
-                      <Image src="/GitHub-icon.svg" alt="GitHub" width={16} height={16} />
+                    <Button className="flex w-full items-center justify-center gap-2 bg-[#C3F32C] text-black hover:bg-[#C3F32C]/90">
+                      <Image
+                        src="/GitHub-icon.svg"
+                        alt="GitHub"
+                        width={16}
+                        height={16}
+                      />
                       Entrar com GitHub
                     </Button>
                   </div>
@@ -619,12 +636,43 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
             </div>
           </div>
 
-          <Button className="mt-6 flex h-auto w-full items-center justify-center gap-3 rounded-2xl border border-[#C3F32C]/30 bg-transparent py-4 hover:bg-[#C3F32C]/10">
-            <LogOut className="h-4 w-4 text-[#C3F32C]" />
-            <span className="text-sm font-medium text-[#C3F32C]" onClick={HandleLogoutClick}>
-              Sair da conta
-            </span>
-          </Button>
+          <Dialog>
+            {data?.user && (
+            <DialogTrigger asChild>
+              <Button className="mt-6 flex h-auto w-full items-center justify-center gap-3 rounded-2xl border border-[#C3F32C]/30 bg-transparent py-4 transition-all duration-300 hover:bg-[#C3F32C]/10 hover:shadow-[0_0_20px_rgba(195,243,44,0.15)]">
+                <LogOut className="h-4 w-4 text-[#C3F32C]" />
+                <span className="text-sm font-medium text-[#C3F32C]">
+                  Sair da conta
+                </span>
+              </Button>
+            </DialogTrigger> )}
+
+            <DialogContent className="border border-[#C3F32C]/20 bg-[#0B0B0B] text-white sm:rounded-3xl">
+              <DialogHeader className="space-y-4">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-red-500/20 bg-red-500/10">
+                  <LogOut className="h-7 w-7 text-red-400" />
+                </div>
+
+                <DialogTitle className="text-center text-xl font-semibold">
+                  Você realmente deseja sair?
+                </DialogTitle>
+
+                <DialogDescription className="text-center text-sm text-zinc-400">
+                  Sua sessão será encerrada e você precisará entrar novamente.
+                </DialogDescription>
+
+                <div className="flex gap-3 pt-4">
+                  <Button
+                    onClick={HandleLogoutClick}
+                    className="w-full rounded-xl bg-red-500 text-white transition-all duration-300 hover:bg-red-600"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sair
+                  </Button>
+                </div>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
         </SheetHeader>
       </SheetContent>
     </Sheet>
@@ -632,5 +680,3 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
 }
 
 export default MenuBtn
-
-
