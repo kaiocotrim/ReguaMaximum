@@ -28,7 +28,7 @@ import {
 } from "lucide-react"
 
 import { cn } from "@/lib/utils" // já vem com o shadcn
-import { Sign } from "crypto"
+import { sign, Sign } from "crypto"
 
 
 import {
@@ -47,8 +47,12 @@ interface MenuBtnProps {
 }
 
 import Image from "next/image"
+import { signIn } from "next-auth/react"
 
 const MenuBtn = ({ className }: MenuBtnProps) => {
+
+  const handleLoginWitchGoogleClick = () => signIn("google")
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -88,7 +92,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                     <DialogDescription>
                       Conecte-se usando suas credenciais.
                     </DialogDescription>
-                    <Button className="mt-4 w-full bg-[#C3F32C] text-black hover:bg-[#C3F32C]/90">
+                    <Button className="mt-4 w-full bg-[#C3F32C] text-black hover:bg-[#C3F32C]/90" onClick={handleLoginWitchGoogleClick}>
                       <Image src="/google-icon.svg" alt="Google Icon" width={16} height={16} className="inline-block mr-2" />
                     </Button>
                     <Button className="mt-2 w-full bg-[#C3F32C] text-black hover:bg-[#C3F32C]/90">
