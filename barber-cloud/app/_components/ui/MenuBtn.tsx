@@ -752,6 +752,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
 
   const handleLoginWithGoogleClick = () => signIn("google")
   const handleLoginWithGithubClick = () => signIn("github")
+  const handleLoginWithFacebookClick = () => signIn("facebook")
 
   const handleLogoutClick = async () => {
     await signOut({ redirect: false })
@@ -852,6 +853,8 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                             ? handleLoginWithGoogleClick
                             : label === "GitHub"
                               ? handleLoginWithGithubClick
+                              : label === "Facebook"
+                              ? handleLoginWithFacebookClick
                               : undefined
                         }
                         className="w-full justify-start gap-3 rounded-xl bg-[#C3F32C] text-sm text-black hover:bg-[#d6f083]"
