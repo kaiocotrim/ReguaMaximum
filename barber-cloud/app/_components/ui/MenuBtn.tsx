@@ -679,7 +679,280 @@
 //   )
 // }
 
+// // export default MenuBtn
+// "use client"
+
+// import Image from "next/image"
+// import { signIn, signOut, useSession } from "next-auth/react"
+
+// import {
+//   Sheet,
+//   SheetContent,
+//   SheetHeader,
+//   SheetTitle,
+//   SheetDescription,
+//   SheetTrigger,
+// } from "./sheet"
+
+// import { Avatar, AvatarFallback, AvatarImage } from "./avatar"
+// import { Button } from "./button"
+
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogDescription,
+//   DialogHeader,
+//   DialogTitle,
+//   DialogTrigger,
+// } from "./dialog"
+
+// import {
+//   CalendarCheck2,
+//   ChevronRight,
+//   Clock,
+//   Crown,
+//   Heart,
+//   LogInIcon,
+//   LogOut,
+//   Menu,
+//   ScissorsLineDashed,
+//   Settings,
+//   CircleUser,
+// } from "lucide-react"
+
+// interface MenuBtnProps {
+//   className?: string
+// }
+
+// const MENU_ITEMS = [
+//   {
+//     icon: CalendarCheck2,
+//     label: "Agendar",
+//     description: "Marque seus horários",
+//   },
+//   {
+//     icon: ScissorsLineDashed,
+//     label: "Serviços",
+//     description: "Gerencie seus serviços",
+//   },
+//   { icon: Heart, label: "Favoritos", description: "Seus favoritos" },
+//   { icon: Clock, label: "Histórico", description: "Veja seu progresso" },
+//   { icon: Settings, label: "Configurações", description: "Ajustes da conta" },
+// ]
+
+// const LOGIN_PROVIDERS = [
+//   { src: "/google-icon.svg", label: "Google" },
+//   { src: "/facebook-icon.svg", label: "Facebook" },
+//   { src: "/Apple-icon.svg", label: "Apple" },
+//   { src: "/GitHub-icon.svg", label: "GitHub" },
+// ]
+
+// const MenuBtn = ({ className }: MenuBtnProps) => {
+//   const { data } = useSession()
+
+//   const handleLoginWithGoogleClick = () => signIn("google")
+//   const handleLoginWithGithubClick = () => signIn("github")
+//   const handleLoginWithFacebookClick = () => signIn("facebook")
+
+//   const handleLogoutClick = async () => {
+//     await signOut({ redirect: false })
+//     window.location.reload()
+//   }
+
+//   return (
+//     <Sheet>
+//       <SheetTrigger asChild>
+//         <Button
+//           size="icon"
+//           variant="ghost"
+//           className={className ?? "text-white hover:bg-white/5"}
+//         >
+//           <Menu className="h-5 w-5" />
+//         </Button>
+//       </SheetTrigger>
+
+//       <SheetContent className="flex flex-col overflow-y-auto border-l border-white/[0.08] bg-[#111111]/95 px-5 text-white shadow-[-20px_0_60px_rgba(0,0,0,0.65)] backdrop-blur-2xl">
+//         {/* <SheetContent className="flex flex-col overflow-y-auto border- bg-[#131313] px-5 text-white"> */}
+//         <SheetHeader className="mt-8 space-y-0">
+//           {data?.user ? (
+//             <div className="flex flex-col gap-4">
+//               {/* Perfil */}
+//               <div className="flex items-center gap-4 rounded-2xl bg-[#1f1f1f] p-4">
+//                 <div className="relative flex-shrink-0">
+//                   <Avatar className="h-13 w-13 rounded-2xl">
+//                     <AvatarImage
+//                       src={data.user.image ?? ""}
+//                       alt="avatar"
+//                       className="rounded-2xl object-cover"
+//                     />
+//                     <AvatarFallback className="rounded-2xl bg-[#C3F32C] text-base font-bold text-black">
+//                       CN
+//                     </AvatarFallback>
+//                   </Avatar>
+//                   <span className="absolute -right-1.5 -bottom-1.5 flex items-center gap-0.5 rounded-full border-2 border-[#161616] bg-[#C3F32C] px-1.5 py-0.5 text-[9px] font-black text-black">
+//                     <Crown className="h-2 w-2" />
+//                     VIP
+//                   </span>
+//                 </div>
+//                 <div className="min-w-0">
+//                   <SheetTitle className="truncate text-[15px] font-semibold text-white">
+//                     {data.user.name}
+//                   </SheetTitle>
+//                   <SheetDescription className="truncate text-xs text-[#555]">
+//                     {data.user.email}
+//                   </SheetDescription>
+//                 </div>
+//               </div>
+
+//               {/* Headline */}
+//               <div className="rounded-2xl border-l-[3px] border-[#C3F32C] bg-[#1f1f1f] px-5 py-[18px]">
+//                 <p className="text-xl leading-tight font-black tracking-tight text-white">
+//                   Vai deixar o cabelo <br />
+//                   na <span className="text-[#C3F32C]">régua?</span>
+//                 </p>
+//                 <p className="mt-1 text-xs font-medium text-[#444]">
+//                   Régua <span className="text-[#C3F32C]/70">Máxima.</span>
+//                 </p>
+//               </div>
+//             </div>
+//           ) : (
+//             <div className="flex items-center justify-between rounded-2xl bg-[#1f1f1f] px-4 py-3">
+//               <div className="flex items-center gap-2">
+//                 <CircleUser className="h-5 w-5 text-[#555]" />
+//                 <SheetTitle className="text-sm font-normal text-[#555]">
+//                   Faça o seu login
+//                 </SheetTitle>
+//               </div>
+
+//               <Dialog>
+//                 <DialogTrigger asChild>
+//                   <Button
+//                     size="sm"
+//                     className="h-8 rounded-xl bg-[#C3F32C] text-xs font-bold text-black hover:bg-[#d4f542]"
+//                   >
+//                     <LogInIcon className="mr-1.5 h-3.5 w-3.5 text-[#254F50]" />
+//                     <p className="text-[#254F50]">Entrar</p>
+//                   </Button>
+//                 </DialogTrigger>
+
+//                 <DialogContent className="border-none bg-[#1c1c1c] text-white">
+//                   <DialogHeader>
+//                     <DialogTitle className="text-white">
+//                       Entrar na plataforma
+//                     </DialogTitle>
+//                     <DialogDescription className="text-[#555]">
+//                       Escolha como deseja continuar.
+//                     </DialogDescription>
+//                   </DialogHeader>
+
+//                   <div className="mt-3 flex flex-col gap-2">
+//                     {LOGIN_PROVIDERS.map(({ src, label }) => (
+//                       <Button
+//                         key={label}
+//                         onClick={
+//                           label === "Google"
+//                             ? handleLoginWithGoogleClick
+//                             : label === "GitHub"
+//                               ? handleLoginWithGithubClick
+//                               : label === "Facebook"
+//                                 ? handleLoginWithFacebookClick
+//                                 : undefined
+//                         }
+//                         className="w-full justify-start gap-3 rounded-xl bg-[#C3F32C] text-sm text-black hover:bg-[#d6f083]"
+//                       >
+//                         <Image src={src} alt={label} width={16} height={16} />
+//                         Continuar com {label}
+//                       </Button>
+//                     ))}
+//                   </div>
+//                 </DialogContent>
+//               </Dialog>
+//             </div>
+//           )}
+//         </SheetHeader>
+
+//         {/* Menu */}
+//         <nav className="mt-6">
+//           <div className="mb-3 flex items-center gap-3 px-1">
+//             <span className="text-[10px] font-bold tracking-[0.15em] text-[#333] uppercase">
+//               Menu
+//             </span>
+//             <div className="h-px flex-1 bg-[#222]" />
+//           </div>
+
+//           <div className="flex flex-col gap-0.5">
+//             {MENU_ITEMS.map(({ icon: Icon, label, description }) => (
+//               <Button
+//                 key={label}
+//                 variant="ghost"
+//                 className="group flex h-auto w-full items-center justify-between rounded-xl bg-[#1a1a1a] px-3.5 py-3 hover:bg-[#222]"
+//               >
+//                 <div className="flex items-center gap-3">
+//                   <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[10px] bg-[#C3F32C]/10">
+//                     <Icon className="h-[17px] w-[17px] text-[#C3F32C]" />
+//                   </div>
+//                   <div className="text-left">
+//                     <p className="text-[14px] font-semibold text-[#eee]">
+//                       {label}
+//                     </p>
+//                     <p className="text-[11px] text-[#444]">{description}</p>
+//                   </div>
+//                 </div>
+//                 <ChevronRight className="h-4 w-4 flex-shrink-0 text-[#333] transition-all group-hover:translate-x-0.5 group-hover:text-[#C3F32C]" />
+//               </Button>
+//             ))}
+//           </div>
+//         </nav>
+
+//         {/* Logout */}
+//         {data?.user && (
+//           <div className="mt-auto border-t border-[#1f1f1f] pt-4 pb-6">
+//             <Dialog>
+//               <DialogTrigger asChild>
+//                 <Button
+//                   variant="ghost"
+//                   className="w-full justify-start gap-3 rounded-xl text-[#555] hover:bg-transparent hover:text-red-500"
+//                 >
+//                   <LogOut className="h-4 w-4 text-red-500" />
+//                   <span className="text-sm font-medium text-red-500">
+//                     Sair da conta
+//                   </span>
+//                 </Button>
+//               </DialogTrigger>
+
+//               <DialogContent className="border-none bg-[#161616] text-white">
+//                 <DialogHeader className="space-y-5">
+//                   <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10">
+//                     <LogOut className="h-6 w-6 text-red-500" />
+//                   </div>
+//                   <div className="space-y-1 text-center">
+//                     <DialogTitle className="text-lg font-bold text-white">
+//                       Sair da conta?
+//                     </DialogTitle>
+//                     <DialogDescription className="text-sm text-[#555]">
+//                       Sua sessão será encerrada e você precisará entrar
+//                       novamente.
+//                     </DialogDescription>
+//                   </div>
+//                   <Button
+//                     onClick={handleLogoutClick}
+//                     className="w-full rounded-xl bg-red-500 font-bold text-white hover:bg-red-600"
+//                   >
+//                     Confirmar saída
+//                   </Button>
+//                 </DialogHeader>
+//               </DialogContent>
+//             </Dialog>
+//           </div>
+//         )}
+//       </SheetContent>
+//     </Sheet>
+//   )
+// }
+
 // export default MenuBtn
+
+
 "use client"
 
 import Image from "next/image"
@@ -771,12 +1044,12 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
         </Button>
       </SheetTrigger>
 
-      <SheetContent className="flex flex-col overflow-y-auto border-none bg-[#131313] px-5 text-white">
+      <SheetContent className="flex flex-col overflow-y-auto border-l border-white/[0.08] bg-[#111111]/95 px-5 text-white shadow-[-20px_0_60px_rgba(0,0,0,0.65)] backdrop-blur-2xl">
         <SheetHeader className="mt-8 space-y-0">
           {data?.user ? (
             <div className="flex flex-col gap-4">
               {/* Perfil */}
-              <div className="flex items-center gap-4 rounded-2xl bg-[#1f1f1f] p-4">
+              <div className="flex items-center gap-4 rounded-2xl border border-white/[0.05] bg-[#1f1f1f] p-4">
                 <div className="relative flex-shrink-0">
                   <Avatar className="h-13 w-13 rounded-2xl">
                     <AvatarImage
@@ -804,7 +1077,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
               </div>
 
               {/* Headline */}
-              <div className="rounded-2xl border-l-[3px] border-[#C3F32C] bg-[#1f1f1f] px-5 py-[18px]">
+              <div className="rounded-2xl border border-white/[0.05] border-l-[3px] border-l-[#C3F32C] bg-[#1f1f1f] px-5 py-[18px]">
                 <p className="text-xl leading-tight font-black tracking-tight text-white">
                   Vai deixar o cabelo <br />
                   na <span className="text-[#C3F32C]">régua?</span>
@@ -815,7 +1088,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-between rounded-2xl bg-[#1f1f1f] px-4 py-3">
+            <div className="flex items-center justify-between rounded-2xl border border-white/[0.05] bg-[#1f1f1f] px-4 py-3">
               <div className="flex items-center gap-2">
                 <CircleUser className="h-5 w-5 text-[#555]" />
                 <SheetTitle className="text-sm font-normal text-[#555]">
@@ -834,7 +1107,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                   </Button>
                 </DialogTrigger>
 
-                <DialogContent className="border-none bg-[#1c1c1c] text-white">
+                <DialogContent className="border border-white/[0.05] bg-[#1c1c1c] text-white">
                   <DialogHeader>
                     <DialogTitle className="text-white">
                       Entrar na plataforma
@@ -854,8 +1127,8 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                             : label === "GitHub"
                               ? handleLoginWithGithubClick
                               : label === "Facebook"
-                              ? handleLoginWithFacebookClick
-                              : undefined
+                                ? handleLoginWithFacebookClick
+                                : undefined
                         }
                         className="w-full justify-start gap-3 rounded-xl bg-[#C3F32C] text-sm text-black hover:bg-[#d6f083]"
                       >
@@ -870,13 +1143,16 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
           )}
         </SheetHeader>
 
+        {/* Separador — Header → Menu */}
+        <div className="mt-6 h-px w-full bg-white/[0.05]" />
+
         {/* Menu */}
         <nav className="mt-6">
           <div className="mb-3 flex items-center gap-3 px-1">
             <span className="text-[10px] font-bold tracking-[0.15em] text-[#333] uppercase">
               Menu
             </span>
-            <div className="h-px flex-1 bg-[#222]" />
+            <div className="h-px flex-1 bg-white/[0.05]" />
           </div>
 
           <div className="flex flex-col gap-0.5">
@@ -884,10 +1160,10 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
               <Button
                 key={label}
                 variant="ghost"
-                className="group flex h-auto w-full items-center justify-between rounded-xl bg-[#1a1a1a] px-3.5 py-3 hover:bg-[#222]"
+                className="group flex h-auto w-full items-center justify-between rounded-xl border border-white/[0.05] bg-[#1a1a1a] px-3.5 py-3 hover:border-white/[0.08] hover:bg-[#222]"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[10px] bg-[#C3F32C]/10">
+                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[10px] border border-white/[0.05] bg-[#C3F32C]/10">
                     <Icon className="h-[17px] w-[17px] text-[#C3F32C]" />
                   </div>
                   <div className="text-left">
@@ -905,12 +1181,12 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
 
         {/* Logout */}
         {data?.user && (
-          <div className="mt-auto border-t border-[#1f1f1f] pt-4 pb-6">
+          <div className="mt-auto border-t border-white/[0.05] pt-4 pb-6">
             <Dialog>
               <DialogTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start gap-3 rounded-xl text-[#555] hover:bg-transparent hover:text-red-500"
+                  className="w-full justify-start gap-3 rounded-xl border border-white/[0.05] text-[#555] hover:border-red-500/20 hover:bg-transparent hover:text-red-500"
                 >
                   <LogOut className="h-4 w-4 text-red-500" />
                   <span className="text-sm font-medium text-red-500">
@@ -919,9 +1195,9 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                 </Button>
               </DialogTrigger>
 
-              <DialogContent className="border-none bg-[#161616] text-white">
+              <DialogContent className="border border-white/[0.05] bg-[#161616] text-white">
                 <DialogHeader className="space-y-5">
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-red-500/20 bg-red-500/10">
                     <LogOut className="h-6 w-6 text-red-500" />
                   </div>
                   <div className="space-y-1 text-center">

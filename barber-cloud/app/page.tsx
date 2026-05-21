@@ -8,9 +8,11 @@ import { Badge } from "./_components/ui/badge"
 import { Avatar, AvatarImage } from "./_components/ui/avatar"
 import BarbershopItem from "./_components/barbershop-item"
 import { db } from "./_lib/prisma"
+import SearchBar from "./_components/SearchBar"
 
-
-{/*  Este componente é a página inicial da aplicação BarberCloud. Ele exibe um cabeçalho, uma saudação personalizada, uma barra de pesquisa, botões de busca rápida para diferentes categorias de serviços, um banner promocional, seções para agendamentos e recomendações de barbearias, além de um rodapé. A página utiliza o Prisma para buscar dados das barbearias no banco de dados e exibi-los usando componentes personalizados para criar uma interface atraente e funcional.*/}
+{
+  /*  Este componente é a página inicial da aplicação BarberCloud. Ele exibe um cabeçalho, uma saudação personalizada, uma barra de pesquisa, botões de busca rápida para diferentes categorias de serviços, um banner promocional, seções para agendamentos e recomendações de barbearias, além de um rodapé. A página utiliza o Prisma para buscar dados das barbearias no banco de dados e exibi-los usando componentes personalizados para criar uma interface atraente e funcional.*/
+}
 export default async function Home() {
   const barbershops = await db.barbershop.findMany()
 
@@ -18,7 +20,6 @@ export default async function Home() {
     orderBy: {
       name: "desc",
     },
-    
   })
 
   return (
@@ -33,21 +34,11 @@ export default async function Home() {
           <p className="text-sm text-gray-500">Segunda-feira, 12 de junho</p>
         </div>
 
-        {/* Search Bar */}
-        <div className="flex items-center gap-2">
-          <Input placeholder="Pesquisar..." className="h-10" />
-          <Button
-            size="icon"
-            variant="outline"
-            className="h-10 w-10 shrink-0 bg-green-600"
-          >
-            <SearchIcon className="text-white" />
-          </Button>
-        </div>
+        <SearchBar />
 
         {/* Busca rapida*/}
-        <div className="flex gap-3 mt-6 overflow-x-scroll [&::-webkit-scrollbar]:hidden">
-          <Button className="gap-1" variant='secondary'>
+        <div className="mt-6 flex gap-3 overflow-x-scroll [&::-webkit-scrollbar]:hidden">
+          <Button className="gap-1" variant="secondary">
             <Image
               src="/cabeloIcon.png"
               alt="Ícone de barbearia"
@@ -55,10 +46,9 @@ export default async function Home() {
               height={16}
             />
             <span className="ml-2">Cabelo</span>
-
           </Button>
 
-          <Button className="gap-1" variant='secondary'>
+          <Button className="gap-1" variant="secondary">
             <Image
               src="/barbarIcon.png"
               alt="Ícone de barbearia"
@@ -66,10 +56,9 @@ export default async function Home() {
               height={16}
             />
             <span className="ml-2">Barba</span>
-
           </Button>
 
-          <Button className="gap-1" variant='secondary'>
+          <Button className="gap-1" variant="secondary">
             <Image
               src="/acabamentoIcon.png"
               alt="Ícone de barbearia"
@@ -77,10 +66,9 @@ export default async function Home() {
               height={16}
             />
             <span className="ml-2">Acabamento</span>
-
           </Button>
 
-          <Button className="gap-1" variant='secondary'>
+          <Button className="gap-1" variant="secondary">
             <Image
               src="/acabamentoIcon.png"
               alt="Ícone de barbearia"
@@ -88,10 +76,9 @@ export default async function Home() {
               height={16}
             />
             <span className="ml-2">Barberia perto de voce</span>
-
           </Button>
 
-          <Button className="gap-1" variant='secondary'>
+          <Button className="gap-1" variant="secondary">
             <Image
               src="/acabamentoIcon.png"
               alt="Ícone de barbearia"
@@ -99,7 +86,6 @@ export default async function Home() {
               height={16}
             />
             <span className="ml-2">Luzes</span>
-
           </Button>
         </div>
 
@@ -167,7 +153,6 @@ export default async function Home() {
         </div>
 
         {/* Footer */}
-
       </div>
     </div>
   )

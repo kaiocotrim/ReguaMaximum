@@ -14,7 +14,7 @@ const Header = () => {
     <Card className="rounded-none bg-black opacity-100">
       <CardContent className="flex flex-row items-center justify-between">
         <Image
-          src="/LogoMComBorder2.png"
+          src="/LogoMComBorder3.png"
           alt="BarberCloud Logo"
           width={60}
           height={50}
