@@ -16,9 +16,10 @@
 // export { handler as GET, handler as POST }
 
 import { db } from "@/app/_lib/prisma"
-import NextAuth from "next-auth"  // ← sem espaço
-import GoogleProvider from "next-auth/providers/google"  // ← sem chaves
+import NextAuth from "next-auth" // ← sem espaço
+import GoogleProvider from "next-auth/providers/google" // ← sem chaves
 import { PrismaAdapter } from "@auth/prisma-adapter"
+import GitHubProvider from "next-auth/providers/github"
 
 const handler = NextAuth({
   adapter: PrismaAdapter(db),
@@ -27,8 +28,14 @@ const handler = NextAuth({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
+
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID!,
+      clientSecret: process.env.GITHUB_SECRET!,
+    }),
   ],
 })
 
 export { handler as GET, handler as POST }
 
+// ROTA DO GIT HUB

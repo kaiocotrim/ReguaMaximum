@@ -725,24 +725,33 @@ interface MenuBtnProps {
 }
 
 const MENU_ITEMS = [
-  { icon: CalendarCheck2,     label: "Agendar",       description: "Marque seus horários"   },
-  { icon: ScissorsLineDashed, label: "Serviços",       description: "Gerencie seus serviços" },
-  { icon: Heart,              label: "Favoritos",      description: "Seus favoritos"         },
-  { icon: Clock,              label: "Histórico",      description: "Veja seu progresso"     },
-  { icon: Settings,           label: "Configurações",  description: "Ajustes da conta"       },
+  {
+    icon: CalendarCheck2,
+    label: "Agendar",
+    description: "Marque seus horários",
+  },
+  {
+    icon: ScissorsLineDashed,
+    label: "Serviços",
+    description: "Gerencie seus serviços",
+  },
+  { icon: Heart, label: "Favoritos", description: "Seus favoritos" },
+  { icon: Clock, label: "Histórico", description: "Veja seu progresso" },
+  { icon: Settings, label: "Configurações", description: "Ajustes da conta" },
 ]
 
 const LOGIN_PROVIDERS = [
-  { src: "/google-icon.svg",   label: "Google"   },
+  { src: "/google-icon.svg", label: "Google" },
   { src: "/facebook-icon.svg", label: "Facebook" },
-  { src: "/Apple-icon.svg",    label: "Apple"    },
-  { src: "/GitHub-icon.svg",   label: "GitHub"   },
+  { src: "/Apple-icon.svg", label: "Apple" },
+  { src: "/GitHub-icon.svg", label: "GitHub" },
 ]
 
 const MenuBtn = ({ className }: MenuBtnProps) => {
   const { data } = useSession()
 
   const handleLoginWithGoogleClick = () => signIn("google")
+  const handleLoginWithGithubClick = () => signIn("github")
 
   const handleLogoutClick = async () => {
     await signOut({ redirect: false })
@@ -761,22 +770,24 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
         </Button>
       </SheetTrigger>
 
-      <SheetContent className="flex flex-col overflow-y-auto border-none bg-[#161616] px-5 text-white">
+      <SheetContent className="flex flex-col overflow-y-auto border-none bg-[#131313] px-5 text-white">
         <SheetHeader className="mt-8 space-y-0">
-
           {data?.user ? (
             <div className="flex flex-col gap-4">
-
               {/* Perfil */}
               <div className="flex items-center gap-4 rounded-2xl bg-[#1f1f1f] p-4">
                 <div className="relative flex-shrink-0">
                   <Avatar className="h-13 w-13 rounded-2xl">
-                    <AvatarImage src={data.user.image ?? ""} alt="avatar" className="rounded-2xl object-cover" />
+                    <AvatarImage
+                      src={data.user.image ?? ""}
+                      alt="avatar"
+                      className="rounded-2xl object-cover"
+                    />
                     <AvatarFallback className="rounded-2xl bg-[#C3F32C] text-base font-bold text-black">
                       CN
                     </AvatarFallback>
                   </Avatar>
-                  <span className="absolute -bottom-1.5 -right-1.5 flex items-center gap-0.5 rounded-full border-2 border-[#161616] bg-[#C3F32C] px-1.5 py-0.5 text-[9px] font-black text-black">
+                  <span className="absolute -right-1.5 -bottom-1.5 flex items-center gap-0.5 rounded-full border-2 border-[#161616] bg-[#C3F32C] px-1.5 py-0.5 text-[9px] font-black text-black">
                     <Crown className="h-2 w-2" />
                     VIP
                   </span>
@@ -792,8 +803,8 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
               </div>
 
               {/* Headline */}
-              <div className="rounded-2xl bg-[#1f1f1f] px-5 py-[18px] border-l-[3px] border-[#C3F32C]">
-                <p className="text-xl font-black leading-tight tracking-tight text-white">
+              <div className="rounded-2xl border-l-[3px] border-[#C3F32C] bg-[#1f1f1f] px-5 py-[18px]">
+                <p className="text-xl leading-tight font-black tracking-tight text-white">
                   Vai deixar o cabelo <br />
                   na <span className="text-[#C3F32C]">régua?</span>
                 </p>
@@ -801,7 +812,6 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                   Régua <span className="text-[#C3F32C]/70">Máxima.</span>
                 </p>
               </div>
-
             </div>
           ) : (
             <div className="flex items-center justify-between rounded-2xl bg-[#1f1f1f] px-4 py-3">
@@ -818,14 +828,16 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                     size="sm"
                     className="h-8 rounded-xl bg-[#C3F32C] text-xs font-bold text-black hover:bg-[#d4f542]"
                   >
-                    <LogInIcon className="mr-1.5 h-3.5 w-3.5" />
-                    Entrar
+                    <LogInIcon className="mr-1.5 h-3.5 w-3.5 text-[#254F50]" />
+                    <p className="text-[#254F50]">Entrar</p>
                   </Button>
                 </DialogTrigger>
 
                 <DialogContent className="border-none bg-[#1c1c1c] text-white">
                   <DialogHeader>
-                    <DialogTitle className="text-white">Entrar na plataforma</DialogTitle>
+                    <DialogTitle className="text-white">
+                      Entrar na plataforma
+                    </DialogTitle>
                     <DialogDescription className="text-[#555]">
                       Escolha como deseja continuar.
                     </DialogDescription>
@@ -835,8 +847,14 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                     {LOGIN_PROVIDERS.map(({ src, label }) => (
                       <Button
                         key={label}
-                        onClick={label === "Google" ? handleLoginWithGoogleClick : undefined}
-                        className="w-full justify-start gap-3 rounded-xl bg-[#2a2a2a] text-sm text-white hover:bg-[#333]"
+                        onClick={
+                          label === "Google"
+                            ? handleLoginWithGoogleClick
+                            : label === "GitHub"
+                              ? handleLoginWithGithubClick
+                              : undefined
+                        }
+                        className="w-full justify-start gap-3 rounded-xl bg-[#C3F32C] text-sm text-black hover:bg-[#d6f083]"
                       >
                         <Image src={src} alt={label} width={16} height={16} />
                         Continuar com {label}
@@ -852,7 +870,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
         {/* Menu */}
         <nav className="mt-6">
           <div className="mb-3 flex items-center gap-3 px-1">
-            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#333]">
+            <span className="text-[10px] font-bold tracking-[0.15em] text-[#333] uppercase">
               Menu
             </span>
             <div className="h-px flex-1 bg-[#222]" />
@@ -870,7 +888,9 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                     <Icon className="h-[17px] w-[17px] text-[#C3F32C]" />
                   </div>
                   <div className="text-left">
-                    <p className="text-[14px] font-semibold text-[#eee]">{label}</p>
+                    <p className="text-[14px] font-semibold text-[#eee]">
+                      {label}
+                    </p>
                     <p className="text-[11px] text-[#444]">{description}</p>
                   </div>
                 </div>
@@ -882,19 +902,21 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
 
         {/* Logout */}
         {data?.user && (
-          <div className="mt-auto border-t border-[#1f1f1f] pb-6 pt-4">
+          <div className="mt-auto border-t border-[#1f1f1f] pt-4 pb-6">
             <Dialog>
               <DialogTrigger asChild>
                 <Button
                   variant="ghost"
                   className="w-full justify-start gap-3 rounded-xl text-[#555] hover:bg-transparent hover:text-red-500"
                 >
-                  <LogOut className="h-4 w-4" />
-                  <span className="text-sm font-medium">Sair da conta</span>
+                  <LogOut className="h-4 w-4 text-red-500" />
+                  <span className="text-sm font-medium text-red-500">
+                    Sair da conta
+                  </span>
                 </Button>
               </DialogTrigger>
 
-              <DialogContent className="border-none bg-[#1c1c1c] text-white">
+              <DialogContent className="border-none bg-[#161616] text-white">
                 <DialogHeader className="space-y-5">
                   <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10">
                     <LogOut className="h-6 w-6 text-red-500" />
@@ -904,7 +926,8 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                       Sair da conta?
                     </DialogTitle>
                     <DialogDescription className="text-sm text-[#555]">
-                      Sua sessão será encerrada e você precisará entrar novamente.
+                      Sua sessão será encerrada e você precisará entrar
+                      novamente.
                     </DialogDescription>
                   </div>
                   <Button
@@ -918,7 +941,6 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
             </Dialog>
           </div>
         )}
-
       </SheetContent>
     </Sheet>
   )
