@@ -1186,7 +1186,8 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
               <DialogTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start gap-3 rounded-xl border border-white/[0.05] text-[#555] hover:border-red-500/20 hover:bg-transparent hover:text-red-500"
+                  className="w-full justify-start gap-3 rounded-xl border border-white/[0.05] tex
+                  t-[#555] hover:border-red-500/20 hover:bg-transparent hover:text-red-500"
                 >
                   <LogOut className="h-4 w-4 text-red-500" />
                   <span className="text-sm font-medium text-red-500">
