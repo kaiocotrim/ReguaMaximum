@@ -32,6 +32,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="dark flex min-h-full flex-col">
+        {/* <Header /> */}
         <AuthProvider>
         {children}
         

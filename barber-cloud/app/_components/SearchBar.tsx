@@ -7,18 +7,19 @@ import { SearchIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 
-const SearchBar = () => {
+const SearchBar = () => { 
   const [search, setSearch] = useState("")
   
 
   const router = useRouter();
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault()
     router.push(`/barbershops?search=${search}`)
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <form className="flex items-center gap-2">
       <Input
         placeholder="Pesquisar..."
         className="h-10"
@@ -26,14 +27,15 @@ const SearchBar = () => {
         onChange={(e) => setSearch(e.target.value)}
       />
       <Button
+        type="submit"
         onClick={handleSubmit}
         size="icon"
         variant="outline"
         className="h-10 w-10 shrink-0 bg-green-600"
       >
-        <SearchIcon className="text-white" />
+        <SearchIcon className="text-[#C3F32C]" />
       </Button>
-    </div>
+    </form>
   )
 }
 

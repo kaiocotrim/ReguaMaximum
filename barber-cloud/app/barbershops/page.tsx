@@ -1,5 +1,6 @@
 import BarbershopItem from "../_components/barbershop-item"
 import { db } from "../_lib/prisma"
+import Header from "../_components/header"
 
 type BarbershopsPageProps = {
   searchParams: Promise<{
@@ -24,6 +25,7 @@ const BarbershopsPage = async ({
 
   return (
     <div>
+      <Header />
       <h2 className="text-xs font-bold text-[#C3F32C] pl-5 pt-5 uppercase">
         Resultados para &quot;{search}&quot;
       </h2>

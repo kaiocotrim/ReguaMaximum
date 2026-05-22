@@ -954,6 +954,7 @@
 
 
 "use client"
+import { useRouter } from "next/navigation"
 
 import Image from "next/image"
 import { signIn, signOut, useSession } from "next-auth/react"
@@ -991,6 +992,7 @@ import {
   ScissorsLineDashed,
   Settings,
   CircleUser,
+  House,
 } from "lucide-react"
 
 interface MenuBtnProps {
@@ -1008,10 +1010,12 @@ const MENU_ITEMS = [
     label: "Serviços",
     description: "Gerencie seus serviços",
   },
+  { icon: House, label: "Inicio", description: "Volte para tela de inicio", href: "/",},
   { icon: Heart, label: "Favoritos", description: "Seus favoritos" },
   { icon: Clock, label: "Histórico", description: "Veja seu progresso" },
   { icon: Settings, label: "Configurações", description: "Ajustes da conta" },
 ]
+
 
 const LOGIN_PROVIDERS = [
   { src: "/google-icon.svg", label: "Google" },
@@ -1023,6 +1027,7 @@ const LOGIN_PROVIDERS = [
 const MenuBtn = ({ className }: MenuBtnProps) => {
   const { data } = useSession()
 
+  const router = useRouter()
   const handleLoginWithGoogleClick = () => signIn("google")
   const handleLoginWithGithubClick = () => signIn("github")
   const handleLoginWithFacebookClick = () => signIn("facebook")
@@ -1032,7 +1037,11 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
     window.location.reload()
   }
 
+
   return (
+
+    
+
     <Sheet>
       <SheetTrigger asChild>
         <Button
@@ -1156,11 +1165,13 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
           </div>
 
           <div className="flex flex-col gap-0.5">
-            {MENU_ITEMS.map(({ icon: Icon, label, description }) => (
+            {MENU_ITEMS.map(({ icon: Icon, label, description, href }) => (
               <Button
                 key={label}
                 variant="ghost"
+                onClick={() => router.push(href)}
                 className="group flex h-auto w-full items-center justify-between rounded-xl border border-white/[0.05] bg-[#1a1a1a] px-3.5 py-3 hover:border-white/[0.08] hover:bg-[#222]"
+                
               >
                 <div className="flex items-center gap-3">
                   <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[10px] border border-white/[0.05] bg-[#C3F32C]/10">
