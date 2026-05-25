@@ -956,6 +956,8 @@
 "use client"
 import { useRouter } from "next/navigation"
 
+
+
 import Image from "next/image"
 import { signIn, signOut, useSession } from "next-auth/react"
 
@@ -1111,7 +1113,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                     size="sm"
                     className="h-8 rounded-xl bg-[#C3F32C] text-xs font-bold text-black hover:bg-[#d4f542]"
                   >
-                    <LogInIcon className="mr-1.5 h-3.5 w-3.5 text-[#254F50]" />
+                    <LogInIcon className="mr-1.5 h-3.5 w-3.5 text-[#  ]" />
                     <p className="text-[#254F50]">Entrar</p>
                   </Button>
                 </DialogTrigger>
