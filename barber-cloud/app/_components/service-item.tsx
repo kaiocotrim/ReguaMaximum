@@ -1,5 +1,16 @@
 "use client"
 
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "./ui/drawer"
+
 import { BarbeshopService } from "@prisma/client"
 import Image from "next/image"
 import { Button } from "./ui/button"
@@ -28,11 +39,46 @@ import {
   DialogTrigger,
 } from "./ui/dialog"
 
+import { setDay } from "date-fns"
+
 import { Scissors } from "lucide-react"
 import { Calendar } from "./ui/calendar"
 import { ptBR } from "date-fns/locale"
+import { useState } from "react"
 
 const ServiceItem = ({ service }: ServiceItemProps) => {
+  const [selectDay, setSelectedDay] = useState<Date | null>(null)
+
+  const [selectedTime, setSelectedTime] = useState<string | null>(null)
+
+  const handleDateSelect = (date: Date | undefined) => {
+    setSelectedDay(date)
+  }
+
+  const TIME_LIST = [
+    "08:00",
+    "08:30",
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+    "18:00",
+  ]
+
   return (
     <div className="mb-3 flex items-center gap-4 rounded-2xl border border-white/10 bg-zinc-900/80 p-3 backdrop-blur-sm transition-all duration-300 hover:border-[#C3F32C]/30 hover:shadow-[0_0_20px_rgba(195,243,44,0.08)]">
       {/* Exibir imagem do serviço */}
@@ -60,43 +106,39 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
             R${" "}
             <span className="text-[#C3F32C]">{service.price.toFixed(2)}</span>
           </p>
+          {/* <Sheet>
+            <SheetTrigger asChild></SheetTrigger>
 
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                size="sm"
-                variant="default"
-                className="ml-auto justify-center rounded-lg bg-[#C3F32C] px-5 text-xs font-bold text-black transition-all duration-200 hover:bg-[#d4ff3a] hover:shadow-[0_0_12px_rgba(195,243,44,0.5)]"
-              >
-                Agendar
-              </Button>
-            </SheetTrigger>
-
-            <SheetContent className="flex flex-col overflow-y-auto border-l border-white/[0.08] bg-[#111111]/95 px-5 text-white shadow-[-20px_0_60px_rgba(0,0,0,0.65)] backdrop-blur-2xl">
-              <SheetHeader className="mt-8 space-y-0"></SheetHeader>
-
-              <div className="mt-6 h-px w-full bg-white/[0.05]" />
-
-              <div className="mt-6">
-                <div className="mb-3 flex items-center gap-3 px-1">
-                  <span className="text-[10px] font-bold tracking-[0.15em] text-[#333] uppercase">
-                    Escolha o dia
-                  </span>
-                  <div className="h-px flex-1 bg-white/[0.05]" />
-                </div>
-
-                <div className="flex justify-center">
-                  <div className="rounded-2xl border border-white/[0.05]  p-3">
-                    <Calendar mode="single" locale={ptBR} className="bg-" />
-                  </div>
-                </div>
+            <SheetContent className="flex flex-col overflow-y-auto border-l border-white/[0.08] bg-[#111111] px-5 text-white">
+              <SheetHeader className="mt-5 space-y-0">
+                <SheetTitle className="text-left text-lg font-black text-white">
+                  Fazer <span className="text-[#C3F32C]">Reserva</span>
+                </SheetTitle>
+                <SheetDescription className="text-left text-xs text-[#555]">
+                  Selecione o dia e horário para sua reserva.
+                </SheetDescription>
+              </SheetHeader>
+              <hr />
+              <div className="">
+                <p className="mb-3 text-[10px] font-bold tracking-[0.15em] text-[#555] uppercase">
+                  Escolha o dia
+                </p>
+                
               </div>
+
               <div className="mt-6">
-                <div className="mb-3 flex items-center gap-3 px-1">
-                  <span className="text-[10px] font-bold tracking-[0.15em] text-[#333] uppercase">
-                    Horário
-                  </span>
-                  <div className="h-px flex-1 bg-white/[0.05]" />
+                <p className="mb-3 text-[10px] font-bold tracking-[0.15em] text-[#555] uppercase">
+                  Horário
+                </p>
+                <div className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden">
+                  {TIME_LIST.map((time) => (
+                    <button
+                      key={time}
+                      className="flex h-10 flex-shrink-0 items-center justify-center rounded-xl border border-white/[0.05] bg-[#1a1a1a] px-4 text-xs font-semibold text-[#aaa] transition-all hover:border-[#C3F32C]/30 hover:bg-[#C3F32C]/10 hover:text-[#C3F32C]"
+                    >
+                      {time}
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -106,7 +148,69 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
                 </button>
               </div>
             </SheetContent>
-          </Sheet>
+          </Sheet> */}
+
+          <Drawer>
+            <DrawerTrigger asChild>
+              <Button
+                size="sm"
+                variant="default"
+                className="ml-auto justify-center rounded-lg bg-[#C3F32C] px-5 text-xs font-bold text-black transition-all duration-200 hover:bg-[#d4ff3a] hover:shadow-[0_0_12px_rgba(195,243,44,0.5)]"
+              >
+                Agendar
+              </Button>
+            </DrawerTrigger>
+
+            <DrawerContent className="bg-[#111111] text-white">
+              <DrawerHeader>
+                <DrawerTitle className="text-white">
+                  Agende seu horario
+                </DrawerTitle>
+              </DrawerHeader>
+
+              <div className="flex justify-center p-4">
+                <Calendar
+                  className="w-fit bg-[#111111]"
+                  mode="single"
+                  locale={ptBR}
+                  selected={selectDay}
+                  onSelect={handleDateSelect}
+                />
+              </div>
+
+              <div>
+                <div className="flex gap-4 overflow-auto p-5 pb-10 pl-10 [&::-webkit-scrollbar]:hidden">
+                  {TIME_LIST.map((time) => (
+                    <Button
+                      key={time}
+                      variant={selectedTime === time ? "default" : "secondary"}
+                      onClick={() => setSelectedTime(time)}
+                      className={
+                        selectedTime === time ? "bg-[#C3F32C] text-black" : ""
+                      }
+                    >
+                      {time}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              {selectDay && selectedTime && (
+                <div className="">
+                  <div className="animate-in fade-in zoom-in-95 slide-in-from-bottom-2 p-5 px-5 pt-1 duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]">
+                    <Button className="w-full rounded-lg bg-[#C3F32C] font-bold text-black shadow-[0_0_6px_rgba(195,243,44,0.3),0_0_16px_rgba(195,243,44,0.15)] transition-all duration-300 hover:bg-[#d4ff3a] hover:text-[#ffffff] hover:shadow-[0_0_12px_rgba(195,243,44,0.7),0_0_32px_rgba(195,243,44,0.4),0_0_60px_rgba(195,243,44,0.2)]">
+                      Confirmar Agendamento
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <DrawerFooter className="pt-0">
+                <DrawerClose asChild>
+                  <Button variant="outline">Fechar</Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer>
         </div>
       </div>
     </div>
