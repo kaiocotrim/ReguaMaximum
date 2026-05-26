@@ -186,7 +186,7 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
                       variant={selectedTime === time ? "default" : "secondary"}
                       onClick={() => setSelectedTime(time)}
                       className={
-                        selectedTime === time ? "bg-[#C3F32C] text-black" : ""
+                        selectedTime === time ? "bg-[#C3F32C] text-[#254F50]" : ""
                       }
                     >
                       {time}
@@ -197,7 +197,7 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
               {selectDay && selectedTime && (
                 <div className="">
                   <div className="animate-in fade-in zoom-in-95 slide-in-from-bottom-2 p-5 px-5 pt-1 duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]">
-                    <Button className="w-full rounded-lg bg-[#C3F32C] font-bold text-black shadow-[0_0_6px_rgba(195,243,44,0.3),0_0_16px_rgba(195,243,44,0.15)] transition-all duration-300 hover:bg-[#d4ff3a] hover:text-[#ffffff] hover:shadow-[0_0_12px_rgba(195,243,44,0.7),0_0_32px_rgba(195,243,44,0.4),0_0_60px_rgba(195,243,44,0.2)]">
+                    <Button className="relative w-full overflow-hidden rounded-lg bg-[#C3F32C] font-bold text-[#254F50]">
                       Confirmar Agendamento
                     </Button>
                   </div>
