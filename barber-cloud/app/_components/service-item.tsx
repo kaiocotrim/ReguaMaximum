@@ -1,3 +1,5 @@
+"use client"
+
 import { BarbeshopService } from "@prisma/client"
 import Image from "next/image"
 import { Button } from "./ui/button"
@@ -11,17 +13,15 @@ import {
   SheetTrigger,
 } from "./ui/sheet"
 
-
-
-
 interface ServiceItemProps {
-  service: BarbeshopService
+  service: Omit<BarbeshopService, "price"> & {
+    price: number
+  }
 }
+import { Calendar } from "./ui/calendar"
+import { ptBR } from "date-fns/locale"
 
 const ServiceItem = ({ service }: ServiceItemProps) => {
-
-   
-
   return (
     <div className="mb-3 flex items-center gap-4 rounded-2xl border border-white/10 bg-zinc-900/80 p-3 backdrop-blur-sm transition-all duration-300 hover:border-[#C3F32C]/30 hover:shadow-[0_0_20px_rgba(195,243,44,0.08)]">
       {/* Exibir imagem do serviço */}
@@ -63,9 +63,10 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
               <SheetHeader>
                 <SheetTitle>Agendar</SheetTitle>
                 <SheetDescription>
-                 
+                  <p>Calendario</p>
                 </SheetDescription>
               </SheetHeader>
+              <Calendar mode="single"  locale={ptBR} />
             </SheetContent>
           </Sheet>
         </div>
