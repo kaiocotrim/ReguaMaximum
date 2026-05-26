@@ -73,9 +73,7 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
             </SheetTrigger>
 
             <SheetContent className="flex flex-col overflow-y-auto border-l border-white/[0.08] bg-[#111111]/95 px-5 text-white shadow-[-20px_0_60px_rgba(0,0,0,0.65)] backdrop-blur-2xl">
-              <SheetHeader className="mt-8 space-y-0">
-
-              </SheetHeader>
+              <SheetHeader className="mt-8 space-y-0"></SheetHeader>
 
               <div className="mt-6 h-px w-full bg-white/[0.05]" />
 
@@ -87,32 +85,10 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
                   <div className="h-px flex-1 bg-white/[0.05]" />
                 </div>
 
-                <div className="rounded-2xl border border-white/[0.05] bg-[#1a1a1a] p-3">
-                  <Calendar
-                    mode="single"
-                    locale={ptBR}
-                    classNames={{
-                      months: "w-full",
-                      month: "w-full space-y-2",
-                      table: "w-full border-collapse",
-                      head_row: "grid grid-cols-7",
-                      head_cell:
-                        "text-[10px] font-bold tracking-widest text-[#444] uppercase text-center",
-                      row: "grid grid-cols-7 mt-1",
-                      cell: "relative p-0 text-center text-sm flex items-center justify-center",
-                      day: "h-9 w-full rounded-xl text-[#aaa] transition-all hover:bg-[#C3F32C]/10 hover:text-[#C3F32C]",
-                      day_selected: "!bg-[#C3F32C] !text-black font-bold",
-                      day_today: "border border-[#C3F32C]/30 text-[#C3F32C]",
-                      day_outside: "text-[#2a2a2a]",
-                      day_disabled: "text-[#2a2a2a] cursor-not-allowed",
-                      nav: "flex items-center gap-1",
-                      nav_button:
-                        "h-8 w-8 rounded-xl border border-white/[0.05] bg-[#1f1f1f] text-white transition-all hover:border-[#C3F32C]/30 hover:bg-[#C3F32C]/10 hover:text-[#C3F32C]",
-                      caption: "flex justify-center pb-2 relative items-center",
-                      caption_label:
-                        "text-sm font-bold text-white capitalize tracking-wide",
-                    }}
-                  />
+                <div className="flex justify-center">
+                  <div className="rounded-2xl border border-white/[0.05]  p-3">
+                    <Calendar mode="single" locale={ptBR} className="bg-" />
+                  </div>
                 </div>
               </div>
               <div className="mt-6">
@@ -123,6 +99,7 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
                   <div className="h-px flex-1 bg-white/[0.05]" />
                 </div>
               </div>
+
               <div className="mt-auto border-t border-white/[0.05] pt-4 pb-6">
                 <button className="w-full rounded-xl bg-[#C3F32C] py-3 text-sm font-black text-black transition-all hover:bg-[#d4ff3a] hover:shadow-[0_0_20px_rgba(195,243,44,0.3)]">
                   Confirmar Agendamento
