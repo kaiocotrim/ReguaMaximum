@@ -94,9 +94,9 @@
 //   Service      BarbeshopService @relation(fields: [serviceId], references: [id])
 //   User         User             @relation(fields: [userId], references: [id])
 // }
-
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
 }
 
 datasource db {
@@ -144,13 +144,14 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Auth
   accounts Account[]
   sessions Session[]
 
-  // Cliente faz agendamentos
+  // Cliente
   bookings Booking[]
 
-  // Usuário pode trabalhar em várias barbearias
+  // Usuário trabalhando como barbeiro
   barbers Barber[]
 
   @@map("users")
@@ -178,12 +179,12 @@ model Barbershop {
   updatedAt DateTime @updatedAt
 
   // Relações
-  services BarbershopService[]
+  services BarbeshopService[]
   barbers  Barber[]
   bookings Booking[]
 }
 
-model BarbershopService {
+model BarbeshopService {
   id String @id @default(uuid())
 
   name        String
@@ -192,9 +193,11 @@ model BarbershopService {
 
   price Decimal @db.Decimal(10, 2)
 
+  // Relação com barbearia
   barbershopId String
-  barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
+  Barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
 
+  // Agendamentos
   bookings Booking[]
 }
 
@@ -203,15 +206,15 @@ model Barber {
 
   createdAt DateTime @default(now())
 
-  // Qual usuário é o barbeiro
+  // Usuário do barbeiro
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  // Em qual barbearia ele trabalha
+  // Barbearia onde trabalha
   barbershopId String
   barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
 
-  // Agendamentos do barbeiro
+  // Agendamentos
   bookings Booking[]
 }
 
@@ -220,7 +223,7 @@ model Booking {
 
   // Cliente
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  User   User   @relation(fields: [userId], references: [id])
 
   // Barbearia
   barbershopId String
@@ -228,7 +231,7 @@ model Booking {
 
   // Serviço
   serviceId String
-  service   BarbershopService @relation(fields: [serviceId], references: [id])
+  Service   BarbeshopService @relation(fields: [serviceId], references: [id])
 
   // Barbeiro
   barberId String
