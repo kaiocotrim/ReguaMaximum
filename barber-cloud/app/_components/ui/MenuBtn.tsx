@@ -1148,6 +1148,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                       </Button>
                     ))}
                   </div>
+                  <h1>Login barbearia</h1>
                 </DialogContent>
               </Dialog>
             </div>
