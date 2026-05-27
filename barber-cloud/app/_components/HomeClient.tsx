@@ -1,5 +1,6 @@
 "use client"
 
+import { BobbingDots } from "@/app/_components/bobbing-dots";
 import Image from "next/image"
 import { Button } from "@/app/_components/ui/button"
 import Header from "./header"
@@ -28,16 +29,25 @@ const fadeIn = {
     transition: { duration: 0.4, delay: i * 0.08 },
   }),
 }
-
 interface HomeClientProps {
   barbershops: Barbershop[]
   popularBarbershops: Barbershop[]
+  loading?: boolean
 }
 
 export default function HomeClient({
   barbershops,
   popularBarbershops,
+  loading,
 }: HomeClientProps) {
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <BobbingDots className="w-16" />
+      </div>
+    )
+  }
+
   return (
     <div>
       <Header />
@@ -87,7 +97,10 @@ export default function HomeClient({
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
-              <Button className="gap-1 whitespace-nowrap p-4" variant="secondary">
+              <Button
+                className="cursor-pointer gap-1 p-4 whitespace-nowrap hover:bg-[#C3F32C] hover:text-white"
+                variant="secondary"
+              >
                 <Image src={src} alt={label} width={16} height={16} />
                 <span className="ml-2">{label}</span>
               </Button>
@@ -133,7 +146,7 @@ export default function HomeClient({
             whileHover={{ scale: 1.01 }}
             transition={{ type: "spring", stiffness: 250, damping: 22 }}
           >
-            <Card>
+            <Card className="cursor-pointer hover:bg-black">
               <CardContent className="flex justify-between p-0">
                 <div className="flex items-center gap-3 py-5 pl-5">
                   <Avatar className="h-14 w-14 border-2 border-solid border-white">

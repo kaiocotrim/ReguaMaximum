@@ -22,6 +22,7 @@
     "framer-motion": "^12.40.0",
     "git-commit-msg-linter": "^5.0.8",
     "lucide-react": "^1.14.0",
+    "motion": "^12.40.0",
     "next": "16.2.6",
     "next-auth": "^4.24.14",
     "next-themes": "^0.4.6",

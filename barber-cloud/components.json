@@ -12,6 +12,8 @@
   },
   "iconLibrary": "lucide",
   "rtl": false,
+  "menuColor": "default",
+  "menuAccent": "subtle",
   "aliases": {
     "components": "@/app/_components",
     "utils": "@/app/_lib/utils",
@@ -19,7 +21,7 @@
     "lib": "@/app/_lib",
     "hooks": "@/app/_hooks"
   },
-  "menuColor": "default",
-  "menuAccent": "subtle",
-  "registries": {}
+  "registries": {
+    "@loading-ui": "https://loading-ui.com/r/{name}.json"
+  }
 }
