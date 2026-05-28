@@ -952,11 +952,10 @@
 
 // export default MenuBtn
 
-
 "use client"
 import { useRouter } from "next/navigation"
 
-
+import { LoginProviders } from "@/app/_components/LoginProviders"
 
 import Image from "next/image"
 import { signIn, signOut, useSession } from "next-auth/react"
@@ -972,6 +971,7 @@ import {
 
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar"
 import { Button } from "./button"
+import { DirectionProvider } from "./direction"
 
 import {
   Dialog,
@@ -996,6 +996,8 @@ import {
   CircleUser,
   House,
 } from "lucide-react"
+import { Direction } from "radix-ui"
+import { LoginForm } from "../login-form"
 
 interface MenuBtnProps {
   className?: string
@@ -1012,12 +1014,16 @@ const MENU_ITEMS = [
     label: "Serviços",
     description: "Gerencie seus serviços",
   },
-  { icon: House, label: "Inicio", description: "Volte para tela de inicio", href: "/",},
+  {
+    icon: House,
+    label: "Inicio",
+    description: "Volte para tela de inicio",
+    href: "/",
+  },
   { icon: Heart, label: "Favoritos", description: "Seus favoritos" },
   { icon: Clock, label: "Histórico", description: "Veja seu progresso" },
   { icon: Settings, label: "Configurações", description: "Ajustes da conta" },
 ]
-
 
 const LOGIN_PROVIDERS = [
   { src: "/google-icon.svg", label: "Google" },
@@ -1039,11 +1045,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
     window.location.reload()
   }
 
-
   return (
-
-    
-
     <Sheet>
       <SheetTrigger asChild>
         <Button
@@ -1088,7 +1090,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
               </div>
 
               {/* Headline */}
-              <div className="rounded-2xl border border-white/[0.05] border-l-[3px] border-l-[#C3F32C] bg-[#1f1f1f] px-5 py-[18px]">
+              <div className="rounded-2xl border border-l-[3px] border-white/[0.05] border-l-[#C3F32C] bg-[#1f1f1f] px-5 py-[18px]">
                 <p className="text-xl leading-tight font-black tracking-tight text-white">
                   Vai deixar o cabelo <br />
                   na <span className="text-[#C3F32C]">régua?</span>
@@ -1113,42 +1115,13 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                     size="sm"
                     className="h-8 rounded-xl bg-[#C3F32C] text-xs font-bold text-black hover:bg-[#d4f542]"
                   >
-                    <LogInIcon className="mr-1.5 h-3.5 w-3.5 text-[#  ]" />
+                    <LogInIcon className="text-[# ] mr-1.5 h-3.5 w-3.5" />
                     <p className="text-[#254F50]">Entrar</p>
                   </Button>
                 </DialogTrigger>
 
-                <DialogContent className="border border-white/[0.05] bg-[#1c1c1c] text-white">
-                  <DialogHeader>
-                    <DialogTitle className="text-white">
-                      Entrar na plataforma
-                    </DialogTitle>
-                    <DialogDescription className="text-[#555]">
-                      Escolha como deseja continuar.
-                    </DialogDescription>
-                  </DialogHeader>
-
-                  <div className="mt-3 flex flex-col gap-2">
-                    {LOGIN_PROVIDERS.map(({ src, label }) => (
-                      <Button
-                        key={label}
-                        onClick={
-                          label === "Google"
-                            ? handleLoginWithGoogleClick
-                            : label === "GitHub"
-                              ? handleLoginWithGithubClick
-                              : label === "Facebook"
-                                ? handleLoginWithFacebookClick
-                                : undefined
-                        }
-                        className="w-full justify-start gap-3 rounded-xl bg-[#C3F32C] text-sm text-black hover:bg-[#d6f083]"
-                      >
-                        <Image src={src} alt={label} width={16} height={16} />
-                        Continuar com {label}
-                      </Button>
-                    ))}
-                  </div>
-                  <h1>Login barbearia</h1>
+                <DialogContent className="p-0" >
+                  <LoginForm/>
                 </DialogContent>
               </Dialog>
             </div>
@@ -1174,7 +1147,6 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                 variant="ghost"
                 onClick={() => router.push(href)}
                 className="group flex h-auto w-full items-center justify-between rounded-xl border border-white/[0.05] bg-[#1a1a1a] px-3.5 py-3 hover:border-white/[0.08] hover:bg-[#222]"
-                
               >
                 <div className="flex items-center gap-3">
                   <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[10px] border border-white/[0.05] bg-[#C3F32C]/10">
@@ -1200,8 +1172,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
               <DialogTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start gap-3 rounded-xl border border-white/[0.05] tex
-                  t-[#555] hover:border-red-500/20 hover:bg-transparent hover:text-red-500"
+                  className="tex t-[#555] w-full justify-start gap-3 rounded-xl border border-white/[0.05] hover:border-red-500/20 hover:bg-transparent hover:text-red-500"
                 >
                   <LogOut className="h-4 w-4 text-red-500" />
                   <span className="text-sm font-medium text-red-500">

@@ -12,6 +12,7 @@ import SearchBar from "./SearchBar"
 import { MapPin } from "lucide-react"
 import { motion } from "framer-motion"
 import { Barbershop } from "@prisma/client"
+import { useSession } from "next-auth/react"
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -48,6 +49,8 @@ export default function HomeClient({
     )
   }
 
+  const { data: session } = useSession()
+
   return (
     <div>
       <Header />
@@ -61,7 +64,7 @@ export default function HomeClient({
           custom={0}
         >
           <h2 className="text-xl font-bold">
-            Olá, <span className="shine-text">Bruno Odorissi Campaner.</span>
+            Olá, <span className="shine-text">{session?.user?.name || "vgiamos alinhar o cabelo ?"} </span>
           </h2>
           <p className="text-sm text-gray-500">Segunda-feira, 12 de junho</p>
         </motion.div>
