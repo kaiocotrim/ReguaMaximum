@@ -1,6 +1,7 @@
 "use client"
 
-import { BobbingDots } from "@/app/_components/bobbing-dots";
+import { DashRing } from "@/app/_components/dash-ring";
+
 import Image from "next/image"
 import { Button } from "@/app/_components/ui/button"
 import Header from "./header"
@@ -44,7 +45,8 @@ export default function HomeClient({
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <BobbingDots className="w-16" />
+          return <DashRing className="size-14" />;
+
       </div>
     )
   }
@@ -64,7 +66,12 @@ export default function HomeClient({
           custom={0}
         >
           <h2 className="text-xl font-bold">
-            Olá, <span className="shine-text">{session?.user?.name || "vgiamos alinhar o cabelo ?"} </span>
+            Olá,{" "}
+            <span className="shine-text">
+              {session?.user?.name
+                ? `${session.user.name}, reguada hoje?`
+                : "iremos alinhar o cabelo?"}
+            </span>
           </h2>
           <p className="text-sm text-gray-500">Segunda-feira, 12 de junho</p>
         </motion.div>
