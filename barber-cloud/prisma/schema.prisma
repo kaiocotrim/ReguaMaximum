@@ -7,6 +7,31 @@ datasource db {
   provider = "postgresql"
 }
 
+
+model FavoriteBarbershop {
+  id String @id @default(cuid())
+
+  userId String
+  barbershopId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  barbershop Barbershop @relation(
+    fields: [barbershopId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, barbershopId])
+}
+
+
+
+
+
+
 model Account {
   id                String  @id @default(cuid())
   userId            String  @map("user_id")
@@ -58,6 +83,9 @@ model User {
   // Usuário trabalhando como barbeiro
   barbers Barber[]
 
+    // Favoritos
+  favorites FavoriteBarbershop[]
+
   @@map("users")
 }
 
@@ -86,6 +114,9 @@ model Barbershop {
   services BarbeshopService[]
   barbers  Barber[]
   bookings Booking[]
+
+  favoritedBy FavoriteBarbershop[]
+
 }
 
 model BarbeshopService {
