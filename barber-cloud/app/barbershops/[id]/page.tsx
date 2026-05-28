@@ -20,6 +20,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/app/_components/ui/sheet"
 
 import MenuBtn from "@/app/_components/ui/MenuBtn"
 
+import FavoriteButton from "@/app/_components/favorite-button"
+
 interface BarbershopPageProps {
   params: {
     id: string
@@ -31,6 +33,27 @@ interface BarbershopPageProps {
   Este componente é responsável por exibir os detalhes de uma barbearia específica, incluindo sua imagem, nome, endereço, descrição, serviços oferecidos e informações de contato. Ele utiliza o Prisma para buscar os dados da barbearia no banco de dados com base no ID fornecido nos parâmetros da URL. A interface do usuário é construída usando componentes personalizados e ícones para melhorar a experiência visual.
 */
 }
+
+const barbershop = await db.barbershop.findUnique({
+  where: { id },
+  include: { services: true },
+})
+
+if (!barbershop) return <p>Barbearia não encontrada.</p>
+
+// ← Adiciona isso aqui:
+const session = await getServerSession(authOptions)
+
+const isFavorited = session?.user?.id
+  ? !!(await db.favoriteBarbershop.findUnique({
+      where: {
+        userId_barbershopId: {
+          userId: (session.user as any).id,
+          barbershopId: id,
+        },
+      },
+    }))
+  : false
 
 const BarbershopPage = async ({ params }: BarbershopPageProps) => {
   const { id } = await params
@@ -106,10 +129,8 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
 
         {/* Mini ações */}
         <div className="ml-auto flex flex-col items-stretch gap-2">
-          <Button className="bg-black/10" variant="secondary">
-            <Heart className="h-2 w-2 text-[#C3F32C]" />
-            Favoritar
-          </Button>
+          <FavoriteButton barbershopId={barbershop.id} initialFavorited={isFavorited} />
+
 
           <Button className="bg-black/10" variant="secondary">
             <Share className="h-2 w-2 text-[#C3F32C]" />

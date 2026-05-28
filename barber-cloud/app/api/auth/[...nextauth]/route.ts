@@ -1,29 +1,18 @@
-// import { db } from "@/app/_lib/prisma"
-// import NextAuth from "next-auth"  // ← sem espaço
-// import GoogleProvider from "next-auth/providers/google"  // ← sem chaves
-// import { PrismaAdapter } from "@auth/prisma-adapter"
-
-// const handler = NextAuth({
-//   adapter: PrismaAdpter(db) as Adapter,
-//   providers: [
-//     GoogleProvider({
-//         clientId: process.env.GOOGLE_CLIENT_ID as string,
-//         clientSecret : process.env.GOOGLE_CLIENT_SECRET as string,
-//     })
-//   ]
-// })
-
-// export { handler as GET, handler as POST }
-
 import { db } from "@/app/_lib/prisma"
 import NextAuth from "next-auth"
+
 import GoogleProvider from "next-auth/providers/google"
 import GitHubProvider from "next-auth/providers/github"
 import FacebookProvider from "next-auth/providers/facebook"
+
 import { PrismaAdapter } from "@auth/prisma-adapter"
 
-const handler = NextAuth({
+export const authOptions = {
   adapter: PrismaAdapter(db),
+
+  session: {
+    strategy: "jwt",
+  },
 
   providers: [
     GoogleProvider({
@@ -39,14 +28,19 @@ const handler = NextAuth({
     FacebookProvider({
       clientId: process.env.FACEBOOK_CLIENT_ID!,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
-
-      authorization: {
-        params: {
-          scope: "public_profile",
-        },
-      },
     }),
   ],
-})
+
+  callbacks: {
+    async session({ session, token }: any) {
+      if (session.user) {
+        session.user.id = token.sub
+      }
+      return session
+    },
+  },
+}
+
+const handler = NextAuth(authOptions)
 
 export { handler as GET, handler as POST }
