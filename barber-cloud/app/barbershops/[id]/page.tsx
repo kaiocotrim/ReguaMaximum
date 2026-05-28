@@ -10,6 +10,11 @@ import MenuBtn from "@/app/_components/ui/MenuBtn"
 import FavoriteButton from "@/app/_components/favorite-button"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
 
 interface BarbershopPageProps {
   params: {
@@ -49,11 +54,13 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
           className="rounded-b-2xl object-cover"
           src={barbershop?.imageUrl}
         />
-        <Button size="icon" variant="outline" className="absolute top-4 left-4 h-10 w-10 !bg-black">
-          <Link href="/">
+        <Link href="/">
+        <Button size="icon" variant="" className="absolute top-4 left-4 h-10 w-10 !bg-black cursor-pointer">
+          
             <ChevronLeft className="h-5 w-5 text-[#C3F32C]" />
-          </Link>
+       
         </Button>
+           </Link>
         <MenuBtn className="absolute top-4 right-4 h-10 w-10 bg-black text-[#C3F32C]" />
       </div>
 

@@ -36,10 +36,12 @@ const BarbershopItem = ({ barbershop }: BarbershopItemProps) => {
         <div className="px-1 py-3">
           <h3 className="truncate font-semibold">{barbershop.name}</h3>
           <p className="truncate text-sm text-gray-500">{barbershop.address}</p>
+          <Link href={`/barbershops/${barbershop.id}`}>
           <Button className="mt-3 w-full bg-white font-bold hover:bg-[#C3F32C] hover:text-[#254F50] cursor-pointer">
-            <Link href={`/barbershops/${barbershop.id}`}>Agendar</Link>
+            Agendar
             <ChevronRight />
           </Button>
+          </Link>
         </div>
         
       </CardContent>
