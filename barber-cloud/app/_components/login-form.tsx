@@ -118,7 +118,7 @@ export function LoginForm({
                   {/* 4. Link de "Esqueceu a senha" mais discreto e elegante */}
                   <a 
                     href="#" 
-                    className="text-xs text-zinc-400 hover:text-zinc-200 transition-colors underline-offset-4 hover:underline"
+                    className="text-xs text-zinc-400 hover:text-zinc-200 transition-colors underline-offset-4 hover:underline cursor-pointer"
                   >
                     Esqueceu a senha?
                   </a>
@@ -133,7 +133,7 @@ export function LoginForm({
             </FieldGroup>
 
             {/* 5. Botão de Call to Action (CTA) robusto ocupando a largura total */}
-            <Button type="submit" className="w-full mt-2 font-medium tracking-wide">
+            <Button type="submit" className="w-full mt-2 font-medium tracking-wide cursor-pointer">
               Entrar
             </Button>
           </form>

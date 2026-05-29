@@ -31,7 +31,8 @@ const SearchBar = () => {
         onClick={handleSubmit}
         size="icon"
         variant="outline"
-        className="h-10 w-10 shrink-0 bg-green-600"
+        className="h-10 w-10 shrink-0 bg-green-6
+        00 cursor-pointer"
       >
         <SearchIcon className="text-[#C3F32C]" />
       </Button>

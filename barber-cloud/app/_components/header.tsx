@@ -13,7 +13,7 @@ import Link from "next/link"
 const Header = () => {
   return (
     <Card className="rounded-none bg-black opacity-100">
-      <CardContent className="flex flex-row items-center justify-between">
+      <CardContent className="flex flex-row items-center justify-between cursor-pointer">
         <Link href="/">
           <Image
             src="/LogoMComBorder3.png"

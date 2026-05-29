@@ -16,7 +16,7 @@ const PhoneItem = ({ phone }: PhoneItemProps) => {
   }
 
   return (
-    <Button variant="outline" size="sm" onClick={handlePhoneClick}>
+    <Button variant="outline" className="cursor-pointer" size="sm" onClick={handlePhoneClick}>
       <SmartphoneIcon className="mr-2" />
       Copiar
     </Button>

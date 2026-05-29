@@ -70,7 +70,7 @@
 import { useState } from "react"
 import { useSession } from "next-auth/react"
 import { Button } from "@/app/_components/ui/button"
-import { Heart } from "lucide-react"
+import { Heart , LockIcon } from "lucide-react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -89,7 +89,10 @@ interface FavoriteButtonProps {
   initialFavorited?: boolean
 }
 
-const FavoriteButton = ({ barbershopId, initialFavorited = false }: FavoriteButtonProps) => {
+const FavoriteButton = ({
+  barbershopId,
+  initialFavorited = false,
+}: FavoriteButtonProps) => {
   const { data: session } = useSession()
   const [favorited, setFavorited] = useState(initialFavorited)
   const [animating, setAnimating] = useState(false)
@@ -123,7 +126,7 @@ const FavoriteButton = ({ barbershopId, initialFavorited = false }: FavoriteButt
     <>
       <div className="relative inline-flex w-full">
         <Button
-          className="w-full bg-black/10"
+          className="w-full bg-black/10 cursor-pointer"
           variant="secondary"
           onClick={handleFavorite}
         >
@@ -154,22 +157,37 @@ const FavoriteButton = ({ barbershopId, initialFavorited = false }: FavoriteButt
 
       {/* Alert para usuário não logado */}
       <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Faça login para favoritar</AlertDialogTitle>
-            <AlertDialogDescription>
-              Você precisa estar logado para favoritar uma barbearia.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-[#C3F32C] text-black hover:bg-[#C3F32C]/90"
-              onClick={() => signIn()}
-            >
-              Fazer login
-            </AlertDialogAction>
-          </AlertDialogFooter>
+        <AlertDialogContent className="max-w-[360px] overflow-hidden border border-[#2a2a28] bg-[#111110] p-0">
+          {/* barra de acento no topo */}
+          <div className="h-[3px] w-full bg-[#C3F32C]" />
+
+          <div className="p-8 pb-6">
+            <AlertDialogHeader>
+              {/* ícone de cadeado */}
+              <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-full border border-[#C3F32C]/30 bg-[#C3F32C]/10">
+                <LockIcon className="h-4 w-4 text-[#C3F32C]" />
+              </div>
+
+              <AlertDialogTitle className="text-[17px] font-medium tracking-tight text-[#f0efe8]">
+                Faça login para favoritar
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-sm leading-relaxed text-[#888780]">
+                Você precisa estar logado para favoritar uma barbearia.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            <AlertDialogFooter className="mt-8 flex gap-2.5 sm:flex-row">
+              <AlertDialogCancel className="cursor-pointer flex-1 border border-[#2a2a28] bg-transparent text-[#888780] hover:border-[#444441] hover:bg-transparent hover:text-[#f0efe8]">
+                Cancelar
+              </AlertDialogCancel>
+              <AlertDialogAction
+                className="flex-1 bg-[#C3F32C] font-medium text-[#111110] transition-all hover:bg-[#C3F32C]/88 active:scale-[0.97] cursor-pointer"
+                onClick={() => signIn()}
+              >
+                Fazer login
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </div>
         </AlertDialogContent>
       </AlertDialog>
     </>

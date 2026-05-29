@@ -109,7 +109,7 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
             <DrawerTrigger asChild>
               <Button
                 size="sm"
-                className="relative ml-auto justify-center overflow-hidden rounded-lg bg-[#C3F32C] px-5 text-xs font-bold text-black transition-all duration-200 before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:transition-transform before:duration-500 hover:scale-105 hover:bg-[#d4ff3a] hover:shadow-[0_0_16px_rgba(195,243,44,0.6)] hover:before:translate-x-full active:scale-95"
+                className="cursor-pointer relative ml-auto justify-center overflow-hidden rounded-lg bg-[#C3F32C] px-5 text-xs font-bold text-black transition-all duration-200 before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:transition-transform before:duration-500 hover:scale-105 hover:bg-[#d4ff3a] hover:shadow-[0_0_16px_rgba(195,243,44,0.6)] hover:before:translate-x-full active:scale-95"
               >
                 Agendar
               </Button>
@@ -126,22 +126,22 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
                 <>
                   <div className="animate-in fade-in zoom-in-95 flex justify-center p-4 duration-300">
                     <Calendar
-                      className="w-fit rounded-xl bg-[#111111] p-3"
+                      className="w-fit rounded-xl bg-[#111111] p-3 "
                       mode="single"
                       locale={ptBR}
                       selected={selectDay}
                       onSelect={handleDateSelect}
                       classNames={{
-                        cell: "h-9 w-9 text-center text-sm p-0 relative",
+                        cell: "h-9 w-9 text-center text-sm p-0 relative cursor-pointer",
 
                         caption_label: "text-[#C3F32C] font-bold",
 
                         head_cell: "text-[#C3F32C] font-semibold",
 
-                        day: "text-white hover:bg-[#C3F32C] hover:text-[#254F50] rounded-md",
+                        day: "text-white hover:bg-[#C3F32C] hover:text-[#254F50] rounded-md cursor-pointer",
 
                         day_selected:
-                          "!bg-[#C3F32C] !text-[#254F50] hover:!bg-[#C3F32C] hover:!text-[#254F50]",
+                          "!bg-[#C3F32C] !text-[#254F50] hover:!bg-[#C3F32C] hover:!text-[#254F50] cursor-pointer",
 
                         day_today: "!bg-[#254F50] !text-[#C3F32C] rounded-md",
 
@@ -163,7 +163,7 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
                         }
                         onClick={() => setSelectedTime(time)}
                         style={{ animationDelay: `${i * 40}ms` }}
-                        className={`animate-in fade-in slide-in-from-bottom-2 transition-all duration-200 hover:scale-105 active:scale-95 ${
+                        className={`animate-in fade-in slide-in-from-bottom-2 transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer ${
                           selectedTime === time
                             ? "scale-105 bg-[#C3F32C] text-[#254F50] shadow-[0_0_12px_rgba(195,243,44,0.4)]"
                             : "hover:border-[#C3F32C]/40"
@@ -191,7 +191,7 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
                     </div>
                     <button
                       onClick={handleReset}
-                      className="text-xs text-[#C3F32C] underline underline-offset-2 transition-all duration-150 hover:scale-105 hover:brightness-125 active:scale-95"
+                      className="cursor-pointer text-xs text-[#C3F32C] underline underline-offset-2 transition-all duration-150 hover:scale-105 hover:brightness-125 active:scale-95"
                     >
                       Trocar
                     </button>
@@ -218,7 +218,7 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
                           key={barber.id}
                           onClick={() => setSelectedBarber(barber.id)}
                           style={{ animationDelay: `${i * 60}ms` }}
-                          className={`animate-in fade-in slide-in-from-bottom-3 flex min-w-[120px] flex-col items-center gap-2 rounded-xl border-2 p-4 transition-all duration-200 hover:scale-105 active:scale-95 ${
+                          className={`cursor-pointer animate-in fade-in slide-in-from-bottom-3 flex min-w-[120px] flex-col items-center gap-2 rounded-xl border-2 p-4 transition-all duration-200 hover:scale-105 active:scale-95 ${
                             isSelected
                               ? "scale-105 border-[#C3F32C] bg-[#C3F32C]/10 shadow-[0_0_16px_rgba(195,243,44,0.3)]"
                               : "border-white/10 bg-white/5 hover:border-white/30"
@@ -248,7 +248,7 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
 
               {selectDay && selectedTime && selectedBarber && (
                 <div className="animate-in fade-in zoom-in-95 slide-in-from-bottom-2 p-5 pt-1 duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]">
-                  <Button className="relative w-full overflow-hidden rounded-lg bg-[#C3F32C] font-bold text-[#254F50] transition-transform duration-150 after:absolute after:inset-0 after:-translate-x-full after:[animation:shimmer_2s_infinite] after:bg-gradient-to-r after:from-transparent after:via-white/20 after:to-transparent hover:scale-[1.02] active:scale-[0.98]">
+                  <Button className="cursor-pointer relative w-full overflow-hidden rounded-lg bg-[#C3F32C] font-bold text-[#254F50] transition-transform duration-150 after:absolute after:inset-0 after:-translate-x-full after:[animation:shimmer_2s_infinite] after:bg-gradient-to-r after:from-transparent after:via-white/20 after:to-transparent hover:scale-[1.02] active:scale-[0.98]">
                     Confirmar Agendamento
                   </Button>
                 </div>
@@ -258,7 +258,7 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
                 <DrawerClose asChild>
                   <Button
                     variant="outline"
-                    className="transition-all duration-150 hover:scale-[1.02] active:scale-95"
+                    className="transition-all duration-150 hover:scale-[1.02] active:scale-95 cursor-pointer"
                   >
                     Fechar
                   </Button>

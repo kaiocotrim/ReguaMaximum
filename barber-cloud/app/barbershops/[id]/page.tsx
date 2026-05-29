@@ -55,13 +55,13 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
           src={barbershop?.imageUrl}
         />
         <Link href="/">
-        <Button size="icon" variant="" className="absolute top-4 left-4 h-10 w-10 !bg-black cursor-pointer">
+        <Button size="icon" variant="" className="absolute top-4 left-4 bg-black cursor-pointer">
           
             <ChevronLeft className="h-5 w-5 text-[#C3F32C]" />
        
         </Button>
            </Link>
-        <MenuBtn className="absolute top-4 right-4 h-10 w-10 bg-black text-[#C3F32C]" />
+        <MenuBtn  className="absolute top-4 right-4  cursor-pointer text-[#C3F32C] bg-black" />
       </div>
 
       <div className="flex p-6 pb-0">
@@ -80,7 +80,7 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
         </div>
 
         <div className="ml-auto flex flex-col items-stretch gap-2">
-          <FavoriteButton barbershopId={barbershop.id} initialFavorited={isFavorited} />
+          <FavoriteButton  barbershopId={barbershop.id} initialFavorited={isFavorited} />
 
           <Button className="bg-black/10" variant="secondary">
             <Share className="h-2 w-2 text-[#C3F32C]" />
