@@ -21,55 +21,33 @@ const FavoritesPage = async () => {
     <div>
       <Header />
 
-      <Card
-        className="relative m-5 overflow-hidden"
-        style={{ minHeight: "160px" }}
-      >
-        {/* Corações decorativos */}
-        <Heart
-          className="absolute right-[18px] -top-[10px] h-[88px] w-[88px] fill-[#C3F32C] text-[#C3F32C] opacity-[0.18]"
-          style={{ animation: "floatA 3.5s ease-in-out infinite" }}
-        />
-        <Heart
-          className="absolute right-[10px] top-[62px] h-9 w-9 fill-[#C3F32C] text-[#C3F32C] opacity-[0.13]"
-          style={{ animation: "floatB 2.8s ease-in-out infinite 0.6s" }}
-        />
-        <Heart
-          className="absolute right-[106px] top-[8px] h-5 w-5 fill-[#C3F32C] text-[#C3F32C] opacity-[0.10]"
-          style={{ animation: "floatC 4s ease-in-out infinite 1s" }}
-        />
-        <Heart
-          className="absolute right-[60px] top-[90px] h-3.5 w-3.5 fill-[#C3F32C] text-[#C3F32C]"
-          style={{ animation: "floatD 3s ease-in-out infinite 0.3s" }}
-        />
-        <Heart
-          className="absolute right-[90px] top-[50px] h-12 w-12 fill-[#C3F32C] text-[#C3F32C] opacity-[0.08]"
-          style={{ animation: "shimmer 4s ease-in-out infinite 1.5s" }}
-        />
-
-        <CardHeader className="relative z-10 pb-0">
-          <div className="mb-2 inline-flex w-fit items-center gap-1 rounded-full border border-[#254F50] bg-[#C3F32C] px-2.5 py-1 text-[11px] text-[#254F50]">
-            <Heart className="h-3 w-3 fill-[#254F50]" />
+           <div className="m-5">
+        <div className="rounded-xl border border-border/40 bg-card px-7 py-6">
+          {/* Badge */}
+          <div className="mb-4 flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
+            <Heart className="h-3 w-3" />
             favoritos
           </div>
 
-          <CardTitle className="text-[17px] font-medium">
+          {/* Título e descrição */}
+          <h1 className="mb-1 text-[18px] font-medium leading-snug">
             Barbearias que você curte
-          </CardTitle>
-          <CardDescription className="max-w-[55%]">
-            Seus estabelecimentos salvos em um só lugar
-          </CardDescription>
-        </CardHeader>
+          </h1>
+          <p className="mb-6 text-[13px] text-muted-foreground">
+            Seus estabelecimentos salvos em um só lugar.
+          </p>
 
-        <CardFooter className="relative z-10 mt-4 border-t border-border/20 py-3">
-          <span className="text-[13px] text-muted-foreground">
-            <strong className="font-medium text-foreground">
-              {favorites.length}
-            </strong>{" "}
-            {favorites.length === 1 ? "barbearia salva" : "barbearias salvas"}
-          </span>
-        </CardFooter>
-      </Card>
+          {/* Rodapé */}
+          <div className="flex items-center justify-between border-t border-border/30 pt-4">
+            <span className="text-[13px] text-muted-foreground">
+              <strong className="font-medium text-foreground">
+                {favorites.length}
+              </strong>{" "}
+              {favorites.length === 1 ? "barbearia salva" : "barbearias salvas"}
+            </span>
+          </div>
+        </div>
+      </div>
 
       {favorites.length === 0 ? (
         <p className="px-5 text-sm text-muted-foreground">
