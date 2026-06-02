@@ -75,6 +75,7 @@ const MENU_ITEMS = [
     icon: Heart,
     label: "Favoritos",
     description: "Seus favoritos",
+    href: "/favorites",
     requiresAuth: true,
   },
   {
@@ -182,10 +183,9 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
               <div className="flex items-center gap-2">
                 <CircleUser className="h-5 w-5 text-[#555]" />
                 <SheetTitle className="text-sm font-normal text-[#555]">
-                  Faça o seu login 
+                  Faça o seu login
                 </SheetTitle>
               </div>
-
 
               {/* Dialog de login disparado pelo botão "Entrar" */}
               <Dialog>
@@ -219,6 +219,22 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
             </span>
             <div className="h-px flex-1 bg-white/[0.05]" />
           </div>
+          
+          {!data && (
+            <div className="mb-4 rounded-2xl border border-white/5 bg-[#1a1a1a] p-4">
+              <div className="flex items-center gap-3"> 
+                <div>
+                  <h3 className="text-sm font-semibold text-white">
+                    Acesso Completo
+                  </h3>
+                  <p className="text-xs text-zinc-400">
+                    Entre na sua conta para acessar agendamentos e recursos
+                    exclusivos.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Lista de itens do menu */}
           <div className="flex flex-col gap-0.5">
