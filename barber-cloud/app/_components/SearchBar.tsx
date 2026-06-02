@@ -18,8 +18,8 @@ const SearchBar = () => {
     router.push(`/barbershops?search=${search}`)
   }
 
-  return (
-    <form className="flex items-center gap-2">
+    return (
+      <form className="flex items-center gap-2">
       <Input
         placeholder="Pesquisar..."
         className="h-10"
