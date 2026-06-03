@@ -51,15 +51,28 @@ const AppointmentsPage = async () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-5 p-5">
-          {appointments.map((appointment) => (
-            <BarbershopItem
-              key={appointment.barbershop.id}
+        {appointments.length === 0 ? (
+            <div className="flex flex-col items-center gap-4 mt-10 border border-border/40 rounded-xl   ">
+              <Image
+                src="/agendamentoNao2.png"
+                alt="Sem agendamento"
+                width={350}
+                height={350}
+              />
+              <p className="text-sm text-muted-foreground">
+                Você ainda não tem nenhum agendamento.
+              </p>
+            </div>
+          ):(
+          <div className="grid grid-cols-2 gap-5 p-5">
+            {appointments.map((appointment) => (
+              <BarbershopItem
+                key={appointment.barbershop.id}
               barbershop={appointment.barbershop}
             />
           ))}
         </div>
-
+        )}
       </div>
     </div>
   )
