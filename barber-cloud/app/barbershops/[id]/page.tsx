@@ -10,11 +10,6 @@ import MenuBtn from "@/app/_components/ui/MenuBtn"
 import FavoriteButton from "@/app/_components/favorite-button"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert"
 
 interface BarbershopPageProps {
   params: {
@@ -27,7 +22,14 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
 
   const barbershop = await db.barbershop.findUnique({
     where: { id },
-    include: { services: true },
+    include: {
+      services: true,
+      barbers: {
+        include: {
+          user: true, // ✅ inclui o User de cada Barber para mostrar o nome
+        },
+      },
+    },
   })
 
   if (!barbershop) return <p>Barbearia não encontrada.</p>
@@ -51,17 +53,16 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
         <Image
           alt={`Imagem da barbearia ${barbershop.name}`}
           fill
+          sizes="100vw"
           className="rounded-b-2xl object-cover"
-          src={barbershop?.imageUrl}
+          src={barbershop.imageUrl}
         />
         <Link href="/">
-        <Button size="icon" variant="" className="absolute top-4 left-4 bg-black cursor-pointer">
-          
+          <Button size="icon" variant="" className="absolute top-4 left-4 bg-black cursor-pointer">
             <ChevronLeft className="h-5 w-5 text-[#C3F32C]" />
-       
-        </Button>
-           </Link>
-        <MenuBtn  className="absolute top-4 right-4  cursor-pointer text-[#C3F32C] bg-black" />
+          </Button>
+        </Link>
+        <MenuBtn className="absolute top-4 right-4 cursor-pointer text-[#C3F32C] bg-black" />
       </div>
 
       <div className="flex p-6 pb-0">
@@ -80,7 +81,7 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
         </div>
 
         <div className="ml-auto flex flex-col items-stretch gap-2">
-          <FavoriteButton  barbershopId={barbershop.id} initialFavorited={isFavorited} />
+          <FavoriteButton barbershopId={barbershop.id} initialFavorited={isFavorited} />
 
           <Button className="bg-black/10" variant="secondary">
             <Share className="h-2 w-2 text-[#C3F32C]" />
@@ -89,25 +90,23 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
 
           <Button className="bg-black/10" variant="secondary">
             <CircleUser className="h-2 w-2 text-[#C3F32C]" />
-            Barbeiros: 3
+            Barbeiros: {barbershop.barbers.length} {/* ✅ número real */}
           </Button>
         </div>
       </div>
 
-      {/* Exibir descrição da barbearia */}
+      {/* Descrição */}
       <div className="mb-4 rounded-lg p-5 pb-0">
         <Card className="mb-4 border-none p-4">
           <div className="flex h-4 items-center gap-1">
-            <h2 className="m-0 pt-1 pl-1 text-[#C3F32C] uppercase">
-              Sobre nós
-            </h2>
+            <h2 className="m-0 pt-1 pl-1 text-[#C3F32C] uppercase">Sobre nós</h2>
             <User className="h-5 w-5 text-[#C3F32C]" />
           </div>
           <p className="text-[15px] text-white">{barbershop.description}</p>
         </Card>
       </div>
 
-      {/* Banner Image */}
+      {/* Banner */}
       <div className="p-4 pb-0">
         <div className="relative h-37.5 w-full overflow-hidden rounded-xl">
           <img
@@ -118,12 +117,9 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
         </div>
       </div>
 
-      {/* Exibir serviços da barbearia */}
+      {/* Serviços */}
       <div className="p-5">
         <h2 className="p-3 text-xs font-bold uppercase">Serviços</h2>
-        {/* {barbershop.services.map((service) => (
-          <ServiceItem key={service.id} service={service} />
-        ))} */}
         {barbershop.services.map((service) => (
           <ServiceItem
             key={service.id}
@@ -131,6 +127,8 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
               ...service,
               price: Number(service.price),
             }}
+            barbershopId={barbershop.id}         // ✅ passando barbershopId
+            barbers={barbershop.barbers}          // ✅ passando barbers reais do banco
           />
         ))}
       </div>
@@ -147,14 +145,7 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
               <p className="text-sm text-white">{phone}</p>
             </div>
             <div>
-              {/* <Button
-                size="sm"
-                className="bg-[#C3F32C] text-[#254F50] hover:bg-[#C3F32C]/90"
-              >
-                Copiar
-                <Copy />
-              </Button> */}
-              <PhoneItem key={phone} phone={phone} />
+              <PhoneItem phone={phone} />
             </div>
           </div>
         ))}
