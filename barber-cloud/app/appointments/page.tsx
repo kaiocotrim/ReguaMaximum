@@ -1,6 +1,6 @@
 import Header from "../_components/header"
-import BarbershopItem from "../_components/barbershop-item"
 import { db } from "../_lib/prisma"
+import BarbershopItem from "../_components/barbershop-item"
 import {
   Card,
   CardDescription,
@@ -8,12 +8,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/app/_components/ui/card"
-import { Heart } from "lucide-react"
+
 import { CalendarCheck2 } from "lucide-react"
 import Image from "next/image"
 
-const AppointmentsPage = () => {
-  return (
+const AppointmentsPage = async () => {
+    const appointments = await db.Booking.findMany({
+        include: {
+            barbershop: true,
+        },
+    })
+  
+    return (
     <div>
       <Header />
 
@@ -44,6 +50,16 @@ const AppointmentsPage = () => {
             />
           </div>
         </div>
+
+        <div className="grid grid-cols-2 gap-5 p-5">
+          {appointments.map((appointment) => (
+            <BarbershopItem
+              key={appointment.barbershop.id}
+              barbershop={appointment.barbershop}
+            />
+          ))}
+        </div>
+
       </div>
     </div>
   )
