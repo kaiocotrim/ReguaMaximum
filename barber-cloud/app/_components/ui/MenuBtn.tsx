@@ -56,9 +56,10 @@ interface MenuBtnProps {
 const MENU_ITEMS = [
   {
     icon: CalendarCheck2,
-    label: "Agendar",
-    description: "Marque seus horários",
+    label: "Agendamentos",
+    description: "Meus agendamentos e histórico de cortes",
     requiresAuth: true,
+    href: "/appointments",
   },
   {
     icon: ScissorsLineDashed,

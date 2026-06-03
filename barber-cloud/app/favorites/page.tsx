@@ -21,7 +21,7 @@ const FavoritesPage = async () => {
     <div>
       <Header />
 
-           <div className="m-5">
+      <div className="m-5">
         <div className="rounded-xl border border-border/40 bg-card px-7 py-6">
           {/* Badge */}
           <div className="mb-4 flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
