@@ -6,6 +6,7 @@ import { Star, ChevronRight } from "lucide-react"
 import { Badge } from "./ui/badge"
 import Link from "next/link"
 
+{/* Este componente é responsável por exibir as informações de uma barbearia em um formato de cartão, incluindo a imagem, nome, endereço e uma avaliação. Ele recebe um objeto do tipo `Barbershop` como prop e utiliza o Next.js Image para exibir a imagem da barbearia, além de estilizar o layout para apresentar as informações de forma clara e atraente. O componente também inclui um botão que direciona o usuário para a página de detalhes da barbearia. */}
 
 interface BarbershopItemProps {
   barbershop: Barbershop
