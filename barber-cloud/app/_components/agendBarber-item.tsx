@@ -1,6 +1,6 @@
 "use client"
 import { motion, AnimatePresence } from "framer-motion"
-import { User, MapPin, Scissors, Clock,Check,CircleCheckBig } from "lucide-react"
+import { User, MapPin, Clock, CircleCheckBig } from "lucide-react"
 import Image from "next/image"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
@@ -49,17 +49,15 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {/* Card com entrada suave + hover elevado */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.38, ease: "easeOut" }}
           whileHover={{ scale: 1.015, backgroundColor: "rgba(255,255,255,0.07)" }}
           whileTap={{ scale: 0.985 }}
-          className="w-full rounded-2xl border border-white/10 bg-transparent backdrop-blur-xl overflow-hidden flex cursor-pointer transition-colors duration-200"
+          className="w-full rounded-3xl border border-white/10 bg-transparent backdrop-blur-xl overflow-hidden flex cursor-pointer transition-colors duration-200"
         >
           <div className="flex items-center gap-4 flex-1 min-w-0 p-4">
-            {/* Avatar com pulse suave se confirmado */}
             <motion.div
               className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-white shrink-0"
               animate={!isPast ? { boxShadow: ["0 0 0px #C3F32C00", "0 0 10px #C3F32C55", "0 0 0px #C3F32C00"] } : {}}
@@ -69,7 +67,6 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
             </motion.div>
 
             <div className="flex flex-col gap-1.5 min-w-0">
-              {/* Badge com entrada */}
               <motion.div
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -102,7 +99,6 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
             </div>
           </div>
 
-          {/* Bloco de data */}
           <motion.div
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
@@ -123,10 +119,9 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
         </motion.div>
       </DialogTrigger>
 
-      {/* Dialog com AnimatePresence para entrada/saída suave */}
       <AnimatePresence>
         {open && (
-          <DialogContent className="max-w-sm rounded-3xl border-0 bg-zinc-800 p-0 overflow-hidden">
+          <DialogContent className="max-w-sm rounded-3xl border-0 bg-zinc-800 p-2 overflow-hidden">
             <motion.div
               initial={{ opacity: 0, scale: 0.94, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -135,7 +130,7 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
             >
               {/* Hero */}
               <motion.div
-                className="relative w-full h-44 rounded-b-3xl overflow-hidden"
+                className="relative w-full h-44 rounded-3xl overflow-hidden"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.4 }}
@@ -153,13 +148,12 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
                       : "bg-[#C3F32C] text-[#1a3a1a]"
                   }`}
                 >
-                  
                   {isPast ? "Finalizado" : <CircleCheckBig size={12} className="text-[#1a3a1a] w-5 h-5" />}
                 </motion.div>
               </motion.div>
 
               <div className="flex flex-col items-center -mt-10 px-6 pb-8 gap-4">
-                {/* Avatar do barbeiro */}
+                {/* Avatar */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.7, y: 10 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -192,9 +186,9 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
                   </div>
                 </motion.div>
 
-                {/* Bloco de stats: preço / serviço / horário com stagger */}
+                {/* Stats */}
                 <motion.div
-                  className="w-full flex items-center justify-between bg-white/[0.10] rounded-2xl px-5 py-4"
+                  className="w-full flex items-center justify-between bg-white/[0.10] rounded-3xl px-5 py-4"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: 0.3 }}
@@ -227,7 +221,7 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
 
                 {/* Data completa */}
                 <motion.div
-                  className="w-full flex items-center justify-center gap-2 bg-[#C3F32C] rounded-2xl px-5 py-3"
+                  className="w-full flex items-center justify-center gap-2 bg-[#C3F32C] rounded-3xl px-5 py-3"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: 0.44 }}
