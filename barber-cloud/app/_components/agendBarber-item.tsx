@@ -38,7 +38,7 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
   })
 
   return (
-    <div className="w-full rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl overflow-hidden flex cursor-pointer transition-all duration-200 hover:bg-white/[0.07]">
+    <div className="w-full rounded-2xl border border-white/10 bg-transparent backdrop-blur-xl overflow-hidden flex cursor-pointer transition-all duration-200 hover:bg-white/[0.07]">
 
       {/* Esquerda — logo + infos */}
       <div className="flex items-center gap-4 flex-1 min-w-0 p-4">
