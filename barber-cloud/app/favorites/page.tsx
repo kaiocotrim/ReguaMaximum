@@ -24,8 +24,8 @@ const FavoritesPage = async () => {
       <div className="m-5">
         <div className="rounded-xl border border-border/40 bg-card px-7 py-6">
           {/* Badge */}
-          <div className="mb-4 flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
-            <Heart className="h-3 w-3" />
+          <div className="mb-4 flex items-center gap-1.5 text-[11px] text-red-500 font-medium uppercase tracking-widest text-muted-foreground">
+            <Heart className="h-3 w-3 text-red-500 fill-[#FF0000]" />
             favoritos
           </div>
 

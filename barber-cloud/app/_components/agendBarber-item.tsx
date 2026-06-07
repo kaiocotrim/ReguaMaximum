@@ -1,10 +1,5 @@
-import { Card, CardContent } from "./ui/card";
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "@/app/_lib/auth" // 
-import { redirect } from "next-navigation" // 
-import Image from "next/image";
-
-
+import { User, Calendar, Clock } from "lucide-react"
+import Image from "next/image"
 
 interface AgendBarberProps {
   appointment: {
@@ -15,51 +10,85 @@ interface AgendBarberProps {
       imageUrl: string
       address: string
     }
+    service: {
+      name: string
+      price: number
+      duration?: number | null
+    }
+    barber: {
+      user: {
+        name: string | null
+        image: string | null
+      }
+    }
   }
 }
 
-// 2. O componente recebe a propriedade "appointment"
 const AgendBarber = ({ appointment }: AgendBarberProps) => {
+  const { service, barber, date, barbershop } = appointment
+
+  const isPast = new Date(date) < new Date()
+
+  const month = new Date(date).toLocaleDateString("pt-BR", { month: "long" })
+  const monthCapitalized = month.charAt(0).toUpperCase() + month.slice(1)
+  const day = new Date(date).getDate()
+  const formattedTime = new Date(date).toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  })
+
   return (
-    <Card className="min-w-[167px] p-1 rounded-2xl hover:bg-zinc-900 cursor-pointer transition-all bg-card text-card-foreground border border-border">
-      <CardContent className="p-2 flex flex-col gap-2">
-        
-        {/* Imagem da Barbearia */}
-        <div className="relative h-[159px] w-full">
+    <div className="w-full rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl overflow-hidden flex cursor-pointer transition-all duration-200 hover:bg-white/[0.07]">
+
+      {/* Esquerda — logo + infos */}
+      <div className="flex items-center gap-4 flex-1 min-w-0 p-4">
+
+        {/* Avatar da barbearia */}
+        <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-white shrink-0">
           <Image
-            src={appointment.barbershop.imageUrl}
-            alt={appointment.barbershop.name}
+            src={barbershop.imageUrl}
+            alt={barbershop.name}
             fill
-            className="rounded-xl object-cover"
+            className="object-cover"
           />
         </div>
 
-        {/* Textos com as informações */}
-        <div className="flex flex-col gap-1 px-1">
-          {/* Nome da Barbearia */}
-          <h3 className="font-semibold text-sm truncate">
-            {appointment.barbershop.name}
-          </h3>
-          
-          {/* Data do Agendamento formatada */}
-          <p className="text-xs text-muted-foreground">
-            {new Date(appointment.date).toLocaleDateString("pt-BR", {
-              day: "2-digit",
-              month: "long",
-            })}
-          </p>
-          
-          {/* Horário do Agendamento */}
-          <p className="text-xs text-primary font-medium">
-            {new Date(appointment.date).toLocaleTimeString("pt-BR", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })} hs
-          </p>
-        </div>
+        {/* Textos */}
+        <div className="flex flex-col gap-1.5 min-w-0">
 
-      </CardContent>
-    </Card>
+          {/* Badge */}
+          <div className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-0.5 rounded-full w-fit ${
+            isPast
+              ? "bg-zinc-700 text-white"
+              : "bg-[#C3F32C] text-[#254F50]"
+          }`}>
+            {isPast ? "Finalizado" : "Confirmado"}
+          </div>
+
+          {/* Serviço */}
+          <p className="text-white text-[15px] font-semibold tracking-tight truncate">
+            {service?.name ?? "Serviço"}
+          </p>
+
+          {/* Barbearia */}
+          <div className="flex items-center gap-1.5">
+            <User size={12} className="text-white shrink-0" />
+            <span className="text-[12px] text-white truncate">
+              {barbershop.name}
+            </span>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Direita — data */}
+      <div className="flex flex-col items-center justify-center border-l border-white/10 px-5 shrink-0 gap-0.5">
+        <p className="text-[12px] text-zinc-400 capitalize">{monthCapitalized}</p>
+        <p className="text-[28px] font-bold text-white leading-none">{day}</p>
+        <p className="text-[12px] font-semibold text-zinc-400">{formattedTime}</p>
+      </div>
+
+    </div>
   )
 }
 
