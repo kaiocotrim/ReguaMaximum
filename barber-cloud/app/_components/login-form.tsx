@@ -5,7 +5,7 @@ import { Button } from "@/app/_components/ui/button"
 import { Field, FieldGroup, FieldLabel } from "@/app/_components/ui/field"
 import { LoginProviders } from "@/app/_components/LoginProviders"
 import { Input } from "@/app/_components/ui/input"
-import { useState } from "react"
+import React, { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 
@@ -23,6 +23,7 @@ export function LoginForm({
   const [registerPassword, setRegisterPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [name, setName] = useState("")
+  const [password, setPassword] = useState("")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,6 +38,35 @@ export function LoginForm({
   const handleForgot = () => {
     setForgotOpen((v) => !v)
   }
+
+  const handleRegister = async (
+  e: React.FormEvent
+) => {
+  e.preventDefault()
+
+  if (registerPassword !== confirmPassword) {
+    alert("As senhas não coincidem")
+    return
+  }
+
+  const response = await fetch("/api/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name,
+      email: registerEmail,
+      password: registerPassword,
+    }),
+  })
+
+  const data = await response.json()
+
+  console.log(data)
+}
+
+
 
   return (
     <div
@@ -205,6 +235,8 @@ export function LoginForm({
                                 placeholder="Senha"
                                 required
                                 autoComplete="current-password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                                 className="h-12 rounded-md border border-zinc-600 bg-[#121212] px-4 text-sm text-white placeholder:text-zinc-500 focus-visible:border-white focus-visible:ring-0 focus-visible:ring-offset-0"
                               />
                             </motion.div>
@@ -242,7 +274,7 @@ export function LoginForm({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -16 }}
               transition={{ duration: 0.28, ease: "easeOut" }}
-              onSubmit={handleSubmit}
+              onSubmit={handleRegister}
               className="space-y-3"
             >
               <FieldGroup className="space-y-3">
@@ -328,6 +360,7 @@ export function LoginForm({
               </FieldGroup>
 
               <Button
+                
                 type="submit"
                 className="h-12 w-full rounded-full bg-[#C3F32C] text-sm font-bold text-[#121212] hover:bg-[#d4ff30] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer mt-1"
               >
