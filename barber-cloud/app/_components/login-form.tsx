@@ -19,6 +19,10 @@ export function LoginForm({
   const [showPassword, setShowPassword] = useState(false)
   const [forgotOpen, setForgotOpen] = useState(false)
   const [email, setEmail] = useState("")
+  const [registerEmail, setRegisterEmail] = useState("")
+  const [registerPassword, setRegisterPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [name, setName] = useState("")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -243,11 +247,29 @@ export function LoginForm({
             >
               <FieldGroup className="space-y-3">
 
+                                <Field className="space-y-2">
+                  <FieldLabel htmlFor="reg-email" className="text-sm font-bold text-white">
+                    Nome de usuário
+                  </FieldLabel>
+                  <Input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    id="reg-email"
+                    type="text"
+                    placeholder="seu nome de usuário"
+                    required
+                    autoComplete="username"
+                    className="h-12 rounded-md border border-zinc-600 bg-[#121212] px-4 text-sm text-white placeholder:text-zinc-500 focus-visible:border-white focus-visible:ring-0 focus-visible:ring-offset-0"
+                  />
+                </Field>
+
                 <Field className="space-y-2">
                   <FieldLabel htmlFor="reg-email" className="text-sm font-bold text-white">
                     E-mail
                   </FieldLabel>
                   <Input
+                    value={registerEmail}
+                    onChange={(e) => setRegisterEmail(e.target.value)}
                     id="reg-email"
                     type="email"
                     placeholder="seu@email.com"
@@ -268,6 +290,8 @@ export function LoginForm({
                       Senha
                     </FieldLabel>
                     <Input
+                      value={registerPassword}
+                      onChange={(e) => setRegisterPassword(e.target.value)}
                       id="reg-password"
                       type="password"
                       placeholder="Crie uma senha"
@@ -289,6 +313,8 @@ export function LoginForm({
                       Confirmar senha
                     </FieldLabel>
                     <Input
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                       id="reg-confirm"
                       type="password"
                       placeholder="Repita a senha"
