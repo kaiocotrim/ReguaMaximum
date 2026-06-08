@@ -188,22 +188,17 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                 </SheetTitle>
               </div>
 
-              {/* Dialog de login disparado pelo botão "Entrar" */}
-              <Dialog>
-                <DialogTrigger asChild>
+           
                   <Button
+                        onClick={() => {
+                  router.push("/login")
+                }}
                     size="sm"
                     className="h-8 cursor-pointer rounded-xl bg-[#C3F32C] text-xs font-bold text-black hover:bg-[#d4f542]"
                   >
                     <LogInIcon className="text-[# ] mr-1.5 h-3.5 w-3.5" />
                     <p className="text-[#254F50]">Entrar</p>
                   </Button>
-                </DialogTrigger>
-
-                <DialogContent className="p-0">
-                  <LoginForm />
-                </DialogContent>
-              </Dialog>
             </div>
           )}
         </SheetHeader>
