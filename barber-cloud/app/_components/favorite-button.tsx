@@ -112,12 +112,12 @@ const FavoriteButton = ({
             </AlertDialogHeader>
 
             <AlertDialogFooter className="mt-8 flex gap-2.5">
-              <AlertDialogCancel>
+              <AlertDialogCancel className="cursor-pointer hover:bg-[#d4f542]">
                 Cancelar
               </AlertDialogCancel>
 
               <AlertDialogAction
-                className="bg-[#C3F32C] text-[#111110]"
+                className="bg-[#C3F32C] text-[#111110] cursor-pointer hover:bg-[#d4f542]"
                 onClick={() => {
                   setShowAlert(false)
                   router.push("/login")

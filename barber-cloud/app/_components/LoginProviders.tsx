@@ -6,16 +6,19 @@ import { Button } from "./ui/button"
 import  { LoginForm }  from "@/app/_components/login-form"
  
 const LOGIN_PROVIDERS = [
-  { id: "google", src: "/google-icon.svg", label: "Google" },
-  { id: "facebook", src: "/facebook-icon.svg", label: "Facebook" },
-  { id: "apple", src: "/Apple-icon.svg", label: "Apple" },
-  { id: "github", src: "/GitHub-icon.svg", label: "GitHub" },
+  { id: "google", src: "/google-icon.svg", label: "Google" ,callbackUrl: "/", },
+  { id: "facebook", src: "/facebook-icon.svg", label: "Facebook" ,callbackUrl: "/", },
+  { id: "apple", src: "/Apple-icon.svg", label: "Apple" ,callbackUrl: "/", },
+  { id: "github", src: "/GitHub-icon.svg", label: "GitHub" ,callbackUrl: "/", },
 ]
 
 export function LoginProviders() {
-  const handleLogin = async (provider: string) => {
-    await signIn(provider)
-  }
+const handleLogin = async (
+  provider: string,
+  callbackUrl: string,
+) => {
+  await signIn(provider, { callbackUrl })
+}
 
   return (
     
@@ -23,7 +26,7 @@ export function LoginProviders() {
         {LOGIN_PROVIDERS.map((provider) => (
         <Button
           key={provider.id}
-          onClick={() => handleLogin(provider.id)}
+          onClick={() => handleLogin(provider.id, provider.callbackUrl)}
           className="w-full justify-start gap-3 rounded-xl bg-[#C3F32C] text-black hover:bg-[#d6f083] cursor-pointer"
         >
           <Image
