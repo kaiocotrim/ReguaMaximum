@@ -8,6 +8,8 @@ import { Input } from "@/app/_components/ui/input"
 import React, { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
+import { signIn } from "next-auth/react"  // adiciona esse import no topo
+
 
 type Mode = "login" | "register" | "success"
 
@@ -26,9 +28,22 @@ export function LoginForm({
   const [password, setPassword] = useState("")
   const [registeredName, setRegisteredName] = useState("")
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+
+  const result = await signIn("credentials", {
+    email,
+    password,
+    redirect: false,
+  })
+
+  if (result?.error) {
+    alert("E-mail ou senha incorretos")
+    return
   }
+
+  window.location.href = "/"
+}
 
   const handleModeSwitch = (next: Mode) => {
     setMode(next)
