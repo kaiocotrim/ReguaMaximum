@@ -9,7 +9,7 @@ import React, { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 
-type Mode = "login" | "register"
+type Mode = "login" | "register" | "success"
 
 export function LoginForm({
   className,
@@ -24,6 +24,7 @@ export function LoginForm({
   const [confirmPassword, setConfirmPassword] = useState("")
   const [name, setName] = useState("")
   const [password, setPassword] = useState("")
+  const [registeredName, setRegisteredName] = useState("")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,34 +40,38 @@ export function LoginForm({
     setForgotOpen((v) => !v)
   }
 
-  const handleRegister = async (
-  e: React.FormEvent
-) => {
-  e.preventDefault()
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault()
 
-  if (registerPassword !== confirmPassword) {
-    alert("As senhas não coincidem")
-    return
+    if (registerPassword !== confirmPassword) {
+      alert("As senhas não coincidem")
+      return
+    }
+
+    const response = await fetch("/api/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email: registerEmail,
+        password: registerPassword,
+      }),
+    })
+
+    const data = await response.json()
+    console.log(data)
+
+    if (response.ok) {
+      setRegisteredName(name)
+      setMode("success")
+
+      setTimeout(() => {
+        handleModeSwitch("login")
+      }, 3000)
+    }
   }
-
-  const response = await fetch("/api/register", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name,
-      email: registerEmail,
-      password: registerPassword,
-    }),
-  })
-
-  const data = await response.json()
-
-  console.log(data)
-}
-
-
 
   return (
     <div
@@ -98,7 +103,11 @@ export function LoginForm({
               transition={{ duration: 0.25, ease: "easeOut" }}
               className="text-center text-3xl font-bold tracking-tight text-white"
             >
-              {mode === "login" ? "Entre na sua conta" : "Crie sua conta"}
+              {mode === "login"
+                ? "Entre na sua conta"
+                : mode === "register"
+                ? "Crie sua conta"
+                : "Tudo certo!"}
             </motion.h1>
           </AnimatePresence>
         </div>
@@ -143,7 +152,6 @@ export function LoginForm({
             >
               <FieldGroup className="space-y-0">
 
-                {/* Campo e-mail */}
                 <Field className="space-y-2">
                   <FieldLabel htmlFor="email" className="text-sm font-bold text-white">
                     E-mail ou nome de usuário
@@ -161,7 +169,6 @@ export function LoginForm({
                   />
                 </Field>
 
-                {/* Campo senha + esqueci + info box */}
                 <AnimatePresence>
                   {showPassword && (
                     <motion.div
@@ -174,7 +181,6 @@ export function LoginForm({
                     >
                       <Field className="space-y-2 pt-3">
 
-                        {/* Label + botão esqueci */}
                         <div className="flex items-center justify-between">
                           <FieldLabel htmlFor="password" className="text-sm font-bold text-white">
                             Senha
@@ -193,11 +199,8 @@ export function LoginForm({
                           </button>
                         </div>
 
-                        {/* Info box minimalista (substitui o campo de senha) */}
                         <AnimatePresence mode="wait">
                           {forgotOpen ? (
-
-                            /* Estado: recuperação */
                             <motion.div
                               key="forgot-info"
                               initial={{ opacity: 0, y: -4 }}
@@ -218,10 +221,7 @@ export function LoginForm({
                                 </p>
                               </div>
                             </motion.div>
-
                           ) : (
-
-                            /* Estado: campo de senha normal */
                             <motion.div
                               key="password-input"
                               initial={{ opacity: 0, y: 4 }}
@@ -240,7 +240,6 @@ export function LoginForm({
                                 className="h-12 rounded-md border border-zinc-600 bg-[#121212] px-4 text-sm text-white placeholder:text-zinc-500 focus-visible:border-white focus-visible:ring-0 focus-visible:ring-offset-0"
                               />
                             </motion.div>
-
                           )}
                         </AnimatePresence>
 
@@ -279,14 +278,14 @@ export function LoginForm({
             >
               <FieldGroup className="space-y-3">
 
-                                <Field className="space-y-2">
-                  <FieldLabel htmlFor="reg-email" className="text-sm font-bold text-white">
+                <Field className="space-y-2">
+                  <FieldLabel htmlFor="reg-name" className="text-sm font-bold text-white">
                     Nome de usuário
                   </FieldLabel>
                   <Input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    id="reg-email"
+                    id="reg-name"
                     type="text"
                     placeholder="seu nome de usuário"
                     required
@@ -360,7 +359,6 @@ export function LoginForm({
               </FieldGroup>
 
               <Button
-                
                 type="submit"
                 className="h-12 w-full rounded-full bg-[#C3F32C] text-sm font-bold text-[#121212] hover:bg-[#d4ff30] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer mt-1"
               >
@@ -369,42 +367,138 @@ export function LoginForm({
             </motion.form>
           )}
 
-        </AnimatePresence>
+          {/* SUCCESS */}
+          {mode === "success" && (
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, scale: 0.92, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: -16 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
+              className="flex flex-col items-center gap-6 text-center py-2"
+            >
+              {/* Ícone check animado */}
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 220, damping: 16, delay: 0.1 }}
+              >
+                <svg width="88" height="88" viewBox="0 0 88 88" fill="none">
+                  {/* Círculo de fundo */}
+                  <circle cx="44" cy="44" r="32" stroke="#1e1e1e" strokeWidth="3.5" />
+                  {/* Círculo animado */}
+                  <motion.circle
+                    cx="44"
+                    cy="44"
+                    r="32"
+                    stroke="#C3F32C"
+                    strokeWidth="3.5"
+                    strokeLinecap="round"
+                    strokeDasharray="201"
+                    initial={{ strokeDashoffset: 201 }}
+                    animate={{ strokeDashoffset: 0 }}
+                    transition={{ duration: 0.75, delay: 0.3, ease: "easeOut" }}
+                    style={{ rotate: "-90deg", transformOrigin: "center" }}
+                  />
+                  {/* Checkmark animado */}
+                  <motion.polyline
+                    points="28,45 39,56 60,33"
+                    stroke="#C3F32C"
+                    strokeWidth="4.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    fill="none"
+                    strokeDasharray="65"
+                    initial={{ strokeDashoffset: 65 }}
+                    animate={{ strokeDashoffset: 0 }}
+                    transition={{ duration: 0.38, delay: 1.0, ease: "easeOut" }}
+                  />
+                </svg>
+              </motion.div>
 
-        {/* Alternar login / cadastro */}
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={mode}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="text-center text-sm text-zinc-400"
-          >
-            {mode === "login" ? (
-              <>
-                Não tem uma conta?{" "}
-                <button
-                  type="button"
-                  onClick={() => handleModeSwitch("register")}
-                  className="font-bold text-white underline underline-offset-2 hover:text-[#C3F32C] transition-colors cursor-pointer"
-                >
-                  Cadastre-se
-                </button>
-              </>
-            ) : (
-              <>
-                Já tem uma conta?{" "}
-                <button
+              {/* Textos */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.15, duration: 0.3 }}
+                className="space-y-1"
+              >
+                <h2 className="text-2xl font-bold text-white">Conta criada!</h2>
+                <p className="text-zinc-400 text-sm leading-relaxed">
+                  Tudo certo,{" "}
+                  <span className="text-zinc-200 font-semibold">{registeredName}</span>.
+                  <br />
+                  Agora é só entrar e agendar seu corte.
+                </p>
+              </motion.div>
+
+              {/* Barra de progresso + botão */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.3, duration: 0.3 }}
+                className="w-full space-y-3"
+              >
+                <p className="text-xs text-zinc-600">Redirecionando para o login em 3s...</p>
+
+                <div className="w-full h-[3px] bg-zinc-800 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-[#C3F32C] rounded-full"
+                    initial={{ width: "0%" }}
+                    animate={{ width: "100%" }}
+                    transition={{ duration: 3, delay: 1.4, ease: "linear" }}
+                  />
+                </div>
+
+                <Button
                   type="button"
                   onClick={() => handleModeSwitch("login")}
-                  className="font-bold text-white underline underline-offset-2 hover:text-[#C3F32C] transition-colors cursor-pointer"
+                  className="h-12 w-full rounded-full bg-[#C3F32C] text-sm font-bold text-[#121212] hover:bg-[#d4ff30] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
                 >
-                  Entrar
-                </button>
-              </>
-            )}
-          </motion.p>
+                  Ir para o login agora
+                </Button>
+              </motion.div>
+            </motion.div>
+          )}
+
+        </AnimatePresence>
+
+        {/* Alternar login / cadastro — esconde no sucesso */}
+        <AnimatePresence mode="wait">
+          {(mode === "login" || mode === "register") && (
+            <motion.p
+              key={mode}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="text-center text-sm text-zinc-400"
+            >
+              {mode === "login" ? (
+                <>
+                  Não tem uma conta?{" "}
+                  <button
+                    type="button"
+                    onClick={() => handleModeSwitch("register")}
+                    className="font-bold text-white underline underline-offset-2 hover:text-[#C3F32C] transition-colors cursor-pointer"
+                  >
+                    Cadastre-se
+                  </button>
+                </>
+              ) : (
+                <>
+                  Já tem uma conta?{" "}
+                  <button
+                    type="button"
+                    onClick={() => handleModeSwitch("login")}
+                    className="font-bold text-white underline underline-offset-2 hover:text-[#C3F32C] transition-colors cursor-pointer"
+                  >
+                    Entrar
+                  </button>
+                </>
+              )}
+            </motion.p>
+          )}
         </AnimatePresence>
 
       </div>
