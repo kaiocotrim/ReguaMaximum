@@ -8,6 +8,7 @@ import { CalendarCheck2 } from "lucide-react"
 import Image from "next/image"
 import AgendBarber from "../_components/agendBarber-item"
 
+
 const AppointmentsPage = async () => {
   const session = await getServerSession(authOptions)
 
