@@ -24,7 +24,8 @@ export default function ResetPasswordForm({ className }: { className?: string })
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
-
+ 
+    
     if (password.length < 6) {
       setError("A senha deve ter pelo menos 6 caracteres")
       return
