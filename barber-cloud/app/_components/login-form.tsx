@@ -585,6 +585,36 @@ export function LoginForm({
     setForgotOpen((v) => !v)
   }
 
+  const handleForgotPassword = async () => {
+  try {
+    console.log("1 - Entrou na função")
+
+    const response = await fetch("/api/forgot-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    })
+
+    console.log("2 - Resposta recebida", response.status)
+
+    const data = await response.json()
+
+    console.log("3 - Dados", data)
+
+    if (!response.ok) {
+      alert(data.error)
+      return
+    }
+
+    alert("Verifique seu e-mail")
+  } catch (error) {
+    console.error("ERRO:", error)
+    alert("Erro ao enviar e-mail")
+  }
+}
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -617,7 +647,6 @@ export function LoginForm({
       }, 3000)
     }
   }
-
 
   return (
     <div
@@ -691,7 +720,14 @@ export function LoginForm({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -16 }}
               transition={{ duration: 0.28, ease: "easeOut" }}
-              onSubmit={handleSubmit}
+              onSubmit={(e) => {
+                if (forgotOpen) {
+                  e.preventDefault()
+                  handleForgotPassword()
+                } else {
+                  handleSubmit(e)
+                }
+              }}
               className="space-y-3"
             >
               <FieldGroup className="space-y-0">
@@ -809,7 +845,11 @@ export function LoginForm({
                       ? "Entrar"
                       : "Continuar"}
                 </Button>
-                {error && <p className="mt-2 text-xs text-red-500 text-center">{error}</p>}
+                {error && (
+                  <p className="mt-2 text-center text-xs text-red-500">
+                    {error}
+                  </p>
+                )}
               </motion.div>
             </motion.form>
           )}

@@ -7,6 +7,7 @@ import { Input } from "@/app/_components/ui/input"
 import React, { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
+import { useSearchParams } from "next/navigation"
 
 type Mode = "input" | "success"
 
@@ -20,7 +21,8 @@ export function ResetPasswordForm({
   const [error, setError] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isRedirecting, setIsRedirecting] = useState(false)
-
+  const searchParams = useSearchParams()
+  const token = searchParams.get("token")
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
@@ -38,21 +40,24 @@ export function ResetPasswordForm({
     setIsSubmitting(true)
 
     try {
-      // Aqui você faria a chamada para a sua API de redefinição.
-      // Geralmente, você também pegaria um "token" da URL para enviar no body.
-      /* const response = await fetch("/api/reset-password", {
+      const response = await fetch("/api/reset-password", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password, token: searchParams.get('token') }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token,
+          password,
+        }),
       })
-      if (!response.ok) throw new Error("Erro ao redefinir")
-      */
 
-      // Simulando o tempo de resposta da API
-      await new Promise((resolve) => setTimeout(resolve, 800))
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error)
+      }
 
       setMode("success")
-
     } catch (err) {
       setError("Ocorreu um erro ao redefinir a senha. Tente novamente.")
     } finally {
@@ -163,7 +168,9 @@ export function ResetPasswordForm({
                   {isSubmitting ? "Salvando..." : "Redefinir Senha"}
                 </Button>
                 {error && (
-                  <p className="mt-2 text-center text-xs text-red-500">{error}</p>
+                  <p className="mt-2 text-center text-xs text-red-500">
+                    {error}
+                  </p>
                 )}
               </motion.div>
             </motion.form>
