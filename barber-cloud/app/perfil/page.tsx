@@ -1,19 +1,20 @@
 "use client"
 
 import { Button } from "@/app/_components/ui/button"
-import Image from "next/image"
 // import ChevronRight from "lucide-react"
 import { ChevronRight } from "lucide-react"
 import { useState } from "react"
 import { set } from "date-fns"
 import { error } from "console"
 import { Card } from "../_components/ui/card"
+import Image from "next/image"
+import { User, Store } from "lucide-react"
 
 const Perfil = () => {
   const [erro, setErro] = useState("")
   const [nome, setNome] = useState("")
   const [mostrarPergunta, setmostrarPergunta] = useState(false)
-
+  const [tipoPerfil, setTipoPerfil] = useState("")
   const handleProsseguir = () => {
     if (!nome.trim()) {
       setErro("Digite seu nome para continuar")
@@ -68,16 +69,50 @@ const Perfil = () => {
         {erro && <p className="text-sm text-red-500">{erro}</p>}
 
         {mostrarPergunta && (
-          <div>
-            <div className="flex gap-4">
-              <Card>
-                Você é o cliente, <span className="shine-text">{nome}</span> ?
-              </Card>
+          <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+            <button
+              onClick={() => setTipoPerfil("cliente")}
+              className={`flex cursor-pointer flex-col items-center rounded-2xl border p-6 text-center transition-all duration-300 hover:border-[#C3F32C] hover:bg-[#C3F32C]/10 ${
+                tipoPerfil === "cliente"
+                  ? "border-[#C3F32C] bg-[#C3F32C]/10"
+                  : "border-zinc-700 bg-transparent"
+              }`}
+            >
+              <p className="text-lg font-semibold text-white">
+                Você é o cliente, <span className="shine-text">{nome} ? </span>
+              </p>
+              <div className="mt-4">
+                <Image
+                  src="/Cliente12.png"
+                  alt="Cliente"
+                  width={180}
+                  height={180}
+                  className="object-contain"
+                />
+              </div>
+            </button>
 
-              <Card>
-                Você é o barbeiro, <span className="shine-text">{nome}</span> ?
-              </Card>
-            </div>
+            <button
+              onClick={() => setTipoPerfil("barbeiro")}
+              className={`flex cursor-pointer flex-col items-center rounded-2xl border p-6 text-center transition-all duration-300 hover:border-[#C3F32C] hover:bg-[#C3F32C]/10 ${
+                tipoPerfil === "barbeiro"
+                  ? "border-[#C3F32C] bg-[#C3F32C]/10"
+                  : "border-zinc-700 bg-transparent"
+              }`}
+            >
+              <p className="text-lg font-semibold text-white">
+                Você é o barbeiro, <span className="shine-text">{nome} ?</span>
+              </p>
+              <div className="mt-4">
+                <Image
+                  src="/dono2.png"
+                  alt="Barbeiro"
+                  width={180}
+                  height={180}
+                  className="object-contain"
+                />
+              </div>
+            </button>
           </div>
         )}
 
