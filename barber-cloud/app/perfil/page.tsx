@@ -7,6 +7,7 @@ import { ChevronRight } from "lucide-react"
 import { useState } from "react"
 import { set } from "date-fns"
 import { error } from "console"
+import { Card } from "../_components/ui/card"
 
 const Perfil = () => {
   const [erro, setErro] = useState("")
@@ -23,7 +24,7 @@ const Perfil = () => {
     setmostrarPergunta(true)
   }
   return (
-    <div className={"min-h-screen items-center justify-center bg-[#121212]"}>
+    <div className="flex min-h-svh w-full items-center justify-center bg-[#121212] p-6 md:p-10">
       <div className="w-full max-w-md space-y-8">
         {/* Cabeçalho */}
         <div className="space-y-4 text-center">
@@ -48,25 +49,35 @@ const Perfil = () => {
         </div>
 
         {/* Campo Nome */}
-        <div className="space-y-5">
-          <input
-            id="nome"
-            type="text"
-            placeholder="Digite seu nome"
-            className="h-12 w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 text-white transition outline-none focus:border-white"
-            value={nome}
-            onChange={(e) => {
-              setNome(e.target.value)
-              setErro("")
-            }}
-          />
-        </div>
+        {!mostrarPergunta && (
+          <div className="space-y-5">
+            <input
+              id="nome"
+              type="text"
+              placeholder="Digite seu nome"
+              className="h-12 w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 text-white transition outline-none focus:border-white"
+              value={nome}
+              onChange={(e) => {
+                setNome(e.target.value)
+                setErro("")
+              }}
+            />
+          </div>
+        )}
 
         {erro && <p className="text-sm text-red-500">{erro}</p>}
 
         {mostrarPergunta && (
           <div>
-            <p>foi</p>
+            <div className="flex gap-4">
+              <Card>
+                Você é o cliente, <span className="shine-text">{nome}</span> ?
+              </Card>
+
+              <Card>
+                Você é o barbeiro, <span className="shine-text">{nome}</span> ?
+              </Card>
+            </div>
           </div>
         )}
 
