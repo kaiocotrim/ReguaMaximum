@@ -11,15 +11,17 @@ import { error } from "console"
 const Perfil = () => {
   const [erro, setErro] = useState("")
   const [nome, setNome] = useState("")
+  const [mostrarPergunta, setmostrarPergunta] = useState(false)
 
   const handleProsseguir = () => {
     if (!nome.trim()) {
       setErro("Digite seu nome para continuar")
+      return
     }
 
     console.log("Prosseguindo")
+    setmostrarPergunta(true)
   }
-
   return (
     <div className={"min-h-screen items-center justify-center bg-[#121212]"}>
       <div className="w-full max-w-md space-y-8">
@@ -58,10 +60,15 @@ const Perfil = () => {
               setErro("")
             }}
           />
-        
         </div>
-  {erro && <p className="text-sm text-red-500">{erro}</p>}
-      
+
+        {erro && <p className="text-sm text-red-500">{erro}</p>}
+
+        {mostrarPergunta && (
+          <div>
+            <p>foi</p>
+          </div>
+        )}
 
         <div className="items-center">
           <Button
