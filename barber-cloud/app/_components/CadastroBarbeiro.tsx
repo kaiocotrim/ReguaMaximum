@@ -1,4 +1,4 @@
-
+import { useState } from "react";
 import { Button } from "@/app/_components/ui/button";
 import { Input } from "@/app/_components/ui/input";
 import { Label } from "@/app/_components/ui/label";
@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/app/_components/ui/select";
 
-import { User, Upload, ArrowRight } from "lucide-react";
+import { User, Upload, ArrowRight, Camera } from "lucide-react";
 
 import {
   Card,
@@ -20,18 +20,25 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/app/_components/ui/card"
-
-
+} from "@/app/_components/ui/card";
 
 const CadastroBarbeiro = () => {
+  const [preview, setPreview] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col items-center bg-[#121212] px-4 py-16">
       <div className="mb-10 max-w-md text-center">
-        <h2 className="text-2xl leading-relaxed font-medium">
+        {/* <h2 className="text-2xl leading-relaxed font-medium">
           Vamos cadastrar o seu perfil para que você faça parte da{" "}
           <span className="shine-text">família Régua Máxima.</span>
-        </h2>
+        </h2> */}
       </div>
 
       <Card className="w-full max-w-[600px] rounded-2xl border border-white/10 bg-[#1A1A1A]">
@@ -46,15 +53,42 @@ const CadastroBarbeiro = () => {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {/* Upload de foto */}
+          {/* Upload de foto com frame */}
           <div className="flex items-center gap-4">
-            <div className="flex h-18 w-18 items-center justify-center rounded-full border border-white/10 bg-white/5">
-              <User className="h-7 w-7 text-white/40" />
-            </div>
+            <label
+              htmlFor="avatar-upload"
+              className="group relative flex h-20 w-20 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-dashed border-white/10 bg-transparent transition-colors hover:border-white/25"
+            >
+              {preview ? (
+                <img
+                  src={preview}
+                  alt="Pré-visualização"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <User className="h-6 w-6 text-white/30 transition-colors group-hover:text-white/50" />
+              )}
+
+              {/* Overlay de câmera no hover */}
+              <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/0 opacity-0 transition-all group-hover:bg-black/50 group-hover:opacity-100">
+                <Camera className="h-5 w-5 text-white" />
+              </div>
+
+              <input
+                id="avatar-upload"
+                type="file"
+                accept="image/png, image/jpeg"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+            </label>
+
             <div className="flex flex-col gap-2">
-              <Button variant="outline" size="sm" className="gap-2">
-                <Upload className="h-4 w-4" />
-                Enviar foto
+              <Button variant="outline" size="sm" className="gap-2" asChild>
+                <label htmlFor="avatar-upload" className="cursor-pointer">
+                  <Upload className="h-4 w-4" />
+                  Enviar foto
+                </label>
               </Button>
               <span className="text-xs text-white/40">PNG ou JPG, até 5MB</span>
             </div>
@@ -107,7 +141,7 @@ const CadastroBarbeiro = () => {
         </CardFooter>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default CadastroBarbeiro
+export default CadastroBarbeiro;
