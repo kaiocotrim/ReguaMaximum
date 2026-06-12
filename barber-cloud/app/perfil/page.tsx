@@ -11,6 +11,7 @@ import {
   AccordionTrigger,
 } from "../_components/ui/accordion"
 import { motion, AnimatePresence } from "framer-motion"
+import CadastroBarbeiro from "@/app/_components/CadastroBarbeiro"
 
 const containerVariants = {
   hidden: {},
@@ -35,14 +36,42 @@ const Perfil = () => {
   const [nome, setNome] = useState("")
   const [mostrarPergunta, setmostrarPergunta] = useState(false)
   const [tipoPerfil, setTipoPerfil] = useState("")
+  const [mostrarCadastroBarbeiro, setMostrarCadastroBarbeiro] = useState(false)
 
   const handleProsseguir = () => {
-    if (!nome.trim()) {
-      setErro("Digite seu nome para continuar")
+    // PRIMEIRA ETAPA
+    if (!mostrarPergunta) {
+      if (!nome.trim()) {
+        setErro("Digite seu nome para continuar")
+        return
+      }
+
+      setmostrarPergunta(true)
       return
     }
-    setmostrarPergunta(true)
+
+    // SEGUNDA ETAPA
+    if (!tipoPerfil) {
+      setErro("Selecione um perfil")
+      return
+    }
+
+    if (tipoPerfil === "cliente") {
+      console.log("Criar perfil cliente")
+      return
+    }
+
+    if (tipoPerfil === "barbeiro") {
+      setMostrarCadastroBarbeiro(true)
+      return
+    }
   }
+
+   // NOVA PARTE
+  if (mostrarCadastroBarbeiro) {
+    return <CadastroBarbeiro nome={nome} />
+  }
+
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center bg-[#121212] p-6 md:p-10">
