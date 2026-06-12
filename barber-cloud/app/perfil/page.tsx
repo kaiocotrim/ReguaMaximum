@@ -67,11 +67,15 @@ const Perfil = () => {
     }
   }
 
-   // NOVA PARTE
+  // NOVA PARTE
   if (mostrarCadastroBarbeiro) {
-    return <CadastroBarbeiro nome={nome} />
+    return <CadastroBarbeiro/>
   }
 
+  if (tipoPerfil === "cliente") {
+    console.log("Cliente selecionado")
+    return
+  }
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center bg-[#121212] p-6 md:p-10">
