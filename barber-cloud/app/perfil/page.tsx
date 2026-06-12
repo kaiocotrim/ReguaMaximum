@@ -121,13 +121,16 @@ const Perfil = () => {
               initial="hidden"
               animate="visible"
             >
+              {/* Card Cliente */}
               <motion.div
                 variants={cardVariants}
                 onClick={() => setTipoPerfil("cliente")}
                 className={`flex cursor-pointer flex-col items-center rounded-2xl border p-3 text-center transition-all duration-300 hover:border-[#C3F32C] hover:bg-[#C3F32C]/10 md:p-6 ${
                   tipoPerfil === "cliente"
-                    ? "border-[#C3F32C] bg-[#C3F32C]/10"
-                    : "border-zinc-700 bg-transparent"
+                    ? "z-10 scale-105 border-[#C3F32C] bg-[#C3F32C]/10 shadow-lg shadow-[#C3F32C]/20"
+                    : tipoPerfil === "barbeiro"
+                      ? "scale-95 border-zinc-700 bg-transparent opacity-40 blur-[2px]"
+                      : "border-zinc-700 bg-transparent"
                 }`}
               >
                 <p className="text-xs font-semibold text-white md:text-lg">
@@ -161,13 +164,16 @@ const Perfil = () => {
                 </div>
               </motion.div>
 
+              {/* Card Barbeiro */}
               <motion.div
                 variants={cardVariants}
                 onClick={() => setTipoPerfil("barbeiro")}
                 className={`flex cursor-pointer flex-col items-center rounded-2xl border p-3 text-center transition-all duration-300 hover:border-[#C3F32C] hover:bg-[#C3F32C]/10 md:p-6 ${
                   tipoPerfil === "barbeiro"
-                    ? "border-[#C3F32C] bg-[#C3F32C]/10"
-                    : "border-zinc-700 bg-transparent"
+                    ? "z-10 scale-105 border-[#C3F32C] bg-[#C3F32C]/10 shadow-lg shadow-[#C3F32C]/20"
+                    : tipoPerfil === "cliente"
+                      ? "scale-95 border-zinc-700 bg-transparent opacity-40 blur-[2px]"
+                      : "border-zinc-700 bg-transparent"
                 }`}
               >
                 <p className="text-xs font-semibold text-white md:text-lg">
@@ -204,24 +210,7 @@ const Perfil = () => {
           )}
         </AnimatePresence>
 
-        {/* Botão */}
-        {/* <motion.div
-          className="items-center"
-          initial={{ opacity: 0, x: -40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
-        >
-          <Button
-            onClick={handleProsseguir}
-            className="flex cursor-pointer items-center gap-2 bg-transparent p-4 whitespace-nowrap text-white hover:bg-transparent hover:text-[#254F50]"
-          >
-            Prosseguir
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </motion.div> */}
-        {/* Botão */}
-        {/* Botão */}
-        {/* Botão */}
+        {/* Botões */}
         <div className="flex items-center justify-between">
           <AnimatePresence mode="popLayout">
             {mostrarPergunta && (
