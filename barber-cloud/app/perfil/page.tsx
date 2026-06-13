@@ -67,7 +67,7 @@
       }
     }
 
-    // NOVA PARTE
+    // NOVA PARTE ok 
     if (mostrarCadastroBarbeiro) {
       return <CadastroBarbeiro nomeInicial={nome} />
     }
