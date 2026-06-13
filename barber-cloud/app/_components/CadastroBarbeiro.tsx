@@ -48,14 +48,16 @@ const ACCENT = "#C3F32C";
 // ─── Variants ─────────────────────────────────────────────────────────────────
 
 const stepVariants = {
-  enterFwd:  { opacity: 0, y: 16 },
+  enterFwd: { opacity: 0, y: 16 },
   enterBack: { opacity: 0, y: -16 },
-  center:    { opacity: 1, y: 0 },
-  exitFwd:   { opacity: 0, y: -16 },
-  exitBack:  { opacity: 0, y: 16 },
+  center: { opacity: 1, y: 0 },
+  exitFwd: { opacity: 0, y: -16 },
+  exitBack: { opacity: 0, y: 16 },
 };
 
 // ─── Progress ─────────────────────────────────────────────────────────────────
+
+
 
 function ProgressHeader({ step }: { step: number }) {
   const pct = STEP_PCT[step] ?? 100;
@@ -152,11 +154,11 @@ function StepShell({
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
-const CadastroBarbeiro = () => {
+const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
   const [step, setStep] = useState<StepId>(0);
   const [dir, setDir] = useState<1 | -1>(1);
 
-  const [nome, setNome] = useState("");
+  const [nome, setNome] = useState(nomeInicial);
   const [avatar, setAvatar] = useState<string | null>(null);
   const [bio, setBio] = useState("");
   const [specialties, setSpecialties] = useState<Set<string>>(new Set());
@@ -442,7 +444,7 @@ const CadastroBarbeiro = () => {
             variants={{
               initial: (d: number) => ({ opacity: 0, y: d * 16 }),
               animate: { opacity: 1, y: 0 },
-              exit:    (d: number) => ({ opacity: 0, y: d * -16 }),
+              exit: (d: number) => ({ opacity: 0, y: d * -16 }),
             }}
             initial="initial"
             animate="animate"
@@ -458,9 +460,8 @@ const CadastroBarbeiro = () => {
             <motion.button
               onClick={back}
               whileTap={{ scale: 0.95 }}
-              className={`flex cursor-pointer items-center gap-1.5 text-sm text-white/25 transition-colors hover:text-white/50 ${
-                step === 0 ? "invisible" : ""
-              }`}
+              className={`flex cursor-pointer items-center gap-1.5 text-sm text-white/25 transition-colors hover:text-white/50 ${step === 0 ? "invisible" : ""
+                }`}
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               Voltar

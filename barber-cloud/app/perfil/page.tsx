@@ -69,7 +69,7 @@
 
     // NOVA PARTE
     if (mostrarCadastroBarbeiro) {
-      return <CadastroBarbeiro/>
+      return <CadastroBarbeiro nomeInicial={nome} />
     }
 
     if (tipoPerfil === "cliente") {
