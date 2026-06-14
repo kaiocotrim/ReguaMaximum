@@ -45,20 +45,6 @@ const STEP_PCT: Record<number, number> = {
 
 const ACCENT = "#C3F32C";
 
-// ─── Variants ─────────────────────────────────────────────────────────────────
-
-const stepVariants = {
-  enterFwd: { opacity: 0, y: 16 },
-  enterBack: { opacity: 0, y: -16 },
-  center: { opacity: 1, y: 0 },
-  exitFwd: { opacity: 0, y: -16 },
-  exitBack: { opacity: 0, y: 16 },
-};
-
-// ─── Progress ─────────────────────────────────────────────────────────────────
-
-
-
 function ProgressHeader({ step }: { step: number }) {
   const pct = STEP_PCT[step] ?? 100;
   const isSuccess = step === TOTAL_STEPS - 1;
@@ -99,8 +85,6 @@ function ProgressHeader({ step }: { step: number }) {
     </div>
   );
 }
-
-// ─── Step Shell ───────────────────────────────────────────────────────────────
 
 function StepShell({
   icon: Icon,
@@ -152,8 +136,6 @@ function StepShell({
   );
 }
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
-
 const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
   const [step, setStep] = useState<StepId>(0);
   const [dir, setDir] = useState<1 | -1>(1);
@@ -164,37 +146,33 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
   const [specialties, setSpecialties] = useState<Set<string>>(new Set());
   const [cidade, setCidade] = useState("");
 
-const salvarPerfil = async () => {
-  try {
-    const response = await fetch("/api/barber/profile", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        nome,
-        avatar,
-        bio,
-        cidade,
-        especialidades: Array.from(specialties),
-      }),
-    });
+  const salvarPerfil = async () => {
+    try {
+      const response = await fetch("/api/barber/profile", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nome,
+          avatar,
+          bio,
+          cidade,
+          especialidades: Array.from(specialties),
+        }),
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      console.error("Erro ao salvar:", error);
-      return;
+      if (!response.ok) {
+        const error = await response.json();
+        console.error("Erro ao salvar:", error);
+        return;
+      }
+
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Erro inesperado:", error);
     }
-
-    const data = await response.json();
-    console.log("Salvo com sucesso:", data);
-    
-    // redirecionar após salvar, ex:
-    // router.push("/dashboard")
-  } catch (error) {
-    console.error("Erro inesperado:", error);
-  }
-};
+  };
 
   const isValid = useCallback(
     (s: number) => {
@@ -492,8 +470,9 @@ const salvarPerfil = async () => {
             <motion.button
               onClick={back}
               whileTap={{ scale: 0.95 }}
-              className={`flex cursor-pointer items-center gap-1.5 text-sm text-white/25 transition-colors hover:text-white/50 ${step === 0 ? "invisible" : ""
-                }`}
+              className={`flex cursor-pointer items-center gap-1.5 text-sm text-white/25 transition-colors hover:text-white/50 ${
+                step === 0 ? "invisible" : ""
+              }`}
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               Voltar
