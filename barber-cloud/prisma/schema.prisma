@@ -1,3 +1,199 @@
+// generator client {
+//   provider = "prisma-client"
+//   output   = "../app/generated/prisma"
+// }
+
+// datasource db {
+//   provider = "postgresql"
+// }
+
+// model FavoriteBarbershop {
+//   id String @id @default(cuid())
+
+//   userId String
+//   barbershopId String
+
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   barbershop Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+
+//   createdAt DateTime @default(now())
+
+//   @@unique([userId, barbershopId])
+// }
+
+// model Account {
+//   id                String  @id @default(cuid())
+//   userId            String  @map("user_id")
+//   type              String
+//   provider          String
+//   providerAccountId String  @map("provider_account_id")
+//   refresh_token     String?
+//   access_token      String?
+//   expires_at        Int?
+//   token_type        String?
+//   scope             String?
+//   id_token          String?
+//   session_state     String?
+
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   @@unique([provider, providerAccountId])
+//   @@map("accounts")
+// }
+
+// model Session {
+//   id           String   @id @default(cuid())
+//   sessionToken String   @unique @map("session_token")
+//   userId       String   @map("user_id")
+//   expires      DateTime
+
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   @@map("sessions")
+// }
+
+// model User {
+//   id            String    @id @default(cuid())
+//   name          String?
+//   email         String?   @unique
+//   password      String?
+//   emailVerified DateTime? @map("email_verified")
+//   image         String?
+
+//   resetPasswordToken  String?
+//   resetPasswordExpiry DateTime?
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   // Auth
+//   accounts Account[]
+//   sessions Session[]
+
+//   // Cliente
+//   bookings Booking[]
+
+//   // Usuário trabalhando como barbeiro
+//   barbers Barber[]
+
+//   // Favoritos
+//   favorites FavoriteBarbershop[]
+
+//   @@map("users")
+// }
+
+// model VerificationToken {
+//   identifier String
+//   token      String
+//   expires    DateTime
+
+//   @@unique([identifier, token])
+//   @@map("verification_tokens")
+// }
+
+// model Barbershop {
+//   id String @id @default(uuid())
+
+//   name        String
+//   address     String
+//   phones      String[]
+//   description String
+//   imageUrl    String
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   // Relações
+//   services BarbeshopService[]
+//   barbers  Barber[]
+//   bookings Booking[]
+
+//   favoritedBy FavoriteBarbershop[]
+
+// }
+
+// model BarbeshopService {
+//   id String @id @default(uuid())
+
+//   name        String
+//   description String
+//   imageUrl    String
+
+//   price Decimal @db.Decimal(10, 2)
+
+//   // Relação com barbearia
+//   barbershopId String
+//   Barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
+
+//   // Agendamentos
+//   bookings Booking[]
+// }
+
+// // model Barber {
+// //   id String @id @default(cuid())
+
+// //   createdAt DateTime @default(now())
+
+// //   // Usuário do barbeiro
+// //   userId String
+// //   user   User   @relation(fields: [userId], references: [id])
+
+// //   // Barbearia onde trabalha
+// //   barbershopId String
+// //   barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
+
+// //   // Agendamentos
+// //   bookings Booking[]
+// // }
+
+// model Barber {
+//   id String @id @default(cuid())
+
+//   createdAt DateTime @default(now())
+
+//   userId String @unique
+//   user User @relation(fields: [userId], references: [id])
+
+//   nome String?
+//   avatar String?
+//   bio String?
+//   cidade String?
+
+//   especialidades String[]
+
+//   barbershopId String?
+//   barbershop Barbershop? @relation(fields: [barbershopId], references: [id])
+
+//   bookings Booking[]
+// }
+
+// model Booking {
+//   id String @id @default(uuid())
+
+//   // Cliente
+//   userId String
+//   User   User   @relation(fields: [userId], references: [id])
+
+//   // Barbearia
+//   barbershopId String
+//   barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
+
+//   // Serviço
+//   serviceId String
+//   Service   BarbeshopService @relation(fields: [serviceId], references: [id])
+
+//   // Barbeiro
+//   barberId String
+//   barber   Barber @relation(fields: [barberId], references: [id])
+
+//   // Data do agendamento
+//   date DateTime
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
 generator client {
   provider = "prisma-client"
   output   = "../app/generated/prisma"
@@ -7,15 +203,13 @@ datasource db {
   provider = "postgresql"
 }
 
-
 model FavoriteBarbershop {
   id String @id @default(cuid())
 
-  userId String
+  userId       String
   barbershopId String
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   barbershop Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -72,16 +266,32 @@ model User {
   accounts Account[]
   sessions Session[]
 
-  // Cliente
+  // Agendamentos
   bookings Booking[]
 
-  // Usuário trabalhando como barbeiro
+  // Perfil barbeiro
   barbers Barber[]
+
+  // Perfil cliente
+  client Client?
 
   // Favoritos
   favorites FavoriteBarbershop[]
 
   @@map("users")
+}
+
+model Client {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  nome   String?
+  avatar String?
+  cidade String?
 }
 
 model VerificationToken {
@@ -105,13 +315,10 @@ model Barbershop {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relações
-  services BarbeshopService[]
-  barbers  Barber[]
-  bookings Booking[]
-
+  services    BarbeshopService[]
+  barbers     Barber[]
+  bookings    Booking[]
   favoritedBy FavoriteBarbershop[]
-
 }
 
 model BarbeshopService {
@@ -120,33 +327,13 @@ model BarbeshopService {
   name        String
   description String
   imageUrl    String
+  price       Decimal @db.Decimal(10, 2)
 
-  price Decimal @db.Decimal(10, 2)
-
-  // Relação com barbearia
   barbershopId String
   Barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
 
-  // Agendamentos
   bookings Booking[]
 }
-
-// model Barber {
-//   id String @id @default(cuid())
-
-//   createdAt DateTime @default(now())
-
-//   // Usuário do barbeiro
-//   userId String
-//   user   User   @relation(fields: [userId], references: [id])
-
-//   // Barbearia onde trabalha
-//   barbershopId String
-//   barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
-
-//   // Agendamentos
-//   bookings Booking[]
-// }
 
 model Barber {
   id String @id @default(cuid())
@@ -154,17 +341,16 @@ model Barber {
   createdAt DateTime @default(now())
 
   userId String @unique
-  user User @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 
-  nome String?
-  avatar String?
-  bio String?
-  cidade String?
-
+  nome           String?
+  avatar         String?
+  bio            String?
+  cidade         String?
   especialidades String[]
 
   barbershopId String?
-  barbershop Barbershop? @relation(fields: [barbershopId], references: [id])
+  barbershop   Barbershop? @relation(fields: [barbershopId], references: [id])
 
   bookings Booking[]
 }
@@ -172,23 +358,18 @@ model Barber {
 model Booking {
   id String @id @default(uuid())
 
-  // Cliente
   userId String
   User   User   @relation(fields: [userId], references: [id])
 
-  // Barbearia
   barbershopId String
   barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
 
-  // Serviço
   serviceId String
   Service   BarbeshopService @relation(fields: [serviceId], references: [id])
 
-  // Barbeiro
   barberId String
   barber   Barber @relation(fields: [barberId], references: [id])
 
-  // Data do agendamento
   date DateTime
 
   createdAt DateTime @default(now())

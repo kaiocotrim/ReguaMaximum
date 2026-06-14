@@ -3,7 +3,6 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/app/_components/ui/input";
-import { Textarea } from "@/app/_components/ui/textarea";
 import { Button } from "@/app/_components/ui/button";
 import {
   ArrowRight,
@@ -12,52 +11,21 @@ import {
   Camera,
   User,
   Check,
-  Scissors,
   MapPin,
-  FileText,
 } from "lucide-react";
 
-type StepId = 0 | 1 | 2 | 3 | 4 | 5;
+type StepId = 0 | 1 | 2 | 3;
 
-const TOTAL_STEPS = 6;
-
-const SPECIALTIES = [
-  "Corte clássico",
-  "Degradê",
-  "Barba",
-  "Sobrancelha",
-  "Pigmentação",
-  "Selagem",
-  "Relaxamento",
-  "Luzes",
-  "Navalhado",
-  "Visagismo",
-];
+const TOTAL_STEPS = 4;
 
 const STEP_PCT: Record<number, number> = {
   0: 0,
-  1: 20,
-  2: 40,
-  3: 60,
-  4: 80,
-  5: 100,
+  1: 33,
+  2: 66,
+  3: 100,
 };
 
 const ACCENT = "#C3F32C";
-
-// ─── Variants ─────────────────────────────────────────────────────────────────
-
-const stepVariants = {
-  enterFwd: { opacity: 0, y: 16 },
-  enterBack: { opacity: 0, y: -16 },
-  center: { opacity: 1, y: 0 },
-  exitFwd: { opacity: 0, y: -16 },
-  exitBack: { opacity: 0, y: 16 },
-};
-
-// ─── Progress ─────────────────────────────────────────────────────────────────
-
-
 
 function ProgressHeader({ step }: { step: number }) {
   const pct = STEP_PCT[step] ?? 100;
@@ -75,7 +43,6 @@ function ProgressHeader({ step }: { step: number }) {
         >
           {isSuccess ? "Concluído" : `${step + 1} / ${TOTAL_STEPS - 1}`}
         </motion.span>
-
         <motion.span
           key={`pct-${pct}`}
           initial={{ opacity: 0 }}
@@ -87,7 +54,6 @@ function ProgressHeader({ step }: { step: number }) {
           {pct}%
         </motion.span>
       </div>
-
       <div className="relative h-[1.5px] w-full rounded-full bg-white/[0.06]">
         <motion.div
           className="absolute inset-y-0 left-0 rounded-full"
@@ -99,8 +65,6 @@ function ProgressHeader({ step }: { step: number }) {
     </div>
   );
 }
-
-// ─── Step Shell ───────────────────────────────────────────────────────────────
 
 function StepShell({
   icon: Icon,
@@ -122,7 +86,6 @@ function StepShell({
       >
         <Icon className="mb-4 h-5 w-5" style={{ color: ACCENT }} />
       </motion.div>
-
       <motion.h2
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -131,7 +94,6 @@ function StepShell({
       >
         {title}
       </motion.h2>
-
       <motion.p
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -140,7 +102,6 @@ function StepShell({
       >
         {subtitle}
       </motion.p>
-
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -152,60 +113,41 @@ function StepShell({
   );
 }
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
-
-const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
+const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
   const [step, setStep] = useState<StepId>(0);
   const [dir, setDir] = useState<1 | -1>(1);
-
   const [nome, setNome] = useState(nomeInicial);
   const [avatar, setAvatar] = useState<string | null>(null);
-  const [bio, setBio] = useState("");
-  const [specialties, setSpecialties] = useState<Set<string>>(new Set());
   const [cidade, setCidade] = useState("");
 
-const salvarPerfil = async () => {
-  try {
-    const response = await fetch("/api/barber/profile", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        nome,
-        avatar,
-        bio,
-        cidade,
-        especialidades: Array.from(specialties),
-      }),
-    });
+  const salvarPerfil = async () => {
+    try {
+      const response = await fetch("/api/client/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nome, avatar, cidade }),
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      console.error("Erro ao salvar:", error);
-      return;
+      if (!response.ok) {
+        const error = await response.json();
+        console.error("Erro ao salvar:", error);
+        return;
+      }
+
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Erro inesperado:", error);
     }
-
-    const data = await response.json();
-    console.log("Salvo com sucesso:", data);
-    
-    // redirecionar após salvar, ex:
-    // router.push("/dashboard")
-  } catch (error) {
-    console.error("Erro inesperado:", error);
-  }
-};
+  };
 
   const isValid = useCallback(
     (s: number) => {
       if (s === 0) return nome.trim().length >= 2;
       if (s === 1) return avatar !== null;
-      if (s === 2) return bio.trim().length >= 10;
-      if (s === 3) return specialties.size >= 1;
-      if (s === 4) return cidade.trim().length >= 2;
+      if (s === 2) return cidade.trim().length >= 2;
       return true;
     },
-    [nome, avatar, bio, specialties, cidade]
+    [nome, avatar, cidade]
   );
 
   const next = () => {
@@ -217,14 +159,6 @@ const salvarPerfil = async () => {
   const back = () => {
     setDir(-1);
     setStep((s) => Math.max(s - 1, 0) as StepId);
-  };
-
-  const toggleSpecialty = (label: string) => {
-    setSpecialties((prev) => {
-      const next = new Set(prev);
-      next.has(label) ? next.delete(label) : next.add(label);
-      return next;
-    });
   };
 
   const handleAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -258,11 +192,11 @@ const salvarPerfil = async () => {
       key="foto"
       icon={Camera}
       title="Adicione uma foto"
-      subtitle="Perfis com foto recebem mais agendamentos."
+      subtitle="Perfis com foto ficam mais completos."
     >
       <div className="flex items-center gap-5">
         <label
-          htmlFor="avatar-input"
+          htmlFor="avatar-cliente-input"
           className="group relative flex h-20 w-20 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-dashed border-white/15 bg-white/[0.03] transition-all hover:border-[#C3F32C]/40"
         >
           {avatar ? (
@@ -282,14 +216,13 @@ const salvarPerfil = async () => {
             <Camera className="h-4 w-4 text-white" />
           </div>
           <input
-            id="avatar-input"
+            id="avatar-cliente-input"
             type="file"
             accept="image/png,image/jpeg"
             className="hidden"
             onChange={handleAvatar}
           />
         </label>
-
         <div className="flex flex-col gap-2">
           <AnimatePresence>
             {avatar && (
@@ -305,9 +238,8 @@ const salvarPerfil = async () => {
               </motion.div>
             )}
           </AnimatePresence>
-
           <label
-            htmlFor="avatar-input"
+            htmlFor="avatar-cliente-input"
             className="flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-white/50 transition-all hover:border-white/20 hover:text-white/80"
           >
             <Upload className="h-3.5 w-3.5" />
@@ -318,65 +250,12 @@ const salvarPerfil = async () => {
       </div>
     </StepShell>,
 
-    // 2 — Bio
-    <StepShell
-      key="bio"
-      icon={FileText}
-      title="Fale sobre você"
-      subtitle="Experiência, estilo e o que te diferencia."
-    >
-      <Textarea
-        value={bio}
-        onChange={(e) => setBio(e.target.value)}
-        rows={4}
-        maxLength={400}
-        placeholder="Ex: 8 anos de experiência em degradê e barba clássica..."
-        className="resize-none border-white/10 bg-white/[0.04] text-white placeholder:text-white/20 focus-visible:ring-0 focus-visible:border-[#C3F32C]"
-      />
-      <div className="mt-2 text-right">
-        <span className="text-xs text-white/20">{bio.length} / 400</span>
-      </div>
-    </StepShell>,
-
-    // 3 — Especialidades
-    <StepShell
-      key="especialidades"
-      icon={Scissors}
-      title="Suas especialidades"
-      subtitle="Selecione as que representam seu trabalho."
-    >
-      <div className="flex flex-wrap gap-2">
-        {SPECIALTIES.map((s, i) => {
-          const sel = specialties.has(s);
-          return (
-            <motion.button
-              key={s}
-              type="button"
-              onClick={() => toggleSpecialty(s)}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2, delay: i * 0.03 }}
-              whileTap={{ scale: 0.95 }}
-              className="cursor-pointer rounded-full border px-3.5 py-1.5 text-sm transition-colors duration-150"
-              style={{
-                borderColor: sel ? ACCENT : "rgba(255,255,255,0.10)",
-                background: sel ? "rgba(195,243,44,0.08)" : "transparent",
-                color: sel ? ACCENT : "rgba(255,255,255,0.40)",
-              }}
-            >
-              {s}
-            </motion.button>
-          );
-        })}
-      </div>
-    </StepShell>,
-
-    // 4 — Cidade
+    // 2 — Cidade
     <StepShell
       key="cidade"
       icon={MapPin}
-      title="Onde você atende?"
-      subtitle="Sua cidade ou região de atuação."
+      title="Onde você está?"
+      subtitle="Sua cidade para encontrar barbearias próximas."
     >
       <Input
         value={cidade}
@@ -387,7 +266,7 @@ const salvarPerfil = async () => {
       />
     </StepShell>,
 
-    // 5 — Sucesso
+    // 3 — Sucesso
     <div key="sucesso" className="flex flex-col items-center py-6 text-center">
       <motion.div
         className="mb-8 flex h-16 w-16 items-center justify-center rounded-full border"
@@ -420,7 +299,7 @@ const salvarPerfil = async () => {
         transition={{ delay: 0.32, duration: 0.3 }}
         className="mb-8 max-w-[280px] text-sm leading-relaxed text-white/35"
       >
-        Seu perfil está ativo. Você pode receber convites de barbearias ou criar a sua.
+        Seu perfil está ativo. Agora é só encontrar a barbearia ideal e agendar seu corte.
       </motion.p>
 
       <motion.div
@@ -431,7 +310,6 @@ const salvarPerfil = async () => {
       >
         {[
           { label: "Nome", value: nome },
-          { label: "Especialidades", value: `${specialties.size} selecionadas` },
           { label: "Cidade", value: cidade },
         ].map(({ label, value }, i) => (
           <motion.div
@@ -467,7 +345,6 @@ const salvarPerfil = async () => {
   return (
     <div className="flex min-h-screen flex-col items-center bg-[#0F0F0F] px-4 py-12">
       <ProgressHeader step={step} />
-
       <div className="w-full max-w-[480px] overflow-hidden rounded-2xl border border-white/[0.06] bg-[#1A1A1A]">
         <AnimatePresence mode="wait" custom={dir}>
           <motion.div
@@ -492,13 +369,11 @@ const salvarPerfil = async () => {
             <motion.button
               onClick={back}
               whileTap={{ scale: 0.95 }}
-              className={`flex cursor-pointer items-center gap-1.5 text-sm text-white/25 transition-colors hover:text-white/50 ${step === 0 ? "invisible" : ""
-                }`}
+              className={`flex cursor-pointer items-center gap-1.5 text-sm text-white/25 transition-colors hover:text-white/50 ${step === 0 ? "invisible" : ""}`}
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               Voltar
             </motion.button>
-
             <motion.button
               onClick={next}
               disabled={!isValid(step)}
@@ -517,4 +392,4 @@ const salvarPerfil = async () => {
   );
 };
 
-export default CadastroBarbeiro;
+export default CadastroCliente;

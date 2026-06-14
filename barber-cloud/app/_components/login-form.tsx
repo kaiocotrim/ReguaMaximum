@@ -553,6 +553,28 @@ export function LoginForm({
   const [isLogging, setIsLogging] = useState(false)
   const [error, setError] = useState("")
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault()
+
+  //   const result = await signIn("credentials", {
+  //     email,
+  //     password,
+  //     redirect: false,
+  //   })
+
+  //   if (result?.error) {
+  //     setError("E-mail ou senha incorretos")
+  //     return
+  //   }
+
+  //   setError("")
+  //   setIsLogging(true)
+
+  //   setTimeout(() => {
+  //     window.location.href = "/"
+  //   }, 600)
+  // }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -570,10 +592,14 @@ export function LoginForm({
     setError("")
     setIsLogging(true)
 
+    const profileResponse = await fetch("/api/user/profile-check")
+    const profileData = await profileResponse.json()
+
     setTimeout(() => {
-      window.location.href = "/"
+      window.location.href = profileData.hasProfile ? "/" : "/perfil"
     }, 600)
   }
+
 
   const handleModeSwitch = (next: Mode) => {
     setMode(next)
@@ -586,34 +612,34 @@ export function LoginForm({
   }
 
   const handleForgotPassword = async () => {
-  try {
-    console.log("1 - Entrou na função")
+    try {
+      console.log("1 - Entrou na função")
 
-    const response = await fetch("/api/forgot-password", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email }),
-    })
+      const response = await fetch("/api/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      })
 
-    console.log("2 - Resposta recebida", response.status)
+      console.log("2 - Resposta recebida", response.status)
 
-    const data = await response.json()
+      const data = await response.json()
 
-    console.log("3 - Dados", data)
+      console.log("3 - Dados", data)
 
-    if (!response.ok) {
-      alert(data.error)
-      return
+      if (!response.ok) {
+        alert(data.error)
+        return
+      }
+
+      alert("Verifique seu e-mail")
+    } catch (error) {
+      console.error("ERRO:", error)
+      alert("Erro ao enviar e-mail")
     }
-
-    alert("Verifique seu e-mail")
-  } catch (error) {
-    console.error("ERRO:", error)
-    alert("Erro ao enviar e-mail")
   }
-}
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
