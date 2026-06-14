@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client"
-  // output   = "../app/generated/prisma"
+  output   = "../app/generated/prisma"
 }
 
 datasource db {
@@ -131,20 +131,41 @@ model BarbeshopService {
   bookings Booking[]
 }
 
+// model Barber {
+//   id String @id @default(cuid())
+
+//   createdAt DateTime @default(now())
+
+//   // Usuário do barbeiro
+//   userId String
+//   user   User   @relation(fields: [userId], references: [id])
+
+//   // Barbearia onde trabalha
+//   barbershopId String
+//   barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
+
+//   // Agendamentos
+//   bookings Booking[]
+// }
+
 model Barber {
   id String @id @default(cuid())
 
   createdAt DateTime @default(now())
 
-  // Usuário do barbeiro
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+  user User @relation(fields: [userId], references: [id])
 
-  // Barbearia onde trabalha
-  barbershopId String
-  barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
+  nome String?
+  avatar String?
+  bio String?
+  cidade String?
 
-  // Agendamentos
+  especialidades String[]
+
+  barbershopId String?
+  barbershop Barbershop? @relation(fields: [barbershopId], references: [id])
+
   bookings Booking[]
 }
 

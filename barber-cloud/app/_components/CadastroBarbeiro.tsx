@@ -43,6 +43,28 @@ const STEP_PCT: Record<number, number> = {
   5: 100,
 };
 
+// Chamada da API 
+
+const salvarPerfil = async () => {
+  const response = await fetch("/api/barber/profile", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      nome,
+      avatar,
+      bio,
+      cidade,
+      especialidades: Array.from(specialties),
+    }),
+  });
+
+  const data = await response.json();
+
+  console.log(data);
+};
+
 const ACCENT = "#C3F32C";
 
 // ─── Variants ─────────────────────────────────────────────────────────────────
@@ -422,11 +444,11 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
         className="w-full"
       >
         <Button
+          onClick={salvarPerfil}
           className="h-11 w-full cursor-pointer rounded-xl text-sm font-semibold text-black hover:opacity-90"
           style={{ background: ACCENT }}
         >
           Acessar o app
-          <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </motion.div>
     </div>,
