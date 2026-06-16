@@ -11,7 +11,7 @@ export async function middleware(req: NextRequest) {
   }
 
   // Já logado E já tem perfil tentando acessar /perfil → manda pro início
-  // (isso evita o usuário voltar pro /perfil depois de já ter cadastrado)
+  // (isso evita o usuário voltar pro /perfil depois de já ter cadastrado
   if (pathname.startsWith("/perfil") && token) {
     const profileResponse = await fetch(new URL("/api/user/profile-check", req.url))
     const profileData = await profileResponse.json()
