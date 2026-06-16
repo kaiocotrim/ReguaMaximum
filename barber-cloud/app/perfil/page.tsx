@@ -1,5 +1,6 @@
 "use client"
 
+// Importações de componentes de UI personalizados e ícones
 import { Button } from "@/app/_components/ui/button"
 import { ChevronRight } from "lucide-react"
 import { useState } from "react"
@@ -10,19 +11,27 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../_components/ui/accordion"
+
+// Importações para animações fluidas na interface
 import { motion, AnimatePresence } from "framer-motion"
+
+// Componentes que serão renderizados após a escolha do perfil
 import CadastroBarbeiro from "@/app/_components/CadastroBarbeiro"
 import CadastroCliente from "@/app/_components/CadastroCliente"
 
+// --- CONFIGURAÇÕES DE ANIMAÇÃO (FRAMER MOTION) ---
+
+// Variante para o container dos cards (controla o atraso em cascata dos filhos)
 const containerVariants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.15,
+      staggerChildren: 0.15, // Cria o efeito de um card aparecer logo após o outro
     },
   },
 }
 
+// Variante para os cards individuais (efeito de surgir de baixo para cima)
 const cardVariants = {
   hidden: { opacity: 0, y: 40 },
   visible: {
@@ -33,19 +42,62 @@ const cardVariants = {
 }
 
 const Perfil = () => {
-  const [erro, setErro] = useState("")
-  const [nome, setNome] = useState("")
-  const [mostrarPergunta, setmostrarPergunta] = useState(false)
-  const [tipoPerfil, setTipoPerfil] = useState("")
-  const [mostrarCadastroBarbeiro, setMostrarCadastroBarbeiro] = useState(false)
-  const [mostrarCadastroCliente, setMostrarCadastroCliente] = useState(false)
+  // --- ESTADOS DA APLICAÇÃO ---
+  const [erro, setErro] = useState("") // Armazena mensagens de validação
+  const [nome, setNome] = useState("") // Armazena o nome digitado pelo usuário
+  const [mostrarPergunta, setmostrarPergunta] = useState(false) // Controla a transição entre a tela de nome e a de seleção de perfil
+  const [tipoPerfil, setTipoPerfil] = useState("") // Guarda o perfil selecionado ('cliente' ou 'barbeiro')
+  const [mostrarCadastroBarbeiro, setMostrarCadastroBarbeiro] = useState(false) // Gatilho para renderizar tela final do Barbeiro
+  const [mostrarCadastroCliente, setMostrarCadastroCliente] = useState(false) // Gatilho para renderizar tela final do Cliente
+
+  // --- FUNÇÃO DE FLUXO E VALIDAÇÃO --- Antiga
+  // const handleProsseguir = () => {
+  //   // Passo 1: Se estiver na tela de digitar o nome
+  //   if (!mostrarPergunta) {
+  //     if (!nome.trim()) {
+  //       setErro("Digite seu nome para continuar")
+  //       return
+  //     }
+  //     setmostrarPergunta(true) // Avança para a próxima etapa (seleção de perfil)
+  //     return
+  //   }
+
+  //   // Passo 2: Se já estiver na tela de seleção, valida se escolheu uma opção
+  //   if (!tipoPerfil) {
+  //     setErro("Selecione um perfil")
+  //     return
+  //   }
+
+  //   // Passo 3: Direciona para o respectivo formulário final baseado na escolha
+  //   if (tipoPerfil === "cliente") {
+  //     setMostrarCadastroCliente(true)
+  //     return
+  //   }
+
+  //   if (tipoPerfil === "barbeiro") {
+  //     setMostrarCadastroBarbeiro(true)
+  //     return
+  //   }
+  // }
+
+  // --- RENDERIZAÇÕES CONDICIONAIS DE TELAS COMPLETAS ---
+  if (mostrarCadastroBarbeiro) {
+    return <CadastroBarbeiro nomeInicial={nome} />
+  }
+
+  if (mostrarCadastroCliente) {
+    return <CadastroCliente nomeInicial={nome} />
+  }
 
   const handleProsseguir = () => {
+    setErro("")
+
     if (!mostrarPergunta) {
       if (!nome.trim()) {
         setErro("Digite seu nome para continuar")
         return
       }
+
       setmostrarPergunta(true)
       return
     }
@@ -66,18 +118,11 @@ const Perfil = () => {
     }
   }
 
-  if (mostrarCadastroBarbeiro) {
-    return <CadastroBarbeiro nomeInicial={nome} />
-  }
-
-  if (mostrarCadastroCliente) {
-    return <CadastroCliente nomeInicial={nome} />
-  }
-
+  // --- RENDERIZAÇÃO DO COMPONENTE PRINCIPAL ---
   return (
     <div className="flex min-h-svh w-full items-center justify-center bg-[#121212] p-6 md:p-10">
       <div className="w-full max-w-md space-y-8">
-        {/* Cabeçalho */}
+        {/* CABEÇALHO (Logo e títulos animados) */}
         <motion.div
           className="space-y-4 text-center"
           initial={{ opacity: 0, y: -20 }}
@@ -102,7 +147,7 @@ const Perfil = () => {
           </div>
         </motion.div>
 
-        {/* Campo Nome */}
+        {/* CAMPO DE ENTRADA DO NOME (Desaparece suavemente ao avançar) */}
         <AnimatePresence>
           {!mostrarPergunta && (
             <motion.div
@@ -120,14 +165,14 @@ const Perfil = () => {
                 value={nome}
                 onChange={(e) => {
                   setNome(e.target.value)
-                  setErro("")
+                  setErro("") // Limpa o erro assim que o usuário volta a digitar
                 }}
               />
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Erro */}
+        {/* EXIBIÇÃO DE ERROS (Aparece de forma fluida se houver alguma mensagem) */}
         <AnimatePresence>
           {erro && (
             <motion.p
@@ -142,7 +187,7 @@ const Perfil = () => {
           )}
         </AnimatePresence>
 
-        {/* Cards */}
+        {/* CARDS DE SELEÇÃO DE PERFIL (Aparecem apenas após digitar o nome) */}
         <AnimatePresence>
           {mostrarPergunta && (
             <motion.div
@@ -151,16 +196,17 @@ const Perfil = () => {
               initial="hidden"
               animate="visible"
             >
-              {/* Card Cliente */}
+              {/* CARD: CLIENTE */}
               <motion.div
                 variants={cardVariants}
                 onClick={() => setTipoPerfil("cliente")}
+                // Classes dinâmicas baseadas no foco e seleção do card
                 className={`flex cursor-pointer flex-col items-center rounded-2xl border p-3 text-center transition-all duration-300 hover:border-[#C3F32C] hover:bg-[#C3F32C]/10 md:p-6 ${
                   tipoPerfil === "cliente"
-                    ? "z-10 scale-105 border-[#C3F32C] bg-[#C3F32C]/10 shadow-lg shadow-[#C3F32C]/20"
+                    ? "z-10 scale-105 border-[#C3F32C] bg-[#C3F32C]/10 shadow-lg shadow-[#C3F32C]/20" // Selecionado
                     : tipoPerfil === "barbeiro"
-                      ? "scale-95 border-zinc-700 bg-transparent opacity-40 blur-[2px]"
-                      : "border-zinc-700 bg-transparent"
+                      ? "scale-95 border-zinc-700 bg-transparent opacity-40 blur-[2px]" // Não selecionado (o outro está ativo)
+                      : "border-zinc-700 bg-transparent" // Estado neutro inicial
                 }`}
               >
                 <p className="text-xs font-semibold text-white md:text-lg">
@@ -176,7 +222,11 @@ const Perfil = () => {
                     className="h-[90px] w-[90px] object-contain md:h-[180px] md:w-[180px]"
                   />
                 </div>
-                <div className="mt-3 w-full" onClick={(e) => e.stopPropagation()}>
+                {/* Accordion informativo (stopPropagation impede que o clique abra o FAQ selecione o card por acidente) */}
+                <div
+                  className="mt-3 w-full"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <Accordion type="single" collapsible defaultValue="">
                     <AccordionItem value="item-1">
                       <AccordionTrigger className="text-xs text-zinc-400 md:text-sm">
@@ -192,16 +242,17 @@ const Perfil = () => {
                 </div>
               </motion.div>
 
-              {/* Card Barbeiro */}
+              {/* CARD: BARBEIRO */}
               <motion.div
                 variants={cardVariants}
                 onClick={() => setTipoPerfil("barbeiro")}
+                // Classes dinâmicas idênticas à lógica do cliente, mas invertidas
                 className={`flex cursor-pointer flex-col items-center rounded-2xl border p-3 text-center transition-all duration-300 hover:border-[#C3F32C] hover:bg-[#C3F32C]/10 md:p-6 ${
                   tipoPerfil === "barbeiro"
-                    ? "z-10 scale-105 border-[#C3F32C] bg-[#C3F32C]/10 shadow-lg shadow-[#C3F32C]/20"
+                    ? "z-10 scale-105 border-[#C3F32C] bg-[#C3F32C]/10 shadow-lg shadow-[#C3F32C]/20" // Selecionado
                     : tipoPerfil === "cliente"
-                      ? "scale-95 border-zinc-700 bg-transparent opacity-40 blur-[2px]"
-                      : "border-zinc-700 bg-transparent"
+                      ? "scale-95 border-zinc-700 bg-transparent opacity-40 blur-[2px]" // Não selecionado (o outro está ativo)
+                      : "border-zinc-700 bg-transparent" // Estado neutro inicial
                 }`}
               >
                 <p className="text-xs font-semibold text-white md:text-lg">
@@ -217,7 +268,11 @@ const Perfil = () => {
                     className="h-[90px] w-[90px] object-contain md:h-[180px] md:w-[180px]"
                   />
                 </div>
-                <div className="mt-3 w-full" onClick={(e) => e.stopPropagation()}>
+                {/* Accordion informativo */}
+                <div
+                  className="mt-3 w-full"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <Accordion type="single" collapsible defaultValue="">
                     <AccordionItem value="item-1">
                       <AccordionTrigger className="text-xs text-zinc-400 md:text-sm">
@@ -236,8 +291,9 @@ const Perfil = () => {
           )}
         </AnimatePresence>
 
-        {/* Botões */}
+        {/* NAVEGAÇÃO (Botões estruturados na parte inferior da tela) */}
         <div className="flex items-center justify-between">
+          {/* Botão Voltar (Renderiza apenas quando a pergunta for exibida) */}
           <AnimatePresence mode="popLayout">
             {mostrarPergunta && (
               <motion.div
@@ -248,8 +304,8 @@ const Perfil = () => {
               >
                 <Button
                   onClick={() => {
-                    setmostrarPergunta(false)
-                    setTipoPerfil("")
+                    setmostrarPergunta(false) // Volta para a tela de nome
+                    setTipoPerfil("") // Reseta a escolha anterior do usuário
                   }}
                   className="flex cursor-pointer items-center gap-2 bg-transparent p-4 whitespace-nowrap text-white hover:bg-transparent hover:text-[#254F50]"
                 >
@@ -260,8 +316,10 @@ const Perfil = () => {
             )}
           </AnimatePresence>
 
+          {/* Botão Prosseguir (Altera sua cor dinamicamente com base no estado do fluxo) */}
           <AnimatePresence mode="popLayout">
             {!mostrarPergunta ? (
+              // Botão Prosseguir na etapa inicial (Nome)
               <motion.div
                 key="prosseguir-inicio"
                 initial={{ opacity: 0, x: -40 }}
@@ -278,7 +336,9 @@ const Perfil = () => {
                 </Button>
               </motion.div>
             ) : (
+              // Botão Prosseguir na etapa final (Seleção de Perfil) com hover estilizado no tom verde-limão
               <motion.div
+                key="prosseguir-perfil"
                 transition={{ duration: 0.4, ease: "easeOut" }}
                 exit={{ opacity: 0, x: 40 }}
                 initial={{ opacity: 0, x: -40 }}

@@ -174,6 +174,52 @@
 // }
 
 
+// import { db } from "./_lib/prisma"
+// import HomeClient from "./_components/HomeClient"
+// import { authOptions } from "./_providers/auth"
+// import { getServerSession } from "next-auth"
+
+// export default async function Home() {
+//   const session = await getServerSession(authOptions)
+
+//   const barbershops = await db.barbershop.findMany()
+
+//   const poularesBarber = await db.barbershop.findMany({
+//     orderBy: { name: "desc" },
+//   })
+
+//   const confirmedBookings = session?.user
+//     ? await db.booking.findMany({
+//         where: {
+//           user: { email: session.user.email! },
+//           date: { gte: new Date() },
+//         },
+//         include: {
+//           Service: true,
+//           barbershop: true,
+//         },
+//         orderBy: { date: "asc" },
+//       })
+//     : []
+
+//   // ✅ Linha nova — converte Decimal para number
+//   const serializedBookings = confirmedBookings.map((booking) => ({
+//     ...booking,
+//     Service: {
+//       ...booking.Service,
+//       price: Number(booking.Service.price),
+//     },
+//   }))
+
+//   return (
+//     <HomeClient
+//       barbershops={barbershops}
+//       popularBarbershops={poularesBarber}
+//       confirmedBookings={serializedBookings} // ✅ trocou aqui
+//     />
+//   )
+// }
+
 import { db } from "./_lib/prisma"
 import HomeClient from "./_components/HomeClient"
 import { authOptions } from "./_providers/auth"
@@ -184,38 +230,40 @@ export default async function Home() {
 
   const barbershops = await db.barbershop.findMany()
 
-  const poularesBarber = await db.barbershop.findMany({
+  const popularBarbershops = await db.barbershop.findMany({
     orderBy: { name: "desc" },
   })
 
   const confirmedBookings = session?.user
     ? await db.booking.findMany({
         where: {
-          User: { email: session.user.email! },
+          user: { email: session.user.email! },
           date: { gte: new Date() },
         },
         include: {
-          Service: true,
+          service: true,
           barbershop: true,
+          barber: true,
+          user: true,
         },
         orderBy: { date: "asc" },
       })
     : []
 
-  // ✅ Linha nova — converte Decimal para number
+  // ✅ serializa Decimal corretamente
   const serializedBookings = confirmedBookings.map((booking) => ({
     ...booking,
-    Service: {
-      ...booking.Service,
-      price: Number(booking.Service.price),
+    service: {
+      ...booking.service,
+      price: Number(booking.service.price),
     },
   }))
 
   return (
     <HomeClient
       barbershops={barbershops}
-      popularBarbershops={poularesBarber}
-      confirmedBookings={serializedBookings} // ✅ trocou aqui
+      popularBarbershops={popularBarbershops}
+      confirmedBookings={serializedBookings}
     />
   )
 }

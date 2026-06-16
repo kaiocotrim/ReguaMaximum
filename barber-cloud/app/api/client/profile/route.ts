@@ -8,23 +8,43 @@ export async function POST(req: Request) {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Não autorizado" },
+        { status: 401 }
+      );
     }
 
     const body = await req.json();
 
-    const client = await db.client.create({
-      data: {
-        userId: session.user.id,
-        nome: body.nome,
-        avatar: body.avatar,
-        cidade: body.cidade,
-      },
+    const client = await db.$transaction(async (tx) => {
+      const client = await tx.client.create({
+        data: {
+          userId: session.user.id,
+          nome: body.nome,
+          avatar: body.avatar,
+          cidade: body.cidade,
+        },
+      });
+
+      await tx.user.update({
+        where: {
+          id: session.user.id,
+        },
+        data: {
+          role: "CLIENT",
+        },
+      });
+
+      return client;
     });
 
     return NextResponse.json(client);
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Erro ao criar perfil" }, { status: 500 });
+
+    return NextResponse.json(
+      { error: "Erro ao criar perfil" },
+      { status: 500 }
+    );
   }
 }

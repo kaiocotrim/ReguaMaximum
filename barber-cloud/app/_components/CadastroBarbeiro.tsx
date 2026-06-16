@@ -1,10 +1,10 @@
-"use client";
+"use client"
 
-import { useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Input } from "@/app/_components/ui/input";
-import { Textarea } from "@/app/_components/ui/textarea";
-import { Button } from "@/app/_components/ui/button";
+import { useState, useCallback } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Input } from "@/app/_components/ui/input"
+import { Textarea } from "@/app/_components/ui/textarea"
+import { Button } from "@/app/_components/ui/button"
 import {
   ArrowRight,
   ArrowLeft,
@@ -15,11 +15,11 @@ import {
   Scissors,
   MapPin,
   FileText,
-} from "lucide-react";
+} from "lucide-react"
 
-type StepId = 0 | 1 | 2 | 3 | 4 | 5;
+type StepId = 0 | 1 | 2 | 3 | 4 | 5
 
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 6
 
 const SPECIALTIES = [
   "Corte clássico",
@@ -32,7 +32,7 @@ const SPECIALTIES = [
   "Luzes",
   "Navalhado",
   "Visagismo",
-];
+]
 
 const STEP_PCT: Record<number, number> = {
   0: 0,
@@ -41,13 +41,13 @@ const STEP_PCT: Record<number, number> = {
   3: 60,
   4: 80,
   5: 100,
-};
+}
 
-const ACCENT = "#C3F32C";
+const ACCENT = "#C3F32C"
 
 function ProgressHeader({ step }: { step: number }) {
-  const pct = STEP_PCT[step] ?? 100;
-  const isSuccess = step === TOTAL_STEPS - 1;
+  const pct = STEP_PCT[step] ?? 100
+  const isSuccess = step === TOTAL_STEPS - 1
 
   return (
     <div className="mb-10 w-full max-w-[480px]">
@@ -57,7 +57,7 @@ function ProgressHeader({ step }: { step: number }) {
           initial={{ opacity: 0, y: -4 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25 }}
-          className="text-[11px] uppercase tracking-[0.12em] text-white/20"
+          className="text-[11px] tracking-[0.12em] text-white/20 uppercase"
         >
           {isSuccess ? "Concluído" : `${step + 1} / ${TOTAL_STEPS - 1}`}
         </motion.span>
@@ -83,7 +83,7 @@ function ProgressHeader({ step }: { step: number }) {
         />
       </div>
     </div>
-  );
+  )
 }
 
 function StepShell({
@@ -92,10 +92,10 @@ function StepShell({
   subtitle,
   children,
 }: {
-  icon: React.ElementType;
-  title: string;
-  subtitle: string;
-  children: React.ReactNode;
+  icon: React.ElementType
+  title: string
+  subtitle: string
+  children: React.ReactNode
 }) {
   return (
     <div>
@@ -133,18 +133,46 @@ function StepShell({
         {children}
       </motion.div>
     </div>
-  );
+  )
 }
 
 const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
-  const [step, setStep] = useState<StepId>(0);
-  const [dir, setDir] = useState<1 | -1>(1);
+  const [step, setStep] = useState<StepId>(0)
+  const [dir, setDir] = useState<1 | -1>(1)
 
-  const [nome, setNome] = useState(nomeInicial);
-  const [avatar, setAvatar] = useState<string | null>(null);
-  const [bio, setBio] = useState("");
-  const [specialties, setSpecialties] = useState<Set<string>>(new Set());
-  const [cidade, setCidade] = useState("");
+  const [nome, setNome] = useState(nomeInicial)
+  const [avatar, setAvatar] = useState<string | null>(null)
+  const [bio, setBio] = useState("")
+  const [specialties, setSpecialties] = useState<Set<string>>(new Set())
+  const [cidade, setCidade] = useState("")
+
+  // const salvarPerfil = async () => {
+  //   try {
+  //     const response = await fetch("/api/barber/profile", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         nome,
+  //         avatar,
+  //         bio,
+  //         cidade,
+  //         especialidades: Array.from(specialties),
+  //       }),
+  //     });
+
+  //     if (!response.ok) {
+  //       const error = await response.json();
+  //       console.error("Erro ao salvar:", error);
+  //       return;
+  //     }
+
+  //     window.location.href = "/";
+  //   } catch (error) {
+  //     console.error("Erro inesperado:", error);
+  //   }
+  // };
 
   const salvarPerfil = async () => {
     try {
@@ -160,57 +188,57 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
           cidade,
           especialidades: Array.from(specialties),
         }),
-      });
+      })
 
       if (!response.ok) {
-        const error = await response.json();
-        console.error("Erro ao salvar:", error);
-        return;
+        const error = await response.json()
+        console.error("Erro ao salvar:", error)
+        return
       }
 
-      window.location.href = "/";
+      window.location.href = "/"
     } catch (error) {
-      console.error("Erro inesperado:", error);
+      console.error("Erro inesperado:", error)
     }
-  };
+  }
 
   const isValid = useCallback(
     (s: number) => {
-      if (s === 0) return nome.trim().length >= 2;
-      if (s === 1) return avatar !== null;
-      if (s === 2) return bio.trim().length >= 10;
-      if (s === 3) return specialties.size >= 1;
-      if (s === 4) return cidade.trim().length >= 2;
-      return true;
+      if (s === 0) return nome.trim().length >= 2
+      if (s === 1) return avatar !== null
+      if (s === 2) return bio.trim().length >= 10
+      if (s === 3) return specialties.size >= 1
+      if (s === 4) return cidade.trim().length >= 2
+      return true
     },
-    [nome, avatar, bio, specialties, cidade]
-  );
+    [nome, avatar, bio, specialties, cidade],
+  )
 
   const next = () => {
-    if (!isValid(step)) return;
-    setDir(1);
-    setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1) as StepId);
-  };
+    if (!isValid(step)) return
+    setDir(1)
+    setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1) as StepId)
+  }
 
   const back = () => {
-    setDir(-1);
-    setStep((s) => Math.max(s - 1, 0) as StepId);
-  };
+    setDir(-1)
+    setStep((s) => Math.max(s - 1, 0) as StepId)
+  }
 
   const toggleSpecialty = (label: string) => {
     setSpecialties((prev) => {
-      const next = new Set(prev);
-      next.has(label) ? next.delete(label) : next.add(label);
-      return next;
-    });
-  };
+      const next = new Set(prev)
+      next.has(label) ? next.delete(label) : next.add(label)
+      return next
+    })
+  }
 
   const handleAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) setAvatar(URL.createObjectURL(file));
-  };
+    const file = e.target.files?.[0]
+    if (file) setAvatar(URL.createObjectURL(file))
+  }
 
-  const isSuccess = step === TOTAL_STEPS - 1;
+  const isSuccess = step === TOTAL_STEPS - 1
 
   const steps: React.ReactNode[] = [
     // 0 — Nome
@@ -227,7 +255,7 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
         placeholder="Ex: João Silva"
         maxLength={60}
         autoFocus
-        className="h-12 border-white/10 bg-white/[0.04] text-base text-white placeholder:text-white/20 focus-visible:ring-0 focus-visible:border-[#C3F32C]"
+        className="h-12 border-white/10 bg-white/[0.04] text-base text-white placeholder:text-white/20 focus-visible:border-[#C3F32C] focus-visible:ring-0"
       />
     </StepShell>,
 
@@ -279,7 +307,9 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
                 className="flex items-center gap-1.5"
               >
                 <Check className="h-3.5 w-3.5" style={{ color: ACCENT }} />
-                <span className="text-xs" style={{ color: ACCENT }}>Foto adicionada</span>
+                <span className="text-xs" style={{ color: ACCENT }}>
+                  Foto adicionada
+                </span>
               </motion.div>
             )}
           </AnimatePresence>
@@ -309,7 +339,7 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
         rows={4}
         maxLength={400}
         placeholder="Ex: 8 anos de experiência em degradê e barba clássica..."
-        className="resize-none border-white/10 bg-white/[0.04] text-white placeholder:text-white/20 focus-visible:ring-0 focus-visible:border-[#C3F32C]"
+        className="resize-none border-white/10 bg-white/[0.04] text-white placeholder:text-white/20 focus-visible:border-[#C3F32C] focus-visible:ring-0"
       />
       <div className="mt-2 text-right">
         <span className="text-xs text-white/20">{bio.length} / 400</span>
@@ -325,7 +355,7 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
     >
       <div className="flex flex-wrap gap-2">
         {SPECIALTIES.map((s, i) => {
-          const sel = specialties.has(s);
+          const sel = specialties.has(s)
           return (
             <motion.button
               key={s}
@@ -344,7 +374,7 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
             >
               {s}
             </motion.button>
-          );
+          )
         })}
       </div>
     </StepShell>,
@@ -361,7 +391,7 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
         onChange={(e) => setCidade(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && next()}
         placeholder="Ex: São Paulo, SP"
-        className="h-12 border-white/10 bg-white/[0.04] text-base text-white placeholder:text-white/20 focus-visible:ring-0 focus-visible:border-[#C3F32C]"
+        className="h-12 border-white/10 bg-white/[0.04] text-base text-white placeholder:text-white/20 focus-visible:border-[#C3F32C] focus-visible:ring-0"
       />
     </StepShell>,
 
@@ -379,7 +409,11 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.2 }}
         >
-          <Check className="h-7 w-7" style={{ color: ACCENT }} strokeWidth={2} />
+          <Check
+            className="h-7 w-7"
+            style={{ color: ACCENT }}
+            strokeWidth={2}
+          />
         </motion.div>
       </motion.div>
 
@@ -398,7 +432,8 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
         transition={{ delay: 0.32, duration: 0.3 }}
         className="mb-8 max-w-[280px] text-sm leading-relaxed text-white/35"
       >
-        Seu perfil está ativo. Você pode receber convites de barbearias ou criar a sua.
+        Seu perfil está ativo. Você pode receber convites de barbearias ou criar
+        a sua.
       </motion.p>
 
       <motion.div
@@ -409,7 +444,10 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
       >
         {[
           { label: "Nome", value: nome },
-          { label: "Especialidades", value: `${specialties.size} selecionadas` },
+          {
+            label: "Especialidades",
+            value: `${specialties.size} selecionadas`,
+          },
           { label: "Cidade", value: cidade },
         ].map(({ label, value }, i) => (
           <motion.div
@@ -440,7 +478,7 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
         </Button>
       </motion.div>
     </div>,
-  ];
+  ]
 
   return (
     <div className="flex min-h-screen flex-col items-center bg-[#0F0F0F] px-4 py-12">
@@ -493,7 +531,7 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CadastroBarbeiro;
+export default CadastroBarbeiro
