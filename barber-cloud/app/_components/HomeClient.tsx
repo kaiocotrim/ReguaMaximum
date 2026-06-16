@@ -647,7 +647,7 @@
   //                 initial="hidden"
   //                 animate="show"
   //                 custom={7 + i * 0.5}
-  //                 whileHover={{ y: -4, scale: 1.02 }}
+  //                 whileHover={{ y: -4, scale: 1.02 }}    
   //                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
   //                 className="pt-2"
   //               >
