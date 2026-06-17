@@ -101,7 +101,9 @@
               Olá,{" "}
               <span className="shine-text">
                 {session?.user?.name
-                  ? `${session.user.name}, corte novo hoje?`
+                  ? role === "BARBER"
+                    ? `${session.user.name}, vamos trabalhar hoje?`
+                    : `${session.user.name}, corte novo hoje?`
                   : "iremos alinhar o cabelo?"}
               </span>
             </h2>
