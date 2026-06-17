@@ -1,4 +1,3 @@
-
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { redirect } from "next/navigation"
@@ -8,7 +7,6 @@ import { CalendarCheck2 } from "lucide-react"
 import Image from "next/image"
 import AgendBarber from "../_components/agendBarber-item"
 
-
 const AppointmentsPage = async () => {
   const session = await getServerSession(authOptions)
 
@@ -16,13 +14,13 @@ const AppointmentsPage = async () => {
     redirect("/")
   }
 
-  const appointments = await db.Booking.findMany({
+  const appointments = await db.booking.findMany({
     where: {
       userId: (session.user as any).id,
     },
     include: {
       barbershop: true,
-      Service: true,
+      service: true,
       barber: {
         include: {
           user: true,
@@ -87,8 +85,8 @@ const AppointmentsPage = async () => {
                   date: appointment.date,
                   barbershop: appointment.barbershop,
                   service: {
-                    name: appointment.Service?.name ?? "Serviço",
-                    price: Number(appointment.Service?.price ?? 0),
+                    name: appointment.service?.name ?? "Serviço",
+                    price: Number(appointment.service?.price ?? 0),
                   },
                   barber: {
                     user: {

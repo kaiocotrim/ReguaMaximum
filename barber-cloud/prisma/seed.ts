@@ -135,7 +135,7 @@ async function seedDatabase() {
             name: service.name,
             description: service.description,
             price: service.price,
-            Barbershop: {
+            barbershop: {
               connect: {
                 id: barbershop.id,
               },
