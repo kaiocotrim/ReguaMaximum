@@ -47,7 +47,7 @@
 
   // Tipo com os includes do Prisma
   type BookingWithRelations = Booking & {
-    Service: Omit<BarbeshopService, "price"> & { price: number }
+    service: Omit<BarbeshopService, "price"> & { price: number }
     barbershop: Barbershop
   }
 
@@ -212,7 +212,7 @@
                                   >
                                     Confirmado
                                   </Badge>
-                                  <h3 className="font-semibold">{booking.Service.name}</h3>
+                                  <h3 className="font-semibold">{booking.service.name}</h3>
                                   <span className="inline-flex items-center gap-1 text-sm">
                                     <MapPin size={14} />
                                     <span>{booking.barbershop.name}</span>

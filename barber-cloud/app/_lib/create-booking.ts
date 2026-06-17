@@ -13,24 +13,24 @@ export const createBooking = async (data: {
   const booking = await db.booking.create({
     data: {
       date: data.date,
-      User:       { connect: { id: data.userId } },
+      user:       { connect: { id: data.userId } },
       barbershop: { connect: { id: data.barbershopId } },
-      Service:    { connect: { id: data.serviceId } },
+      service:    { connect: { id: data.serviceId } },
       barber:     { connect: { id: data.barberId } },
     },
     include: {
-      User:       true,
+      user:       true,
       barbershop: true,
-      Service:    true,
+      service:    true,
       barber:     { include: { user: true } },
     },
   })
 
   await sendBookingEmail({
-    toEmail:        booking.User.email!,
-    userName:       booking.User.name ?? "Cliente",
+    toEmail:        booking.user.email!,
+    userName:       booking.user.name ?? "Cliente",
     barbershopName: booking.barbershop.name,
-    serviceName:    booking.Service.name,
+    serviceName:    booking.service.name,
     barberName:     booking.barber.user.name ?? "Barbeiro",
     date: booking.date.toLocaleDateString("pt-BR", {
       day: "2-digit", month: "long", year: "numeric",
