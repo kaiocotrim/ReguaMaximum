@@ -92,6 +92,10 @@ const MENU_ITEMS = [
     requiresAuth: true,
   },
 ]
+
+
+
+
 // ─── Provedores de login disponíveis ──────────────────────────────────────────
 const LOGIN_PROVIDERS = [
   { src: "/google-icon.svg", label: "Google" },
@@ -104,6 +108,9 @@ const LOGIN_PROVIDERS = [
 const MenuBtn = ({ className }: MenuBtnProps) => {
   const { data } = useSession()
   const router = useRouter()
+  const role = data?.user?.role // "BARBER" ou "CLIENT"
+//  console.log("sessão completa:", data)
+//  console.log("role:", role)
 
   // ── Handlers de autenticação ──────────────────────────────────────────────
   const handleLoginWithGoogleClick = () => signIn("google")
@@ -113,7 +120,11 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
   const handleLogoutClick = async () => {
     await signOut({ redirect: false })
     window.location.reload()
+
+
+
   }
+
 
   return (
     <Sheet>
@@ -152,7 +163,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                   {/* Badge VIP sobre o avatar */}
                   <span className="absolute -right-1.5 -bottom-1.5 flex items-center gap-0.5 rounded-full border-2 border-[#161616] bg-[#C3F32C] px-1.5 py-0.5 text-[9px] font-black text-black">
                     <Crown className="h-2 w-2" />
-                    VIP
+                    {role === "BARBER" ? "BARBER" : "VIP"}
                   </span>
                 </div>
 
@@ -188,17 +199,17 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                 </SheetTitle>
               </div>
 
-           
-                  <Button
-                        onClick={() => {
+
+              <Button
+                onClick={() => {
                   router.push("/login")
                 }}
-                    size="sm"
-                    className="h-8 cursor-pointer rounded-xl bg-[#C3F32C] text-xs font-bold text-black hover:bg-[#d4f542]"
-                  >
-                    <LogInIcon className="text-[# ] mr-1.5 h-3.5 w-3.5" />
-                    <p className="text-[#254F50]">Entrar</p>
-                  </Button>
+                size="sm"
+                className="h-8 cursor-pointer rounded-xl bg-[#C3F32C] text-xs font-bold text-black hover:bg-[#d4f542]"
+              >
+                <LogInIcon className="text-[# ] mr-1.5 h-3.5 w-3.5" />
+                <p className="text-[#254F50]">Entrar</p>
+              </Button>
             </div>
           )}
         </SheetHeader>
@@ -215,10 +226,10 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
             </span>
             <div className="h-px flex-1 bg-white/[0.05]" />
           </div>
-          
+
           {!data && (
             <div className="mb-4 rounded-2xl border border-white/5 bg-[#1a1a1a] p-4">
-              <div className="flex items-center gap-3"> 
+              <div className="flex items-center gap-3">
                 <div>
                   <h3 className="text-sm font-semibold text-white">
                     Acesso Completo

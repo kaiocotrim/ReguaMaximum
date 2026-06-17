@@ -17,6 +17,7 @@
   import { ptBR } from "date-fns/locale"
   import { useRouter } from "next/navigation"
 
+
   import {
     Carousel,
     CarouselContent,
@@ -65,6 +66,7 @@
   }: HomeClientProps) {
     // ✅ Hook sempre primeiro
     const { data: session } = useSession()
+    const role = session?.user?.role  // "BARBER" ou "CLIENT"
     const router = useRouter()
     // ✅ Lógica depois
     const bookingsToShow =

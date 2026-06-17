@@ -1,96 +1,95 @@
-  import CredentialsProvider from "next-auth/providers/credentials"
-  import bcrypt from "bcrypt"
-  import { db } from "@/app/_lib/prisma"
-  import NextAuth from "next-auth"
+import CredentialsProvider from "next-auth/providers/credentials"
+import bcrypt from "bcrypt"
+import { db } from "@/app/_lib/prisma"
+import NextAuth from "next-auth"
+import GoogleProvider from "next-auth/providers/google"
+import GitHubProvider from "next-auth/providers/github"
+import FacebookProvider from "next-auth/providers/facebook"
+import { PrismaAdapter } from "@auth/prisma-adapter"
 
-  import GoogleProvider from "next-auth/providers/google"
-  import GitHubProvider from "next-auth/providers/github"
-  import FacebookProvider from "next-auth/providers/facebook"
+export const authOptions = {
+  adapter: PrismaAdapter(db),
 
-  import { PrismaAdapter } from "@auth/prisma-adapter"
+  session: {
+    strategy: "jwt",
+  },
 
-  export const authOptions = {
-    adapter: PrismaAdapter(db),
-
-    session: {
-      strategy: "jwt",
-    },
-
-    providers: [
-      
-      CredentialsProvider({
-    name: "credentials",
-
-    credentials: {
-      email: {
-        label: "Email",
-        type: "email",
+  providers: [
+    CredentialsProvider({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Senha", type: "password" },
       },
-      password: {
-        label: "Senha",
-        type: "password",
-      },
-    },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null
 
-    async authorize(credentials) {
-      if (!credentials?.email || !credentials?.password) {
-        return null
-      }
+        const user = await db.user.findUnique({
+          where: { email: credentials.email },
+        })
 
-      const user = await db.user.findUnique({
-        where: {
-          email: credentials.email,
-        },
-      })
+        if (!user?.password) return null
 
-      if (!user?.password) {
-        return null
-      }
+        const passwordMatch = await bcrypt.compare(
+          credentials.password,
+          user.password,
+        )
 
-      const passwordMatch = await bcrypt.compare(
-        credentials.password,
-        user.password,
-      )
+        if (!passwordMatch) return null
 
-      if (!passwordMatch) {
-        return null
-      }
-
-      return {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        image: user.image,
-      }
-    },
-  }),
-
-      GoogleProvider({
-        clientId: process.env.GOOGLE_CLIENT_ID!,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      }),
-
-      GitHubProvider({
-        clientId: process.env.GITHUB_ID!,
-        clientSecret: process.env.GITHUB_SECRET!,
-      }),
-
-      FacebookProvider({
-        clientId: process.env.FACEBOOK_CLIENT_ID!,
-        clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
-      }),
-    ],
-
-    callbacks: {
-      async session({ session, token }: any) {
-        if (session.user) {
-          session.user.id = token.sub
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          image: user.image,
+          role: user.role,
         }
-        return session
       },
+    }),
+
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID!,
+      clientSecret: process.env.GITHUB_SECRET!,
+    }),
+
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_CLIENT_ID!,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
+    }),
+  ],
+
+  callbacks: {
+    async jwt({ token, user }: any) {
+      if (user) {
+        token.role = user.role
+      }
+
+      if (token.sub) {
+        const userFromDb = await db.user.findUnique({
+          where: { id: token.sub },
+          select: { role: true },
+        })
+        token.role = userFromDb?.role
+      }
+
+      return token
     },
-  }
 
-  const handler = NextAuth(authOptions)
+    async session({ session, token }: any) {
+      if (session.user) {
+        session.user.id = token.sub
+        session.user.role = token.role
+      }
+      return session
+    },
+  },
+}
 
-  export { handler as GET, handler as POST }
+const handler = NextAuth(authOptions)
+
+export { handler as GET, handler as POST }
