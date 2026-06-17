@@ -67,8 +67,8 @@ const MENU_ITEMS = [
     icon: Scissors,
     label: "Minha Barbearia",
     description: "Gerencie sua barbearia",
-    href: "/barbershop",
     requiresAuth: true,
+    href: "/dashboard",
     onlyBarber: true, // ← flag
   },
   {
