@@ -44,7 +44,7 @@ import {
   CircleUser,
   House,
   Lock,
-  User
+  User,
 } from "lucide-react"
 import { Direction } from "radix-ui"
 import { LoginForm } from "../login-form"
@@ -77,12 +77,14 @@ const MENU_ITEMS = [
     description: "Agendamentos e histórico",
     requiresAuth: true,
     href: "/appointments",
+    onlyClient: true,
   },
   {
     icon: ScissorsLineDashed,
     label: "Serviços",
     description: "Gerencie seus serviços",
     onlyBarber: true, // ← flag
+    onlyClient: true,
   },
 
   {
@@ -91,6 +93,13 @@ const MENU_ITEMS = [
     description: "Seus favoritos",
     href: "/favorites",
     requiresAuth: true,
+  },
+  {
+    icon: User,
+    label: "Perfil",
+    description: "Faça seu trabalho falar por você.",
+    onlyBarber: true, // ← flag
+    
   },
 
   {
@@ -257,54 +266,54 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
 
           {/* Lista de itens do menu */}
           <div className="flex flex-col gap-0.5">
-            {MENU_ITEMS.filter(
-              (item) => !item.onlyBarber || role === "BARBER",
-            ).map(({ icon: Icon, label, description, href, requiresAuth }) => {
-              const locked = requiresAuth && !isLoggedIn
+            {MENU_ITEMS.filter((item) => !item.onlyBarber || role === "BARBER")
+              .filter((item) => !item.onlyClient || role === "CLIENT") // ← faltou essa
+              .map(({ icon: Icon, label, description, href, requiresAuth }) => {
+                const locked = requiresAuth && !isLoggedIn
 
-              return (
-                <Button
-                  key={label}
-                  variant="ghost"
-                  onClick={() => !locked && href && router.push(href)}
-                  className={`group flex h-auto w-full cursor-pointer items-center justify-between rounded-xl border px-3.5 py-3 transition-all ${
-                    locked
-                      ? "cursor-default border-white/[0.03] bg-[#161616] "
-                      : "border-white/[0.05] bg-[#1a1a1a] hover:border-white/[0.08] hover:bg-[#222]"
-                  }`}
-                >
-                  {/* Ícone + texto do item */}
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[10px] border ${
-                        locked
-                          ? "border-white/[0.03] bg-white/[0.03]"
-                          : "border-white/[0.05] bg-[#C3F32C]/10"
-                      }`}
-                    >
-                      <Icon
-                        className={`h-[17px] w-[17px] ${locked ? "text-[#333]" : "text-[#C3F32C]"}`}
-                      />
-                    </div>
-                    <div className="text-left">
-                      <p
-                        className={`text-[14px] font-semibold ${locked ? "text-[#333]" : "text-[#eee]"}`}
+                return (
+                  <Button
+                    key={label}
+                    variant="ghost"
+                    onClick={() => !locked && href && router.push(href)}
+                    className={`group flex h-auto w-full cursor-pointer items-center justify-between rounded-xl border px-3.5 py-3 transition-all ${
+                      locked
+                        ? "cursor-default border-white/[0.03] bg-[#161616]"
+                        : "border-white/[0.05] bg-[#1a1a1a] hover:border-white/[0.08] hover:bg-[#222]"
+                    }`}
+                  >
+                    {/* Ícone + texto do item */}
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[10px] border ${
+                          locked
+                            ? "border-white/[0.03] bg-white/[0.03]"
+                            : "border-white/[0.05] bg-[#C3F32C]/10"
+                        }`}
                       >
-                        {label}
-                      </p>
-                      <p className="text-[11px] text-[#333]">{description}</p>
+                        <Icon
+                          className={`h-[17px] w-[17px] ${locked ? "text-[#333]" : "text-[#C3F32C]"}`}
+                        />
+                      </div>
+                      <div className="text-left">
+                        <p
+                          className={`text-[14px] font-semibold ${locked ? "text-[#333]" : "text-[#eee]"}`}
+                        >
+                          {label}
+                        </p>
+                        <p className="text-[11px] text-[#333]">{description}</p>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Cadeado se bloqueado, seta se liberado */}
-                  {locked ? (
-                    <Lock className="h-4 w-4 flex-shrink-0 text-[#333] transition-colors group-hover:text-[#C3F32C]" />
-                  ) : (
-                    <ChevronRight className="h-4 w-4 flex-shrink-0 text-[#333] transition-all group-hover:translate-x-0.5 group-hover:text-[#C3F32C]" />
-                  )}
-                </Button>
-              )
-            })}
+                    {/* Cadeado se bloqueado, seta se liberado */}
+                    {locked ? (
+                      <Lock className="h-4 w-4 flex-shrink-0 text-[#333] transition-colors group-hover:text-[#C3F32C]" />
+                    ) : (
+                      <ChevronRight className="h-4 w-4 flex-shrink-0 text-[#333] transition-all group-hover:translate-x-0.5 group-hover:text-[#C3F32C]" />
+                    )}
+                  </Button>
+                )
+              })}
           </div>
         </nav>
 
