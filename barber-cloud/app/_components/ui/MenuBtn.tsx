@@ -99,6 +99,7 @@ const MENU_ITEMS = [
     label: "Perfil",
     description: "Faça seu trabalho falar por você.",
     onlyBarber: true, // ← flag
+    href : "/portifolio"
     
   },
 
@@ -138,6 +139,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
   }
 
   return (
+    
     <Sheet>
       {/* Botão de abertura do menu — ícone de hambúrguer */}
       <SheetTrigger asChild>

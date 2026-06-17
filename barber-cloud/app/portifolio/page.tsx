@@ -2,13 +2,14 @@
 
 import { motion } from "framer-motion"
 import { MapPin, Scissors, Star, Share2, Phone, Clock, Sparkles } from "lucide-react"
+import Header from "../_components/header"
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   show: (i: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.45, delay: i * 0.08, ease: "easeOut" },
+    transition: { duration: 0.45, delay: i * 0.08, ease: "easeOut" }, 
   }),
 }
 
@@ -84,7 +85,9 @@ const reviews = [
 
 export default function BarberPortfolio() {
   return (
+
     <div className="min-h-screen bg-zinc-950 text-white font-sans">
+      <Header />
       <div className="space-y-6 px-5 py-7 max-w-lg mx-auto">
 
         {/* Data */}
