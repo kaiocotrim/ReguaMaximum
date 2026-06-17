@@ -43,9 +43,12 @@ import {
   Settings,
   CircleUser,
   House,
+  Lock,
+  User
 } from "lucide-react"
 import { Direction } from "radix-ui"
 import { LoginForm } from "../login-form"
+import { Scissors } from "lucide-react"
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 interface MenuBtnProps {
@@ -55,9 +58,23 @@ interface MenuBtnProps {
 // ─── Itens de navegação do menu lateral ───────────────────────────────────────
 const MENU_ITEMS = [
   {
+    icon: House,
+    label: "Inicio",
+    description: "Volte para tela de inicio",
+    href: "/",
+  },
+  {
+    icon: Scissors,
+    label: "Minha Barbearia",
+    description: "Gerencie sua barbearia",
+    href: "/barbershop",
+    requiresAuth: true,
+    onlyBarber: true, // ← flag
+  },
+  {
     icon: CalendarCheck2,
     label: "Agendamentos",
-    description: "Meus agendamentos e histórico de cortes",
+    description: "Agendamentos e histórico",
     requiresAuth: true,
     href: "/appointments",
   },
@@ -65,13 +82,9 @@ const MENU_ITEMS = [
     icon: ScissorsLineDashed,
     label: "Serviços",
     description: "Gerencie seus serviços",
+    onlyBarber: true, // ← flag
   },
-  {
-    icon: House,
-    label: "Inicio",
-    description: "Volte para tela de inicio",
-    href: "/",
-  },
+
   {
     icon: Heart,
     label: "Favoritos",
@@ -79,12 +92,7 @@ const MENU_ITEMS = [
     href: "/favorites",
     requiresAuth: true,
   },
-  {
-    icon: Clock,
-    label: "Histórico",
-    description: "Veja seu progresso",
-    requiresAuth: true,
-  },
+
   {
     icon: Settings,
     label: "Configurações",
@@ -92,9 +100,6 @@ const MENU_ITEMS = [
     requiresAuth: true,
   },
 ]
-
-
-
 
 // ─── Provedores de login disponíveis ──────────────────────────────────────────
 const LOGIN_PROVIDERS = [
@@ -109,8 +114,9 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
   const { data } = useSession()
   const router = useRouter()
   const role = data?.user?.role // "BARBER" ou "CLIENT"
-//  console.log("sessão completa:", data)
-//  console.log("role:", role)
+  const isLoggedIn = !!data?.user
+  //  console.log("sessão completa:", data)
+  //  console.log("role:", role)
 
   // ── Handlers de autenticação ──────────────────────────────────────────────
   const handleLoginWithGoogleClick = () => signIn("google")
@@ -120,11 +126,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
   const handleLogoutClick = async () => {
     await signOut({ redirect: false })
     window.location.reload()
-
-
-
   }
-
 
   return (
     <Sheet>
@@ -143,54 +145,46 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
       <SheetContent className="flex flex-col overflow-y-auto border-l border-white/[0.08] bg-[#111111]/95 px-5 text-white shadow-[-20px_0_60px_rgba(0,0,0,0.65)] backdrop-blur-2xl">
         {/* ── Cabeçalho: perfil do usuário ou CTA de login ─────────────────── */}
         <SheetHeader className="mt-8 space-y-0">
-          {data?.user ? (
-            // Estado logado: exibe avatar, nome, e-mail e headline da marca
-            <div className="flex flex-col gap-4">
-              {/* Card de perfil do usuário */}
-              <div className="flex items-center gap-4 rounded-2xl border border-white/[0.05] bg-[#1f1f1f] p-4">
-                <div className="relative flex-shrink-0">
-                  <Avatar className="h-13 w-13 rounded-2xl">
-                    <AvatarImage
-                      src={data.user.image ?? ""}
-                      alt="avatar"
-                      className="rounded-2xl object-cover"
-                    />
-                    <AvatarFallback className="rounded-2xl bg-[#C3F32C] text-base font-bold text-black">
-                      CN
-                    </AvatarFallback>
-                  </Avatar>
+          {/* Card de perfil — só aparece se logado */}
+          {data?.user && (
+            <div className="flex items-center gap-4 rounded-2xl border border-white/[0.05] bg-[#1f1f1f] p-4">
+              <div className="relative flex-shrink-0">
+                <Avatar className="h-13 w-13 rounded-2xl">
+                  <AvatarImage
+                    src={data.user.image ?? ""}
+                    alt="avatar"
+                    className="rounded-2xl object-cover"
+                  />
+                  <AvatarFallback className="rounded-2xl bg-[#C3F32C] text-base font-bold text-black">
+                    CN
+                  </AvatarFallback>
+                </Avatar>
 
-                  {/* Badge VIP sobre o avatar */}
-                  <span className="absolute -right-1.5 -bottom-1.5 flex items-center gap-0.5 rounded-full border-2 border-[#161616] bg-[#C3F32C] px-1.5 py-0.5 text-[9px] font-black text-black">
-                    <Crown className="h-2 w-2" />
-                    {role === "BARBER" ? "BARBER" : "VIP"}
-                  </span>
-                </div>
-
-                {/* Nome e e-mail do usuário */}
-                <div className="min-w-0">
-                  <SheetTitle className="truncate text-[15px] font-semibold text-white">
-                    {data.user.name}
-                  </SheetTitle>
-                  <SheetDescription className="truncate text-xs text-[#555]">
-                    {data.user.email}
-                  </SheetDescription>
-                </div>
+                {/* Badge VIP sobre o avatar */}
+                <span className="absolute -right-1.5 -bottom-1.5 flex items-center gap-0.5 rounded-full border-2 border-[#161616] bg-[#C3F32C] px-1.5 py-0.5 text-[9px] font-black text-black">
+                  {role === "BARBER" ? (
+                    <Scissors className="h-2 w-2" />
+                  ) : (
+                    <User className="h-2 w-2" />
+                  )}
+                  {role === "BARBER" ? "BAR" : "VIP"}
+                </span>
               </div>
 
-              {/* Headline da marca com destaque em verde */}
-              <div className="rounded-2xl border border-l-[3px] border-white/[0.05] border-l-[#C3F32C] bg-[#1f1f1f] px-5 py-[18px]">
-                <p className="text-xl leading-tight font-black tracking-tight text-white">
-                  Vai deixar o cabelo <br />
-                  na <span className="text-[#C3F32C]">régua?</span>
-                </p>
-                <p className="mt-1 text-xs font-medium text-[#444]">
-                  Régua <span className="text-[#C3F32C]/70">Máxima.</span>
-                </p>
+              {/* Nome e e-mail do usuário */}
+              <div className="min-w-0">
+                <SheetTitle className="truncate text-[15px] font-semibold text-white">
+                  {data.user.name}
+                </SheetTitle>
+                <SheetDescription className="truncate text-xs text-[#555]">
+                  {data.user.email}
+                </SheetDescription>
               </div>
             </div>
-          ) : (
-            // Estado deslogado: exibe convite para login com botão de acesso
+          )}
+
+          {/* Card de login — só aparece se deslogado */}
+          {!data?.user && (
             <div className="flex items-center justify-between rounded-2xl border border-white/[0.05] bg-[#1f1f1f] px-4 py-3">
               <div className="flex items-center gap-2">
                 <CircleUser className="h-5 w-5 text-[#555]" />
@@ -199,19 +193,37 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                 </SheetTitle>
               </div>
 
-
               <Button
-                onClick={() => {
-                  router.push("/login")
-                }}
+                onClick={() => router.push("/login")}
                 size="sm"
                 className="h-8 cursor-pointer rounded-xl bg-[#C3F32C] text-xs font-bold text-black hover:bg-[#d4f542]"
               >
-                <LogInIcon className="text-[# ] mr-1.5 h-3.5 w-3.5" />
+                <LogInIcon className="mr-1.5 h-3.5 w-3.5" />
                 <p className="text-[#254F50]">Entrar</p>
               </Button>
             </div>
           )}
+
+          {/* Headline da marca — aparece SEMPRE, logado ou não */}
+          <div className="mt-4 rounded-2xl border border-l-[3px] border-white/[0.05] border-l-[#C3F32C] bg-[#1f1f1f] px-5 py-[18px]">
+            <p className="text-xl leading-tight font-black tracking-tight text-white">
+              {!isLoggedIn
+                ? "Venha entrar para o time da "
+                : role === "BARBER"
+                  ? "Mais um cliente para deixar "
+                  : "Vai deixar o cabelo "}
+              {!isLoggedIn ? (
+                <span className="text-[#C3F32C]">RéguaMáxima.</span>
+              ) : (
+                <>
+                  na <span className="text-[#C3F32C]">régua?</span>
+                </>
+              )}
+            </p>
+            <p className="mt-1 text-xs font-medium text-[#444]">
+              Régua <span className="text-[#C3F32C]/70">Máxima.</span>
+            </p>
+          </div>
         </SheetHeader>
 
         {/* Divisor visual entre cabeçalho e menu de navegação */}
@@ -245,32 +257,54 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
 
           {/* Lista de itens do menu */}
           <div className="flex flex-col gap-0.5">
-            {MENU_ITEMS.filter((item) => !item.requiresAuth || data).map(
-              ({ icon: Icon, label, description, href }) => (
+            {MENU_ITEMS.filter(
+              (item) => !item.onlyBarber || role === "BARBER",
+            ).map(({ icon: Icon, label, description, href, requiresAuth }) => {
+              const locked = requiresAuth && !isLoggedIn
+
+              return (
                 <Button
                   key={label}
                   variant="ghost"
-                  onClick={() => href && router.push(href)}
-                  className="group flex h-auto w-full cursor-pointer items-center justify-between rounded-xl border border-white/[0.05] bg-[#1a1a1a] px-3.5 py-3 hover:border-white/[0.08] hover:bg-[#222]"
+                  onClick={() => !locked && href && router.push(href)}
+                  className={`group flex h-auto w-full cursor-pointer items-center justify-between rounded-xl border px-3.5 py-3 transition-all ${
+                    locked
+                      ? "cursor-default border-white/[0.03] bg-[#161616] "
+                      : "border-white/[0.05] bg-[#1a1a1a] hover:border-white/[0.08] hover:bg-[#222]"
+                  }`}
                 >
                   {/* Ícone + texto do item */}
                   <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[10px] border border-white/[0.05] bg-[#C3F32C]/10">
-                      <Icon className="h-[17px] w-[17px] text-[#C3F32C]" />
+                    <div
+                      className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[10px] border ${
+                        locked
+                          ? "border-white/[0.03] bg-white/[0.03]"
+                          : "border-white/[0.05] bg-[#C3F32C]/10"
+                      }`}
+                    >
+                      <Icon
+                        className={`h-[17px] w-[17px] ${locked ? "text-[#333]" : "text-[#C3F32C]"}`}
+                      />
                     </div>
                     <div className="text-left">
-                      <p className="text-[14px] font-semibold text-[#eee]">
+                      <p
+                        className={`text-[14px] font-semibold ${locked ? "text-[#333]" : "text-[#eee]"}`}
+                      >
                         {label}
                       </p>
-                      <p className="text-[11px] text-[#444]">{description}</p>
+                      <p className="text-[11px] text-[#333]">{description}</p>
                     </div>
                   </div>
 
-                  {/* Seta indicadora — anima no hover */}
-                  <ChevronRight className="h-4 w-4 flex-shrink-0 text-[#333] transition-all group-hover:translate-x-0.5 group-hover:text-[#C3F32C]" />
+                  {/* Cadeado se bloqueado, seta se liberado */}
+                  {locked ? (
+                    <Lock className="h-4 w-4 flex-shrink-0 text-[#333] transition-colors group-hover:text-[#C3F32C]" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4 flex-shrink-0 text-[#333] transition-all group-hover:translate-x-0.5 group-hover:text-[#C3F32C]" />
+                  )}
                 </Button>
-              ),
-            )}
+              )
+            })}
           </div>
         </nav>
 
