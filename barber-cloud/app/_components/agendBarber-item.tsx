@@ -1,4 +1,16 @@
 "use client"
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/app/_components/ui/alert-dialog"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
@@ -323,12 +335,34 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
                     {fullDate}
                   </span>
                 </motion.div>
-                <Button
-                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-3xl bg-red-500 px-5 py-5 text-white hover:bg-red-700"
-                  onClick={() => handleCancel(appointment.id)}
-                >
-                  Cancelar agendamento
-                </Button>
+
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="outline">Show Dialog</Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you absolutely sure?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete your account from our servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction>
+                        <Button
+                          className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-3xl bg-red-500 px-5 py-5 text-white hover:bg-red-700"
+                          onClick={() => handleCancel(appointment.id)}
+                        >
+                          Cancelar agendamento
+                        </Button>
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </motion.div>
           </DialogContent>
