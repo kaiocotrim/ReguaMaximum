@@ -1,73 +1,55 @@
-"use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { User, MapPin, Clock, CircleCheckBig } from "lucide-react";
-import Image from "next/image";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+"use client"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { motion, AnimatePresence } from "framer-motion"
+import { User, MapPin, Clock, CircleCheckBig } from "lucide-react"
+import Image from "next/image"
+import { format } from "date-fns"
+import { ptBR } from "date-fns/locale"
 import {
   Dialog,
   DialogContent,
   DialogTrigger,
-} from "@/app/_components/ui/dialog";
-import { Button } from "@/app/_components/ui/button";
+} from "@/app/_components/ui/dialog"
+import { Button } from "@/app/_components/ui/button"
 
 interface AgendBarberProps {
   appointment: {
-    id: string;
-    date: Date;
+    id: string
+    date: Date
     barbershop: {
-      name: string;
-      imageUrl: string;
-      address: string;
-    };
+      name: string
+      imageUrl: string
+      address: string
+    }
     service: {
-      name: string;
-      price: number;
-      duration?: number | null;
-    };
+      name: string
+      price: number
+      duration?: number | null
+    }
     barber: {
       user: {
-        name: string | null;
-        image: string | null;
-      };
-    };
-  };
+        name: string | null
+        image: string | null
+      }
+    }
+  }
 }
 
 const AgendBarber = ({ appointment }: AgendBarberProps) => {
-  const { service, barber, date, barbershop } = appointment;
-  const [open, setOpen] = useState(false);
-  const router = useRouter();
+  const { service, barber, date, barbershop } = appointment
+  const [open, setOpen] = useState(false)
+  const router = useRouter()
 
-  const isPast = new Date(date) < new Date();
-  const dateObj = new Date(date);
-  const monthCapitalized = format(dateObj, "MMMM", { locale: ptBR });
-  const day = format(dateObj, "dd");
+  const isPast = new Date(date) < new Date()
+  const dateObj = new Date(date)
+  const monthCapitalized = format(dateObj, "MMMM", { locale: ptBR })
+  const day = format(dateObj, "dd")
   const fullDate = format(dateObj, "EEEE, dd 'de' MMMM 'de' yyyy", {
     locale: ptBR,
-  });
-  const formattedTime = format(dateObj, "HH:mm");
+  })
+  const formattedTime = format(dateObj, "HH:mm")
 
-  const handleDelete = async () => {
-    try {
-      console.log("Tentando deletar agendamento com ID:", appointment.id);
-
-      const response = await fetch(`/api/appointments/${appointment.id}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error("Erro ao cancelar agendamento");
-      }
-
-      setOpen(false); // Fecha o modal
-      router.refresh(); // Atualiza a página
-    } catch (error) {
-      console.error("Falha ao cancelar agendamento:", error);
-    }
-  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -328,21 +310,16 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
                     {fullDate}
                   </span>
                 </motion.div>
-              </div>
-              {!isPast && (
-                <Button
-                  onClick={handleDelete}
-                  className="w-full rounded-xl bg-red-600 py-3 text-white transition hover:bg-red-700"
-                >
+                <Button className="flex w-full items-center justify-center gap-2 rounded-3xl bg-red-500 px-5 text-white py-5 hover:bg-red-700 cursor-pointer" onClick={() => handleCancel(appointment.id)}>
                   Cancelar agendamento
                 </Button>
-              )}
+              </div>
             </motion.div>
           </DialogContent>
         )}
       </AnimatePresence>
     </Dialog>
-  );
-};
+  )
+}
 
-export default AgendBarber;
+export default AgendBarber
