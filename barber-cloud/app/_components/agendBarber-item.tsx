@@ -374,7 +374,6 @@
 
 // export default AgendBarber
 
-
 "use client"
 
 import {
@@ -455,11 +454,15 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
   const dateObj = new Date(date)
   const monthCapitalized = format(dateObj, "MMM", { locale: ptBR })
   const day = format(dateObj, "dd")
-  const fullDate = format(dateObj, "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR })
+  const fullDate = format(dateObj, "EEEE, dd 'de' MMMM 'de' yyyy", {
+    locale: ptBR,
+  })
   const formattedTime = format(dateObj, "HH:mm")
 
   async function handleCancel(id: string) {
-    const response = await fetch(`/api/appointments/${id}`, { method: "DELETE" })
+    const response = await fetch(`/api/appointments/${id}`, {
+      method: "DELETE",
+    })
     if (response.ok) {
       router.refresh()
       setOpen(false)
@@ -480,7 +483,6 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-
       {/* ════════════════════════════════════════════
           CARD TRIGGER
       ════════════════════════════════════════════ */}
@@ -489,19 +491,18 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.38, ease: "easeOut" }}
-          whileHover={{ scale: 1.012, backgroundColor: "rgba(255,255,255,0.055)" }}
+          whileHover={{
+            scale: 1.012,
+            backgroundColor: "rgba(255,255,255,0.055)",
+          }}
           whileTap={{ scale: 0.984 }}
-          className="flex w-full cursor-pointer overflow-hidden rounded-3xl
-                     border border-white/[0.08] bg-white/[0.03]
-                     backdrop-blur-xl transition-colors duration-200"
+          className="flex w-full cursor-pointer overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl transition-colors duration-200"
         >
           {/* Lado esquerdo */}
           <div className="flex min-w-0 flex-1 items-center gap-4 p-4">
-
             {/* Avatar com glow pulsante */}
             <motion.div
-              className="relative h-[52px] w-[52px] shrink-0 overflow-hidden
-                         rounded-full border-2 border-white/80"
+              className="relative h-[52px] w-[52px] shrink-0 overflow-hidden rounded-full border-2 border-white/80"
               animate={
                 !isPast
                   ? {
@@ -529,15 +530,14 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
 
             {/* Infos textuais */}
             <div className="flex min-w-0 flex-col gap-1.5">
-
               {/* Badge status */}
               <motion.div {...fadeX(-8, 0.08)}>
                 <div
-                  className={`inline-flex w-fit items-center gap-1.5 rounded-full
-                               px-2.5 py-[3px] text-[10px] font-bold tracking-wide
-                               ${isPast
-                                 ? "bg-white/[0.08] text-white/40"
-                                 : "bg-[#C3F32C] text-[#1d3d1e]"}`}
+                  className={`inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-[3px] text-[10px] font-bold tracking-wide ${
+                    isPast
+                      ? "bg-white/[0.08] text-white/40"
+                      : "bg-[#C3F32C] text-[#1d3d1e]"
+                  }`}
                 >
                   {!isPast && (
                     <motion.span
@@ -576,12 +576,11 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.38, delay: 0.1, ease: "easeOut" }}
-            className="flex shrink-0 flex-col items-center justify-center
-                       gap-0.5 border-l border-white/[0.08] px-5"
+            className="flex shrink-0 flex-col items-center justify-center gap-0.5 border-l border-white/[0.08] px-5"
           >
             <motion.p
               {...fadeUp(0.16)}
-              className="text-[11px] capitalize text-white/35"
+              className="text-[11px] text-white/35 capitalize"
             >
               {monthCapitalized}
             </motion.p>
@@ -589,8 +588,12 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
             <motion.p
               initial={{ scale: 0.7, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.4, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="text-[26px] font-bold leading-none text-white"
+              transition={{
+                duration: 0.4,
+                delay: 0.2,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="text-[26px] leading-none font-bold text-white"
             >
               {day}
             </motion.p>
@@ -610,16 +613,13 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
       ════════════════════════════════════════════ */}
       <AnimatePresence>
         {open && (
-          <DialogContent
-            className="max-w-sm overflow-hidden rounded-[28px] border-0 bg-[#1a1a1c] p-2"
-          >
+          <DialogContent className="max-w-sm overflow-hidden rounded-[28px] border-0 bg-[#1a1a1c] p-2">
             <motion.div
               initial={{ opacity: 0, scale: 0.93, y: 24 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.93, y: 24 }}
               transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
             >
-
               {/* ── Hero image ── */}
               <motion.div
                 className="relative h-44 w-full overflow-hidden rounded-[22px]"
@@ -638,25 +638,25 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
                 {/* Badge no hero */}
                 <motion.div
                   {...fadeX(-12, 0.15)}
-                  className={`absolute top-3 left-3 inline-flex items-center
-                               gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold
-                               ${isPast
-                                 ? "bg-black/50 text-white/50 backdrop-blur-md"
-                                 : "bg-[#C3F32C] text-[#1a3a1a]"}`}
+                  className={`absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold ${
+                    isPast
+                      ? "bg-black/50 text-white/50 backdrop-blur-md"
+                      : "bg-[#C3F32C] text-[#1a3a1a]"
+                  }`}
                 >
-                  {!isPast && <CircleCheckBig size={13} className="text-[#1a3a1a]" />}
+                  {!isPast && (
+                    <CircleCheckBig size={13} className="text-[#1a3a1a]" />
+                  )}
                   {isPast ? "Finalizado" : "Confirmado"}
                 </motion.div>
               </motion.div>
 
               {/* ── Body ── */}
               <div className="-mt-10 flex flex-col items-center gap-4 px-5 pb-8">
-
                 {/* Avatar do barbeiro */}
                 <motion.div
                   {...popIn(0.18)}
-                  className="relative h-20 w-20 overflow-hidden rounded-full
-                             border-[3px] border-[#C3F32C] shadow-2xl"
+                  className="relative h-20 w-20 overflow-hidden rounded-full border-[3px] border-[#C3F32C] shadow-2xl"
                 >
                   {barber.user.image ? (
                     <Image
@@ -692,15 +692,16 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
                     className="mt-1.5 flex items-center justify-center gap-1.5"
                   >
                     <MapPin size={11} className="shrink-0 text-white/25" />
-                    <p className="text-[11px] text-white/25">{barbershop.address}</p>
+                    <p className="text-[11px] text-white/25">
+                      {barbershop.address}
+                    </p>
                   </motion.div>
                 </motion.div>
 
                 {/* Stats — preço / serviço / horário */}
                 <motion.div
                   {...fadeUp(0.3)}
-                  className="flex w-full items-center justify-around
-                             rounded-[20px] bg-white/[0.06] px-4 py-4"
+                  className="flex w-full items-center justify-around rounded-[20px] bg-white/[0.06] px-4 py-4"
                 >
                   {stats.map((item, i) => (
                     <div key={item.label} className="flex items-center">
@@ -719,14 +720,17 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
                         className="flex flex-col items-center gap-0.5"
                       >
                         <span
-                          className={`font-semibold text-white
-                            ${item.truncate
+                          className={`font-semibold text-white ${
+                            item.truncate
                               ? "max-w-[72px] truncate text-center text-[13px]"
-                              : "text-[15px]"}`}
+                              : "text-[15px]"
+                          }`}
                         >
                           {item.value}
                         </span>
-                        <span className="text-[11px] text-white/30">{item.label}</span>
+                        <span className="text-[11px] text-white/30">
+                          {item.label}
+                        </span>
                       </motion.div>
                     </div>
                   ))}
@@ -737,11 +741,10 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
                   {...fadeUp(0.42)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="flex w-full items-center justify-center gap-2
-                             rounded-[18px] bg-[#C3F32C] px-5 py-3"
+                  className="flex w-full items-center justify-center gap-2 rounded-[18px] bg-[#C3F32C] px-5 py-3"
                 >
                   <Clock size={13} className="shrink-0 text-[#254F50]" />
-                  <span className="text-[12px] font-semibold capitalize text-[#254F50]">
+                  <span className="text-[12px] font-semibold text-[#254F50] capitalize">
                     {fullDate}
                   </span>
                 </motion.div>
@@ -757,21 +760,20 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
                             backgroundColor: "rgba(239,68,68,0.12)",
                           }}
                           whileTap={{ scale: 0.98 }}
-                          className="w-full rounded-[18px] border border-red-500/20
-                                     bg-red-500/[0.06] py-3 text-[13px] font-semibold
-                                     text-red-400/80 transition-colors duration-200"
+                          className="w-full rounded-[18px] border border-red-500/20 bg-red-500/[0.06] py-3 text-[13px] font-semibold text-red-400/80 transition-colors duration-200 cursor-pointer"
                         >
                           Cancelar agendamento
                         </motion.button>
                       </AlertDialogTrigger>
 
-                      <AlertDialogContent
-                        className="rounded-[24px] border-0 bg-[#1a1a1c] p-6"
-                      >
+                      <AlertDialogContent className="rounded-[24px] border-0 bg-[#1a1a1c] p-6">
                         <motion.div
                           initial={{ opacity: 0, scale: 0.95, y: 12 }}
                           animate={{ opacity: 1, scale: 1, y: 0 }}
-                          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                          transition={{
+                            duration: 0.3,
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
                         >
                           <AlertDialogHeader>
                             <motion.div {...fadeUp(0.05)}>
@@ -781,30 +783,27 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
                             </motion.div>
                             <motion.div {...fadeUp(0.1)}>
                               <AlertDialogDescription className="text-[13px] text-white/40">
-                                Essa ação não pode ser desfeita. O horário ficará
-                                disponível para outros clientes.
+                                Essa ação não pode ser desfeita. O horário
+                                ficará disponível para outros clientes.
                               </AlertDialogDescription>
                             </motion.div>
                           </AlertDialogHeader>
 
                           <motion.div {...fadeUp(0.15)}>
                             <AlertDialogFooter className="mt-5 flex gap-2">
-                              <AlertDialogCancel
-                                className="flex-1 rounded-[14px] border border-white/10
-                                           bg-white/[0.05] text-[13px] text-white/60
-                                           hover:bg-white/[0.09] hover:text-white/80"
-                              >
+                              <AlertDialogCancel className="flex-1 cursor-pointer rounded-[14px] border border-white/10 bg-white/[0.05] text-[13px] text-white/60 hover:bg-white/[0.09] hover:text-white/80">
                                 Voltar
                               </AlertDialogCancel>
 
                               <AlertDialogAction asChild>
                                 <motion.button
-                                  whileHover={{ scale: 1.02, backgroundColor: "#dc2626" }}
+                                  whileHover={{
+                                    scale: 1.02,
+                                    backgroundColor: "#dc2626",
+                                  }}
                                   whileTap={{ scale: 0.97 }}
                                   onClick={() => handleCancel(appointment.id)}
-                                  className="flex-1 rounded-[14px] bg-red-500 
-                                             text-[13px] font-semibold text-white
-                                             transition-colors duration-150"
+                                  className="flex-1 cursor-pointer rounded-[14px] bg-red-500 p-0.5 text-[13px] font-semibold text-white transition-colors duration-150"
                                 >
                                   Sim, cancelar
                                 </motion.button>
@@ -816,7 +815,6 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
                     </AlertDialog>
                   </motion.div>
                 )}
-
               </div>
             </motion.div>
           </DialogContent>
