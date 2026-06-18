@@ -5,13 +5,14 @@ import { motion, AnimatePresence } from "framer-motion"
 import { User, MapPin, Clock, CircleCheckBig } from "lucide-react"
 import Image from "next/image"
 import { format } from "date-fns"
-import { ptBR } from "date-fns/locale"
+import { de, ptBR } from "date-fns/locale"
 import {
   Dialog,
   DialogContent,
   DialogTrigger,
 } from "@/app/_components/ui/dialog"
 import { Button } from "@/app/_components/ui/button"
+import { METHODS } from "http"
 
 interface AgendBarberProps {
   appointment: {
@@ -50,6 +51,18 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
   })
   const formattedTime = format(dateObj, "HH:mm")
 
+  async function handleCancel(id: string) {
+    const response = await fetch(`/api/appointments/${id}`, {
+      method: "DELETE",
+    })
+
+    if (response.ok) {
+      console.log("Agendamento cancelado!")
+      router.refresh()
+    } else {
+      console.log("Erro ao cancelar.")
+    }
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -310,7 +323,10 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
                     {fullDate}
                   </span>
                 </motion.div>
-                <Button className="flex w-full items-center justify-center gap-2 rounded-3xl bg-red-500 px-5 text-white py-5 hover:bg-red-700 cursor-pointer" onClick={() => handleCancel(appointment.id)}>
+                <Button
+                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-3xl bg-red-500 px-5 py-5 text-white hover:bg-red-700"
+                  onClick={() => handleCancel(appointment.id)}
+                >
                   Cancelar agendamento
                 </Button>
               </div>
