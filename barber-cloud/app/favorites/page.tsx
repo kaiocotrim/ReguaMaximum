@@ -3,13 +3,26 @@ import BarbershopItem from "../_components/barbershop-item"
 import { db } from "../_lib/prisma"
 import { Heart } from "lucide-react"
 import Image from "next/image"
+import { getServerSession } from "next-auth"
+import { authOptions } from "../api/auth/[...nextauth]/route"
+import { redirect } from "next/navigation"    
 
 const FavoritesPage = async () => {
+  const session = await getServerSession(authOptions)
+
+  if (!session) {
+    redirect("/login")
+  }
+
   const favorites = await db.favoriteBarbershop.findMany({
+    where: {
+      userId: session.user.id,
+    },
     include: {
       barbershop: true,
     },
   })
+
 
   return (
     <div>
