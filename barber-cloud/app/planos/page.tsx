@@ -1,8 +1,15 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { motion, useMotionValue, useTransform, animate } from "framer-motion"
-import { Check, Minus,MoveLeft, MoveLeftIcon } from "lucide-react"
+import { useRouter } from "next/navigation"
+import {
+  motion,
+  useMotionValue,
+  useTransform,
+  animate,
+  type Variants,
+} from "framer-motion"
+import { Check, Minus, MoveLeft } from "lucide-react"
 
 type Feature = {
   label: string
@@ -73,7 +80,40 @@ const plans: Plan[] = [
   },
 ]
 
-// Nome da marca "RÉGUA MÁXIMA" — corte de navalha revelando o nome, com linha riscando embaixo
+// ---------------------------------------------------------------------------
+// Botão de voltar — desliza a seta para a esquerda no hover, como se fosse
+// puxada por um fio. Entra com leve atraso depois do resto do header.
+// ---------------------------------------------------------------------------
+const BackButton = () => {
+  const router = useRouter()
+
+  return (
+    <motion.button
+      type="button"
+      onClick={() => router.push("/")}
+      initial={{ opacity: 0, x: -8 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.4, delay: 0.15 }}
+      whileHover="hover"
+      whileTap={{ scale: 0.94 }}
+      className="group inline-flex items-center gap-2 text-sm font-medium text-neutral-400 transition-colors hover:text-lime-400 cursor-pointer"
+    >
+      <motion.span
+        variants={{ hover: { x: -4 } }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
+        className="flex"
+      >
+        <MoveLeft size={18} />
+      </motion.span>
+      Voltar
+    </motion.button>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Nome da marca — entra letra a letra com leve desfoque, depois um traço
+// de navalha risca por baixo.
+// ---------------------------------------------------------------------------
 const BrandReveal = () => {
   const letters = "RÉGUA MÁXIMA".split("")
 
@@ -83,10 +123,10 @@ const BrandReveal = () => {
         {letters.map((letter, i) => (
           <motion.span
             key={`${letter}-${i}`}
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{
-              duration: 0.35,
+              duration: 0.4,
               delay: 1.5 + i * 0.035,
               ease: "easeOut",
             }}
@@ -97,7 +137,6 @@ const BrandReveal = () => {
         ))}
       </div>
 
-      {/* traço que risca por baixo do nome, tipo navalha passando */}
       <motion.div
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
@@ -113,7 +152,9 @@ const BrandReveal = () => {
   )
 }
 
-// Título com efeito "navalha" — uma lâmina corta da esquerda pra direita revelando o texto
+// ---------------------------------------------------------------------------
+// Título — corte de navalha revela o texto da esquerda pra direita.
+// ---------------------------------------------------------------------------
 const RazorRevealTitle = () => {
   return (
     <div className="relative inline-block overflow-hidden">
@@ -125,7 +166,6 @@ const RazorRevealTitle = () => {
       >
         SIMPLES ASSIM.
       </motion.h1>
-      {/* lâmina que desliza por cima durante o corte */}
       <motion.div
         className="pointer-events-none absolute inset-y-0 left-0 w-1.5 bg-lime-300 shadow-[0_0_16px_4px_rgba(163,230,53,0.7)]"
         initial={{ x: "0%" }}
@@ -136,7 +176,9 @@ const RazorRevealTitle = () => {
   )
 }
 
-// Preço contando tipo odômetro
+// ---------------------------------------------------------------------------
+// Preço — conta de 0 até o valor final, tipo odômetro.
+// ---------------------------------------------------------------------------
 const AnimatedPrice = ({
   value,
   highlighted,
@@ -173,16 +215,25 @@ const AnimatedPrice = ({
   )
 }
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 60 },
+// ---------------------------------------------------------------------------
+// Variants
+// ---------------------------------------------------------------------------
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 70, scale: 0.94, filter: "blur(6px)" },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, delay: 0.2 * i, ease: [0.16, 1, 0.3, 1] },
+    scale: 1,
+    filter: "blur(0px)",
+    transition: {
+      duration: 0.7,
+      delay: 0.15 * i,
+      ease: [0.16, 1, 0.3, 1],
+    },
   }),
 }
 
-const featureVariants = {
+const featureVariants: Variants = {
   hidden: { opacity: 0, x: -12 },
   visible: (i: number) => ({
     opacity: 1,
@@ -198,7 +249,7 @@ const PlanCard = ({ plan, index }: { plan: Plan; index: number }) => {
       initial="hidden"
       animate="visible"
       variants={cardVariants}
-      whileHover={{ y: -10 }}
+      whileHover={{ y: -10, transition: { duration: 0.25, ease: "easeOut" } }}
       className={`relative flex flex-col rounded-2xl border p-8 ${
         plan.highlighted
           ? "border-lime-400 bg-neutral-950"
@@ -210,7 +261,6 @@ const PlanCard = ({ plan, index }: { plan: Plan; index: number }) => {
           : undefined
       }
     >
-      {/* glow pulsante atrás do card PRO — neon piscando */}
       {plan.highlighted && (
         <motion.div
           className="pointer-events-none absolute -inset-px -z-10 rounded-2xl"
@@ -293,13 +343,13 @@ const PlanCard = ({ plan, index }: { plan: Plan; index: number }) => {
         whileHover="hover"
         initial="rest"
         animate="rest"
+        whileTap={{ scale: 0.97 }}
         className={`relative mt-8 w-full overflow-hidden rounded-lg py-3 text-sm font-bold tracking-wide ${
           plan.ctaVariant === "solid"
             ? "bg-lime-400 text-black"
             : "border border-neutral-700 text-white"
         }`}
       >
-        {/* "lâmina" que desliza por cima do botão no hover */}
         <motion.span
           variants={{
             rest: { x: "-110%" },
@@ -318,14 +368,13 @@ const PlanCard = ({ plan, index }: { plan: Plan; index: number }) => {
 }
 
 const Planos = () => {
-
   return (
-    
     <div className="min-h-screen bg-black px-6 py-20">
-      <div className="flex cursor-pointer  hover:text-lime-400">
-       <MoveLeft onClick={() => router.push(`.../`)} />
+      <div className="mx-auto max-w-5xl">
+        <BackButton />
       </div>
-      <div className="mx-auto max-w-5xl text-center">
+
+      <div className="mx-auto mt-10 max-w-5xl text-center">
         <motion.span
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
