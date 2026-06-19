@@ -45,6 +45,7 @@ import {
   House,
   Lock,
   User,
+  CreditCard
 } from "lucide-react"
 import { Direction } from "radix-ui"
 import { LoginForm } from "../login-form"
@@ -99,8 +100,15 @@ const MENU_ITEMS = [
     label: "Perfil",
     description: "Faça seu trabalho falar por você.",
     onlyBarber: true, // ← flag
-    href : "/portifolio"
-    
+    href: "/portifolio",
+  },
+  {
+    icon: CreditCard,
+    label: "Plano",
+    description: "Assinatura dos plano",
+    onlyBarber: true, // ← flag
+    requiresAuth: true,
+    href: "/planos"
   },
 
   {
@@ -139,7 +147,6 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
   }
 
   return (
-    
     <Sheet>
       {/* Botão de abertura do menu — ícone de hambúrguer */}
       <SheetTrigger asChild>

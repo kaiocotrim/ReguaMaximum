@@ -176,6 +176,7 @@ import {
   Smartphone,
   Share,
   CircleUser,
+  ChevronRight
 } from "lucide-react"
 import Link from "next/link"
 import { Card } from "@/app/_components/ui/card"
@@ -395,10 +396,9 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
             </DrawerTrigger>
 
             <DrawerContent className="border-t border-zinc-800 bg-zinc-950">
-              
               <DrawerHeader>
-                <DrawerTitle className="text-2xl font-black tracking-tight text-white ">
-                  Nosso barbeiros
+                <DrawerTitle className="text-2xl font-black tracking-tight text-white">
+                  Nossos barbeiros
                 </DrawerTitle>
                 <DrawerDescription className="text-xs tracking-widest text-zinc-500 uppercase">
                   {/* This action cannot be undone. */}
@@ -408,19 +408,33 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
                 {/* <Button className="h-11 rounded-xl bg-[#C3F32C] font-bold text-black hover:bg-[#d4ff3d]">
                   Submit
                 </Button> */}
-                
 
+                <Card className="border-none bg-black/10 p-4 " >
+                  <div className="flex items-center justify-between cursor-pointer">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={"https://avatars.githubusercontent.com/u/175139628?v=4"}
+                        alt={"https://avatars.githubusercontent.com/u/175139628?v=4"}
+                        className="h-10 w-10 rounded-full object-cover"
+                      />
+                      <span className="text-sm font-semibold text-white">
+                        Kaio Alan (Cotrim)
+                      </span>
+                    </div>
 
+                    <div>{/* Botão, avaliação, ação, etc. */} 
+                      <ChevronRight >
+                        
+                      </ChevronRight>
 
+                      </div>
+                  </div>
+                </Card>
 
-
-
-
-                
                 <DrawerClose>
                   <Button
                     variant="outline"
-                    className="h-11 w-full rounded-xl border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                    className="h-11 w-full rounded-xl border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white cursor-pointer"
                   >
                     Cancelar
                   </Button>
