@@ -156,6 +156,16 @@
 
 // export default BarbershopPage
 
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/app/_components/ui/drawer"
 import { db } from "../../_lib/prisma"
 import Image from "next/image"
 import { Button } from "../../_components/ui/button"
@@ -255,19 +265,22 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
         {/* OPÇÃO 2 — Clássico Instagram (gradiente colorido) */}
         <div
           className="absolute -bottom-10 left-6 h-20 w-20 rounded-full"
-          style={{ background: "conic-gradient(#f9ce34, #ee2a7b, #6228d7, #f9ce34)", padding: "4px" }}
+          style={{
+            background: "conic-gradient(#f9ce34, #ee2a7b, #6228d7, #f9ce34)",
+            padding: "4px",
+          }}
         >
           <div
-              style={{
-                borderRadius: "50%",
-                background: "#171717",
-                width: "100%",
-                height: "100%",
-                position: "relative",
-                overflow: "hidden",
-                padding: "5px",
-              }}
-            >
+            style={{
+              borderRadius: "50%",
+              background: "#171717",
+              width: "100%",
+              height: "100%",
+              position: "relative",
+              overflow: "hidden",
+              padding: "5px",
+            }}
+          >
             <Image
               alt={`Logo da barbearia ${barbershop.name}`}
               fill
@@ -303,20 +316,7 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
             />
           </div>
         </div> */}
-
-
-
       </div>
-
-
-
-
-
-
-
-
-
-
 
       {/* Header info */}
       <div className="flex items-start justify-between gap-4 px-6 pt-14">
@@ -353,15 +353,81 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
             Compartilhar
           </Button>
 
-          <Button
-            className="cursor-pointer justify-start gap-2 bg-black/10 text-xs"
-            variant="secondary"
-            size="sm"
-          >
-            <CircleUser className="h-3.5 w-3.5 shrink-0 text-[#C3F32C]" />
-            {barbershop.barbers.length} barbeiro
-            {barbershop.barbers.length !== 1 ? "s" : ""}
-          </Button>
+          {/* <Drawer  >
+            <DrawerTrigger className="bg-black">
+              <Button
+                className="cursor-pointer justify-start gap-2 bg-black/10 text-xs"
+                variant="secondary"
+                size="sm"
+              >
+                <CircleUser className="h-3.5 w-3.5 shrink-0 text-[#C3F32C]" />
+                {barbershop.barbers.length} barbeiro
+                {barbershop.barbers.length !== 1 ? "s" : ""}
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+                <DrawerDescription>
+                  This action cannot be undone.
+                </DrawerDescription>
+              </DrawerHeader>
+              <DrawerFooter>
+                <Button>Submit</Button>
+                <DrawerClose>
+                  <Button variant="outline">Cancel</Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer> */}
+
+          <Drawer>
+            <DrawerTrigger className="bg-black">
+              <Button
+                className="cursor-pointer justify-start gap-2 bg-black/10 text-xs"
+                variant="secondary"
+                size="sm"
+              >
+                <CircleUser className="h-3.5 w-3.5 shrink-0 text-[#C3F32C]" />
+                {barbershop.barbers.length} barbeiro
+                {barbershop.barbers.length !== 1 ? "s" : ""}
+              </Button>
+            </DrawerTrigger>
+
+            <DrawerContent className="border-t border-zinc-800 bg-zinc-950">
+              
+              <DrawerHeader>
+                <DrawerTitle className="text-2xl font-black tracking-tight text-white ">
+                  Nosso barbeiros
+                </DrawerTitle>
+                <DrawerDescription className="text-xs tracking-widest text-zinc-500 uppercase">
+                  {/* This action cannot be undone. */}
+                </DrawerDescription>
+              </DrawerHeader>
+              <DrawerFooter>
+                {/* <Button className="h-11 rounded-xl bg-[#C3F32C] font-bold text-black hover:bg-[#d4ff3d]">
+                  Submit
+                </Button> */}
+                
+
+
+
+
+
+
+
+                
+                <DrawerClose>
+                  <Button
+                    variant="outline"
+                    className="h-11 w-full rounded-xl border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                  >
+                    Cancelar
+                  </Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer>
         </div>
       </div>
 
