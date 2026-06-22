@@ -1,87 +1,64 @@
-'use client';
+"use client"
 
-import { useEffect, useRef, useState, useCallback } from 'react';
-import maplibregl from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
+import { useEffect, useRef, useState, useCallback } from "react"
+import maplibregl from "maplibre-gl"
+import "maplibre-gl/dist/maplibre-gl.css"
 
-// ============================================================================
-// 100% GRATUITO — sem token, sem conta, sem cartão de crédito
-// Tiles: OpenFreeMap (https://openfreemap.org) — uso livre e ilimitado
-// Engine: MapLibre GL JS (open source, fork do Mapbox GL)
-// ============================================================================
+const LIME_400 = "#a3e635"
+const LIME_400_GLOW = "rgba(163, 230, 53, 0.6)"
+const STYLE_URL = "https://tiles.openfreemap.org/styles/liberty"
+const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 
-const LIME_400 = '#a3e635';
-const LIME_400_GLOW = 'rgba(163, 230, 53, 0.55)';
-
-// Estilo "liberty" do OpenFreeMap já vem com camada de prédios em 3D
-const STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty';
-
-// Endpoint de geocoding gratuito (Nominatim/OpenStreetMap, sem chave)
-const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
-
-// ============================================================================
-// TIPOS
-// ============================================================================
 export interface MapPoint {
-  id: string;
-  address: string;
-  lat?: number;
-  lng?: number;
-  label?: string;
+  id: string
+  address: string
+  lat?: number
+  lng?: number
+  label?: string
 }
 
 interface Map3DProps {
-  /** Lista de endereços/pontos a destacar no mapa */
-  points: MapPoint[];
-  /** Centro inicial do mapa [lng, lat]. Padrão: São Paulo */
-  initialCenter?: [number, number];
-  initialZoom?: number;
+  points: MapPoint[]
+  initialCenter?: [number, number]
+  initialZoom?: number
 }
 
-// ============================================================================
-// GEOCODING gratuito via Nominatim (OpenStreetMap) — sem chave de API
-// Respeita o limite de uso justo da Nominatim (~1 req/s)
-// ============================================================================
-async function geocodeAddress(address: string): Promise<[number, number] | null> {
+async function geocodeAddress(
+  address: string,
+): Promise<[number, number] | null> {
   try {
-    const url = `${NOMINATIM_URL}?q=${encodeURIComponent(address)}&format=json&limit=1`;
-    const res = await fetch(url, {
-      headers: { 'Accept-Language': 'pt-BR' },
-    });
-    const data = await res.json();
-    const first = data?.[0];
-    if (!first) return null;
-    return [parseFloat(first.lon), parseFloat(first.lat)];
+    const url = `${NOMINATIM_URL}?q=${encodeURIComponent(address)}&format=json&limit=1`
+    const res = await fetch(url, { headers: { "Accept-Language": "pt-BR" } })
+    if (!res.ok) return null
+
+    const data = await res.json()
+    const first = data?.[0]
+    return first ? [parseFloat(first.lon), parseFloat(first.lat)] : null
   } catch (err) {
-    console.error('Erro ao geocodificar endereço:', address, err);
-    return null;
+    console.error("Erro ao geocodificar endereço:", address, err)
+    return null
   }
 }
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-// ============================================================================
-// COMPONENTE PRINCIPAL
-// ============================================================================
 export default function Map3D({
   points,
-  initialCenter = [-46.6333, -23.5505], // São Paulo
+  initialCenter = [-46.6333, -23.5505],
   initialZoom = 13,
 }: Map3DProps) {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<maplibregl.Map | null>(null);
-  const markersRef = useRef<Record<string, maplibregl.Marker>>({});
-  const [loading, setLoading] = useState(true);
-  const [resolvedPoints, setResolvedPoints] = useState<MapPoint[]>([]);
-  const [activePoint, setActivePoint] = useState<MapPoint | null>(null);
+  const mapContainer = useRef<HTMLDivElement>(null)
+  const map = useRef<maplibregl.Map | null>(null)
+  const markersRef = useRef<Record<string, maplibregl.Marker>>({})
+  const [loading, setLoading] = useState(true)
+  const [resolvedPoints, setResolvedPoints] = useState<MapPoint[]>([])
+  const [activePoint, setActivePoint] = useState<MapPoint | null>(null)
 
   // ---- Inicializa o mapa ----
   useEffect(() => {
-    if (map.current || !mapContainer.current) return;
+    if (!mapContainer.current || map.current) return
 
-    map.current = new maplibregl.Map({
+    const m = new maplibregl.Map({
       container: mapContainer.current,
       style: STYLE_URL,
       center: initialCenter,
@@ -89,160 +66,196 @@ export default function Map3D({
       pitch: 60,
       bearing: -17,
       antialias: true,
-    });
+    })
 
-    map.current.on('load', () => {
-      if (!map.current) return;
-      const m = map.current;
+    map.current = m
 
-      // Céu preto
+    m.on("load", () => {
+      // Céu e neblina claros
       try {
         m.setSky({
-          'sky-color': '#000000',
-          'horizon-color': '#000000',
-          'fog-color': '#000000',
-        } as any);
-      } catch {
-        /* sky pode não estar disponível dependendo da versão do style */
+          "sky-color": "#f0f4f8",
+          "horizon-color": "#ffffff",
+          "fog-color": "#ffffff",
+        } as any)
+      } catch (e) {
+        /* Suprimido */
       }
 
-      // Recolore o fundo / água / terreno para preto
-      const style = m.getStyle();
+      const style = m.getStyle()
       style?.layers?.forEach((layer) => {
-        const id = layer.id.toLowerCase();
+        const id = layer.id.toLowerCase()
         try {
-          if (layer.type === 'background') {
-            m.setPaintProperty(layer.id, 'background-color', '#000000');
+          // Oculta pontos de interesse (POIs) e transporte
+          if (
+            id.includes("poi") ||
+            id.includes("amenity") ||
+            id.includes("shop") ||
+            id.includes("station") ||
+            id.includes("transit") ||
+            id.includes("transport")
+          ) {
+            m.setLayoutProperty(layer.id, "visibility", "none")
+            return
           }
-          if (layer.type === 'fill' && (id.includes('water') || id.includes('land'))) {
-            m.setPaintProperty(layer.id, 'fill-color', id.includes('water') ? '#050505' : '#000000');
-          }
-          if (layer.type === 'line' && id.includes('water')) {
-            m.setPaintProperty(layer.id, 'line-color', '#0a0a0a');
-          }
-          // ruas em cinza bem escuro pra contrastar discretamente com o preto
-          if (layer.type === 'line' && (id.includes('road') || id.includes('street') || id.includes('highway'))) {
-            m.setPaintProperty(layer.id, 'line-color', '#1a1a1a');
-          }
-        } catch {
-          /* propriedade pode não existir nesse layer, ignora */
-        }
-      });
 
-      // Adiciona prédios em 3D se a fonte vetorial existir
+          // CUSTOMIZAÇÃO DO TEMA CLARO
+          if (layer.type === "background") {
+            m.setPaintProperty(layer.id, "background-color", "#ffffff")
+          } else if (
+            layer.type === "fill" &&
+            (id.includes("water") || id.includes("land"))
+          ) {
+            // Água em tom azul-cinza claro, terra em branco/cinza suave
+            m.setPaintProperty(
+              layer.id,
+              "fill-color",
+              id.includes("water") ? "#e0e6ed" : "#f8f9fa",
+            )
+          } else if (layer.type === "line") {
+            if (id.includes("water")) {
+              m.setPaintProperty(layer.id, "line-color", "#cbd5e1")
+            } else if (
+              id.includes("road") ||
+              id.includes("street") ||
+              id.includes("highway")
+            ) {
+              // Ruas em cinza claro para contraste sutil
+              m.setPaintProperty(layer.id, "line-color", "#e2e8f0")
+            }
+          }
+        } catch (e) {
+          /* Suprimido */
+        }
+      })
+
+      // Camada de prédios 3D em tom claro
       try {
-        const sourceId = style?.sources && Object.keys(style.sources).find((s) =>
-          ['openmaptiles', 'maptiler_planet', 'protomaps'].includes(s)
-        );
-        if (sourceId && !m.getLayer('3d-buildings-lime')) {
+        const sourceId =
+          style?.sources &&
+          Object.keys(style.sources).find((s) =>
+            ["openmaptiles", "maptiler_planet", "protomaps"].includes(s),
+          )
+        if (sourceId && !m.getLayer("3d-buildings-lime")) {
           m.addLayer({
-            id: '3d-buildings-lime',
+            id: "3d-buildings-lime",
             source: sourceId,
-            'source-layer': 'building',
-            type: 'fill-extrusion',
+            "source-layer": "building",
+            type: "fill-extrusion",
             minzoom: 13,
             paint: {
-              'fill-extrusion-color': '#0d0d0d',
-              'fill-extrusion-height': ['coalesce', ['get', 'render_height'], ['get', 'height'], 8],
-              'fill-extrusion-base': ['coalesce', ['get', 'render_min_height'], ['get', 'min_height'], 0],
-              'fill-extrusion-opacity': 0.92,
+              "fill-extrusion-color": "#f1f5f9", // Prédios brancos/cinza-claro
+              "fill-extrusion-height": [
+                "coalesce",
+                ["get", "render_height"],
+                ["get", "height"],
+                8,
+              ],
+              "fill-extrusion-base": [
+                "coalesce",
+                ["get", "render_min_height"],
+                ["get", "min_height"],
+                0,
+              ],
+              "fill-extrusion-opacity": 0.85,
             },
-          });
+          })
         }
-      } catch {
-        /* fonte de prédios não disponível neste style — segue sem 3D extrudado */
+      } catch (e) {
+        /* Suprimido */
       }
 
-      setLoading(false);
-    });
+      setLoading(false)
+    })
 
-    map.current.addControl(new maplibregl.NavigationControl(), 'top-right');
+    m.addControl(new maplibregl.NavigationControl(), "top-right")
 
     return () => {
-      map.current?.remove();
-      map.current = null;
-    };
+      Object.values(markersRef.current).forEach((marker) => marker.remove())
+      markersRef.current = {}
+      m.remove()
+      map.current = null
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
-  // ---- Resolve endereços -> coordenadas (geocoding gratuito, sequencial p/ respeitar rate limit) ----
+  // ---- Geocoding ----
   useEffect(() => {
-    let cancelled = false;
+    let cancelled = false
 
     async function resolveAll() {
-      const resolved: MapPoint[] = [];
+      const resolved: MapPoint[] = []
       for (const p of points) {
-        if (cancelled) return;
+        if (cancelled) return
         if (p.lat != null && p.lng != null) {
-          resolved.push(p);
-          continue;
+          resolved.push(p)
+          continue
         }
-        const coords = await geocodeAddress(p.address);
+        const coords = await geocodeAddress(p.address)
         if (coords) {
-          resolved.push({ ...p, lng: coords[0], lat: coords[1] });
-        } else {
-          console.warn('Não foi possível geocodificar:', p.address);
+          resolved.push({ ...p, lng: coords[0], lat: coords[1] })
         }
-        await sleep(1100); // respeita o limite de uso justo da Nominatim
+        await sleep(1100)
       }
-      if (!cancelled) setResolvedPoints(resolved);
+      if (!cancelled) setResolvedPoints(resolved)
     }
 
-    if (points.length > 0) resolveAll();
-    else setResolvedPoints([]);
+    if (points.length > 0) resolveAll()
+    else setResolvedPoints([])
 
     return () => {
-      cancelled = true;
-    };
-  }, [points]);
+      cancelled = true
+    }
+  }, [points])
 
-  // ---- Cria/atualiza marcadores lime-400 com destaque ----
+  // ---- Marcadores ----
   useEffect(() => {
-    if (!map.current) return;
+    const currentMap = map.current
+    if (!currentMap) return
 
-    const currentIds = new Set(resolvedPoints.map((p) => p.id));
+    const currentIds = new Set(resolvedPoints.map((p) => p.id))
+
     Object.keys(markersRef.current).forEach((id) => {
       if (!currentIds.has(id)) {
-        markersRef.current[id].remove();
-        delete markersRef.current[id];
+        markersRef.current[id].remove()
+        delete markersRef.current[id]
       }
-    });
+    })
 
     resolvedPoints.forEach((point) => {
-      if (point.lng == null || point.lat == null) return;
+      if (point.lng == null || point.lat == null) return
 
       if (markersRef.current[point.id]) {
-        markersRef.current[point.id].setLngLat([point.lng, point.lat]);
-        return;
+        markersRef.current[point.id].setLngLat([point.lng, point.lat])
+        return
       }
 
-      const el = document.createElement('div');
-      el.className = 'map3d-marker';
-      el.innerHTML = `
-        <div class="map3d-marker-pulse"></div>
-        <div class="map3d-marker-dot"></div>
-      `;
-      el.addEventListener('click', () => setActivePoint(point));
+      const el = document.createElement("div")
+      el.className = "map3d-marker"
+      el.innerHTML =
+        '<div class="map3d-marker-pulse"></div><div class="map3d-marker-dot"></div>'
 
-      const marker = new maplibregl.Marker({ element: el, anchor: 'center' })
+      el.addEventListener("click", () => setActivePoint(point))
+
+      const marker = new maplibregl.Marker({ element: el, anchor: "center" })
         .setLngLat([point.lng, point.lat])
-        .addTo(map.current!);
+        .addTo(currentMap)
 
-      markersRef.current[point.id] = marker;
-    });
-  }, [resolvedPoints]);
+      markersRef.current[point.id] = marker
+    })
+  }, [resolvedPoints])
 
-  // ---- Voa até um ponto ----
   const flyTo = useCallback((point: MapPoint) => {
-    if (!map.current || point.lng == null || point.lat == null) return;
+    if (!map.current || point.lng == null || point.lat == null) return
     map.current.flyTo({
       center: [point.lng, point.lat],
       zoom: 16,
       pitch: 65,
-      duration: 1400,
-    });
-    setActivePoint(point);
-  }, []);
+      bearing: -17,
+      duration: 1200,
+    })
+    setActivePoint(point)
+  }, [])
 
   return (
     <div className="map3d-root">
@@ -265,11 +278,13 @@ export default function Map3D({
             {resolvedPoints.map((p) => (
               <li
                 key={p.id}
-                className={`map3d-panel-item ${activePoint?.id === p.id ? 'is-active' : ''}`}
+                className={`map3d-panel-item ${activePoint?.id === p.id ? "is-active" : ""}`}
                 onClick={() => flyTo(p)}
               >
                 <span className="map3d-panel-bullet" />
-                <span className="map3d-panel-address">{p.label || p.address}</span>
+                <span className="map3d-panel-address">
+                  {p.label || p.address}
+                </span>
               </li>
             ))}
           </ul>
@@ -282,19 +297,22 @@ export default function Map3D({
           width: 100%;
           height: 100%;
           min-height: 480px;
-          background: #000;
+          background: #ffffff;
           border-radius: 12px;
           overflow: hidden;
-          font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+          font-family:
+            ui-sans-serif,
+            system-ui,
+            -apple-system,
+            sans-serif;
         }
-
         .map3d-container {
           width: 100%;
           height: 100%;
           min-height: 480px;
         }
 
-        /* ---------- Loading ---------- */
+        /* ---------- Loading Claro ---------- */
         .map3d-loading {
           position: absolute;
           inset: 0;
@@ -302,8 +320,8 @@ export default function Map3D({
           align-items: center;
           justify-content: center;
           gap: 10px;
-          background: #000;
-          color: ${LIME_400};
+          background: #ffffff;
+          color: #1e293b;
           font-size: 14px;
           letter-spacing: 0.02em;
           z-index: 5;
@@ -316,7 +334,7 @@ export default function Map3D({
           animation: map3d-pulse 1s ease-in-out infinite;
         }
 
-        /* ---------- Marker ---------- */
+        /* ---------- Marcador (Alto contraste no fundo claro) ---------- */
         .map3d-marker {
           position: relative;
           width: 26px;
@@ -331,7 +349,10 @@ export default function Map3D({
           height: 12px;
           border-radius: 999px;
           background: ${LIME_400};
-          box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.85), 0 0 14px 4px ${LIME_400_GLOW};
+          /* Borda escura fina para o marcador "saltar" no fundo branco */
+          box-shadow:
+            0 0 0 2px rgba(15, 23, 42, 0.9),
+            0 0 14px 4px ${LIME_400_GLOW};
           z-index: 2;
         }
         .map3d-marker-pulse {
@@ -343,11 +364,10 @@ export default function Map3D({
           animation: map3d-marker-pulse 1.8s ease-out infinite;
           z-index: 1;
         }
-
         @keyframes map3d-marker-pulse {
           0% {
             transform: scale(0.4);
-            opacity: 0.9;
+            opacity: 1;
           }
           100% {
             transform: scale(2.4);
@@ -355,21 +375,27 @@ export default function Map3D({
           }
         }
         @keyframes map3d-pulse {
-          0%, 100% { opacity: 0.4; }
-          50% { opacity: 1; }
+          0%,
+          100% {
+            opacity: 0.4;
+          }
+          50% {
+            opacity: 1;
+          }
         }
 
-        /* ---------- Painel lateral ---------- */
+        /* ---------- Painel Lateral Claro ---------- */
         .map3d-panel {
           position: absolute;
           top: 16px;
           left: 16px;
           width: 260px;
           max-height: calc(100% - 32px);
-          background: rgba(0, 0, 0, 0.82);
-          border: 1px solid rgba(163, 230, 53, 0.25);
+          background: rgba(255, 255, 255, 0.9);
+          border: 1px solid rgba(163, 230, 53, 0.5);
           border-radius: 10px;
-          backdrop-filter: blur(6px);
+          backdrop-filter: blur(8px);
+          box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08);
           overflow: hidden;
           display: flex;
           flex-direction: column;
@@ -380,16 +406,16 @@ export default function Map3D({
           align-items: baseline;
           gap: 8px;
           padding: 14px 16px 10px;
-          border-bottom: 1px solid rgba(163, 230, 53, 0.15);
+          border-bottom: 1px solid rgba(163, 230, 53, 0.2);
         }
         .map3d-panel-count {
-          color: ${LIME_400};
+          color: #4d7c0f; /* Tom de verde levemente mais escuro para leitura no branco */
           font-weight: 700;
           font-size: 15px;
           font-variant-numeric: tabular-nums;
         }
         .map3d-panel-title {
-          color: #d4d4d4;
+          color: #64748b;
           font-size: 12px;
           text-transform: uppercase;
           letter-spacing: 0.08em;
@@ -411,7 +437,7 @@ export default function Map3D({
         }
         .map3d-panel-item:hover,
         .map3d-panel-item.is-active {
-          background: rgba(163, 230, 53, 0.1);
+          background: rgba(163, 230, 53, 0.18);
         }
         .map3d-panel-bullet {
           margin-top: 5px;
@@ -423,26 +449,27 @@ export default function Map3D({
           box-shadow: 0 0 6px 1px ${LIME_400_GLOW};
         }
         .map3d-panel-address {
-          color: #e5e5e5;
+          color: #334155;
           font-size: 12.5px;
           line-height: 1.4;
         }
 
-        /* ---------- MapLibre overrides ---------- */
+        /* ---------- Controles do MapLibre Atualizados ---------- */
         .maplibregl-ctrl-top-right .maplibregl-ctrl {
-          background: rgba(0, 0, 0, 0.8);
-          border: 1px solid rgba(163, 230, 53, 0.25);
+          background: rgba(255, 255, 255, 0.9);
+          border: 1px solid rgba(163, 230, 53, 0.3);
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
         .maplibregl-ctrl-group button {
-          filter: invert(1);
+          filter: none; /* Mantém os ícones escuros padrão para fundo claro */
         }
         .maplibregl-ctrl-attrib {
-          background: rgba(0, 0, 0, 0.6) !important;
+          background: rgba(255, 255, 255, 0.7) !important;
         }
         .maplibregl-ctrl-attrib a {
-          color: #888 !important;
+          color: #64748b !important;
         }
       `}</style>
     </div>
-  );
+  )
 }

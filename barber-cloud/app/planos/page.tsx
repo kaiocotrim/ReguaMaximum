@@ -115,7 +115,7 @@ const BackButton = () => {
 // de navalha risca por baixo.
 // ---------------------------------------------------------------------------
 const BrandReveal = () => {
-  const letters = "RÉGUA MÁXIMA".split("")
+  const letters = "".split("")
 
   return (
     <div className="flex flex-col items-center gap-2">
