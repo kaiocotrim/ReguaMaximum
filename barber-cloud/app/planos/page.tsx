@@ -76,7 +76,7 @@ const plans: Plan[] = [
       "Suporte 24/7",
       "Acesso antecipado a novidades",
     ],
-    image: "/mobile2.png",
+    image: "/celular1.png",
     gradientDirection: "to top",
     gradientTop: "transparent",
     gradientBottom: "transparent",
@@ -157,12 +157,12 @@ const Planos = () => {
                 <div className="absolute bottom-0 left-0 right-0 flex flex-col gap-1 p-5">
                   <h2 className="text-xl font-bold leading-tight">{plan.name}</h2>
                   <p className="mb-2 text-sm opacity-70">{plan.description}</p>
-                  <button
-                    className="rounded-lg bg-black/20 py-2 text-sm font-semibold backdrop-blur-sm transition hover:bg-black/35"
+                  {/* <button
+                    className="rounded-lg  py-2 text-sm font-semibold backdrop-blur-sm transition hover:bg-black/35"
                     style={{ color: plan.textColor }}
                   >
                     Assinar
-                  </button>
+                  </button> */}
                 </div>
               </motion.div>
             ))}
