@@ -102,70 +102,83 @@ const Planos = () => {
       animate={{ backgroundColor: selected ? selected.color : "#000000" }}
       transition={{ duration: 0.6, ease: "easeInOut" }}
     >
-      <AnimatePresence mode="wait">
+      {/* 👇 ADICIONA ISSO AQUI — botão fixo no canto superior esquerdo */}
+      {!selected && (
+      <motion.button
+        onClick={() => router.push("/")}
+        className="absolute top-5 left-5 z-50 flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white backdrop-blur-sm transition cursor-pointer hover:text-lime-400"
+        initial={{ opacity: 0, x: -16 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        ← Início
+      </motion.button>
+      )}
 
+      <AnimatePresence mode="wait">
         {/* VIEW: Cards */}
         {!selected && (
           <motion.div
             key="cards"
-            // mobile: coluna única / tablet: 3 colunas
-            className="flex w-full max-w-3xl flex-col items-center gap-4 sm:flex-row sm:items-stretch sm:justify-center sm:gap-6"
+            className="flex w-full max-w-3xl flex-col items-center gap-8"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -30 }}
             transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
           >
-            {plans.map((plan) => (
-              <motion.div
-                key={plan.id}
-                onClick={() => setSelected(plan)}
-                // mobile: largura quase cheia / sm+: largura fixa
-                className="relative flex h-72 w-full cursor-pointer flex-col overflow-hidden rounded-xl sm:h-80 sm:w-64"
-                style={{
-                  color: plan.textColor,
-                  backgroundColor: plan.backgroundColor,
-                  boxShadow: "0 4px 16px rgba(0,0,0,0.18)",
-                }}
-                whileHover={{
-                  scale: 1.03,
-                  y: -6,
-                  boxShadow: "0 20px 48px rgba(0,0,0,0.38)",
-                }}
-                whileTap={{ scale: 0.98 }}
-                transition={{
-                  duration: 0.45,
-                  ease: [0.25, 0.1, 0.25, 1],
-                }}
-              >
-                {/* Imagem de fundo */}
-                <div className="absolute inset-0">
-                  <img
-                    src={plan.image}
-                    alt={plan.name}
-                    className="h-full w-full object-cover"
-                  />
-                  {/* Degradê — edite gradientTop, gradientBottom e gradientDirection no objeto do plano */}
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background: `linear-gradient(${plan.gradientDirection}, ${plan.gradientTop} 0%, ${plan.gradientBottom} 100%)`,
-                    }}
-                  />
-                </div>
+            {/* Título apresentativo */}
+    
 
-                {/* Conteúdo sobre a imagem */}
-                <div className="absolute bottom-0 left-0 right-0 flex flex-col gap-1 p-5">
-                  <h2 className="text-xl font-bold leading-tight">{plan.name}</h2>
-                  <p className="mb-2 text-sm opacity-70">{plan.description}</p>
-                  {/* <button
-                    className="rounded-lg  py-2 text-sm font-semibold backdrop-blur-sm transition hover:bg-black/35"
-                    style={{ color: plan.textColor }}
-                  >
-                    Assinar
-                  </button> */}
-                </div>
-              </motion.div>
-            ))}
+            {/* Cards */}
+            <div className="flex w-full flex-col items-center gap-4 sm:flex-row sm:items-stretch sm:justify-center sm:gap-6">
+              {plans.map((plan) => (
+                <motion.div
+                  key={plan.id}
+                  onClick={() => setSelected(plan)}
+                  className="relative flex h-72 w-full cursor-pointer flex-col overflow-hidden rounded-xl sm:h-80 sm:w-64"
+                  style={{
+                    color: plan.textColor,
+                    backgroundColor: plan.backgroundColor,
+                    boxShadow: "0 4px 16px rgba(0,0,0,0.18)",
+                  }}
+                  whileHover={{
+                    scale: 1.03,
+                    y: -6,
+                    boxShadow: "0 20px 48px rgba(0,0,0,0.38)",
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{
+                    duration: 0.45,
+                    ease: [0.25, 0.1, 0.25, 1],
+                  }}
+                >
+                  {/* Imagem de fundo */}
+                  <div className="absolute inset-0">
+                    <img
+                      src={plan.image}
+                      alt={plan.name}
+                      className="h-full w-full object-cover"
+                    />
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background: `linear-gradient(${plan.gradientDirection}, ${plan.gradientTop} 0%, ${plan.gradientBottom} 100%)`,
+                      }}
+                    />
+                  </div>
+
+                  {/* Conteúdo sobre a imagem */}
+                  <div className="absolute right-0 bottom-0 left-0 flex flex-col gap-1 p-5">
+                    <h2 className="text-xl leading-tight font-bold">
+                      {plan.name}
+                    </h2>
+                    <p className="mb-2 text-sm opacity-70">
+                      {plan.description}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
         )}
 
@@ -221,7 +234,7 @@ const Planos = () => {
               {selected.features.map((feature) => (
                 <motion.li
                   key={feature}
-                  className="flex items-center gap-2 rounded-lg bg-black/10 px-5 py-3 text-sm font-medium"
+                  className="flex items-center gap-2 rounded-lg px-5 py-3 text-sm font-medium"
                   variants={{
                     hidden: { opacity: 0, y: 14 },
                     visible: { opacity: 1, y: 0 },
@@ -241,13 +254,13 @@ const Planos = () => {
             >
               <button
                 onClick={() => setSelected(null)}
-                className="w-full rounded-lg bg-black/15 px-6 py-3 text-sm font-semibold transition hover:bg-black/25 sm:w-auto"
+                className="w-full rounded-lg  px-6 py-3 text-sm font-semibold transition  sm:w-auto"
                 style={{ color: selected.textColor }}
               >
                 ← Voltar
               </button>
               <button
-                className="w-full rounded-lg bg-black/30 px-8 py-3 text-sm font-bold transition hover:bg-black/40 sm:w-auto"
+                className="w-full rounded-lg  px-8 py-3 text-sm font-bold transition  sm:w-auto"
                 style={{ color: selected.textColor }}
               >
                 Assinar agora
@@ -255,7 +268,6 @@ const Planos = () => {
             </motion.div>
           </motion.div>
         )}
-
       </AnimatePresence>
     </motion.div>
   )
