@@ -266,6 +266,7 @@ export default function HomeClient({
               initial="hidden"
               animate="show"
               custom={6}
+              onClick={() => router.push(`/map`)}
             >
               Mapa 
             </motion.h2>
