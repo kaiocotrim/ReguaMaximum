@@ -36,7 +36,7 @@ export default function RootLayout({
           {children}
         </AuthProvider>
         <Toaster />
-        <Footer></Footer>
+        {/* <Footer></Footer> */}
       </body>
     </html>
   )
