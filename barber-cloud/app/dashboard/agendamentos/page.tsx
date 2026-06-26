@@ -148,36 +148,36 @@ export default function AgendamentosPage() {
     setDetalheAberto(false)
   }
 
-  return (
-    <div className="p-6 bg-black min-h-screen">
+return (
+    <div className="min-h-screen bg-[#0e0e0e] p-8">
 
       {/* ── Header ── */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Agendamentos</h1>
-          <p className="text-neutral-400 text-sm mt-0.5">Clique em um horário para agendar</p>
+          <h1 className="text-xl font-bold text-white">Agendamentos</h1>
+          <p className="mt-0.5 text-sm text-[#444]">Clique em um horário para agendar</p>
         </div>
         <button
           onClick={() => setModalAberto(true)}
-          className="flex items-center gap-2 bg-[#C3F32C] hover:bg-[#C3F32C] text-black text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+          className="flex items-center gap-2 rounded-xl bg-[#C3F32C] px-4 py-2.5 text-sm font-semibold text-black transition-opacity hover:opacity-90"
         >
-          <Plus size={16} />
+          <Plus size={15} />
           Novo agendamento
         </button>
       </div>
 
       {/* ── Legenda barbeiros ── */}
-      <div className="flex gap-4 mb-4">
+      <div className="mb-6 flex gap-5">
         {barbeiros.map((b) => (
           <div key={b.nome} className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: b.cor }} />
-            <span className="text-xs text-neutral-400">{b.nome}</span>
+            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: b.cor }} />
+            <span className="text-xs text-[#444]">{b.nome}</span>
           </div>
         ))}
       </div>
 
       {/* ── Calendário ── */}
-      <div className="fc-barbearia rounded-xl border border-neutral-800 p-4">
+      <div className="fc-barbearia rounded-2xl bg-[#0e0e0e] p-1">
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           initialView="timeGridWeek"
@@ -202,41 +202,55 @@ export default function AgendamentosPage() {
 
       {/* ── Modal: Novo agendamento ── */}
       {modalAberto && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-neutral-900 border border-neutral-800 rounded-2xl w-full max-w-md p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-white font-bold text-lg">Novo Agendamento</h2>
-              <button onClick={() => setModalAberto(false)} className="text-neutral-400 hover:text-white">
-                <X size={20} />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl border border-white/[0.06] bg-[#111] p-6">
+
+            {/* Cabeçalho */}
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-base font-bold text-white">Novo Agendamento</h2>
+              <button
+                onClick={() => setModalAberto(false)}
+                className="text-[#444] transition-colors hover:text-white"
+              >
+                <X size={18} />
               </button>
             </div>
 
             <div className="space-y-4">
+              {/* Nome */}
               <div>
-                <label className="text-xs text-neutral-400 mb-1 block">Nome do cliente</label>
+                <label className="mb-1.5 block text-[11px] font-medium tracking-wide text-[#444] uppercase">
+                  Cliente
+                </label>
                 <input
-                  className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#C3F32C]"
+                  className="w-full rounded-xl bg-white/[0.04] px-3.5 py-2.5 text-sm text-white placeholder-[#333] outline-none transition-colors focus:bg-white/[0.06] focus:ring-1 focus:ring-[#C3F32C]/30"
                   placeholder="Ex: João Silva"
                   value={form.cliente}
                   onChange={(e) => setForm((f) => ({ ...f, cliente: e.target.value }))}
                 />
               </div>
 
+              {/* Telefone */}
               <div>
-                <label className="text-xs text-neutral-400 mb-1 block">Telefone</label>
+                <label className="mb-1.5 block text-[11px] font-medium tracking-wide text-[#444] uppercase">
+                  Telefone
+                </label>
                 <input
-                  className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#C3F32C]"
+                  className="w-full rounded-xl bg-white/[0.04] px-3.5 py-2.5 text-sm text-white placeholder-[#333] outline-none transition-colors focus:bg-white/[0.06] focus:ring-1 focus:ring-[#C3F32C]/30"
                   placeholder="(11) 99999-0000"
                   value={form.telefone}
                   onChange={(e) => setForm((f) => ({ ...f, telefone: e.target.value }))}
                 />
               </div>
 
+              {/* Barbeiro + Serviço */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs text-neutral-400 mb-1 block">Barbeiro</label>
+                  <label className="mb-1.5 block text-[11px] font-medium tracking-wide text-[#444] uppercase">
+                    Barbeiro
+                  </label>
                   <select
-                    className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#C3F32C]"
+                    className="w-full rounded-xl bg-white/[0.04] px-3.5 py-2.5 text-sm text-white outline-none transition-colors focus:bg-white/[0.06] focus:ring-1 focus:ring-[#C3F32C]/30"
                     value={form.barbeiro}
                     onChange={(e) => setForm((f) => ({ ...f, barbeiro: e.target.value }))}
                   >
@@ -244,9 +258,11 @@ export default function AgendamentosPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs text-neutral-400 mb-1 block">Serviço</label>
+                  <label className="mb-1.5 block text-[11px] font-medium tracking-wide text-[#444] uppercase">
+                    Serviço
+                  </label>
                   <select
-                    className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#C3F32C]"
+                    className="w-full rounded-xl bg-white/[0.04] px-3.5 py-2.5 text-sm text-white outline-none transition-colors focus:bg-white/[0.06] focus:ring-1 focus:ring-[#C3F32C]/30"
                     value={form.servico}
                     onChange={(e) => setForm((f) => ({ ...f, servico: e.target.value }))}
                   >
@@ -255,31 +271,39 @@ export default function AgendamentosPage() {
                 </div>
               </div>
 
+              {/* Data + Horário */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs text-neutral-400 mb-1 block">Data</label>
+                  <label className="mb-1.5 block text-[11px] font-medium tracking-wide text-[#444] uppercase">
+                    Data
+                  </label>
                   <input
                     type="date"
-                    className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#C3F32C]"
+                    className="w-full rounded-xl bg-white/[0.04] px-3.5 py-2.5 text-sm text-white outline-none transition-colors focus:bg-white/[0.06] focus:ring-1 focus:ring-[#C3F32C]/30"
                     value={form.data}
                     onChange={(e) => setForm((f) => ({ ...f, data: e.target.value }))}
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-neutral-400 mb-1 block">Horário</label>
+                  <label className="mb-1.5 block text-[11px] font-medium tracking-wide text-[#444] uppercase">
+                    Horário
+                  </label>
                   <input
                     type="time"
-                    className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#C3F32C]"
+                    className="w-full rounded-xl bg-white/[0.04] px-3.5 py-2.5 text-sm text-white outline-none transition-colors focus:bg-white/[0.06] focus:ring-1 focus:ring-[#C3F32C]/30"
                     value={form.hora}
                     onChange={(e) => setForm((f) => ({ ...f, hora: e.target.value }))}
                   />
                 </div>
               </div>
 
+              {/* Duração */}
               <div>
-                <label className="text-xs text-neutral-400 mb-1 block">Duração</label>
+                <label className="mb-1.5 block text-[11px] font-medium tracking-wide text-[#444] uppercase">
+                  Duração
+                </label>
                 <select
-                  className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#C3F32C]"
+                  className="w-full rounded-xl bg-white/[0.04] px-3.5 py-2.5 text-sm text-white outline-none transition-colors focus:bg-white/[0.06] focus:ring-1 focus:ring-[#C3F32C]/30"
                   value={form.duracao}
                   onChange={(e) => setForm((f) => ({ ...f, duracao: e.target.value }))}
                 >
@@ -291,16 +315,17 @@ export default function AgendamentosPage() {
               </div>
             </div>
 
-            <div className="flex gap-3 mt-6">
+            {/* Ações */}
+            <div className="mt-6 flex gap-3">
               <button
                 onClick={() => setModalAberto(false)}
-                className="flex-1 border border-neutral-700 text-neutral-300 rounded-lg py-2.5 text-sm hover:bg-neutral-800 transition-colors"
+                className="flex-1 rounded-xl py-2.5 text-sm text-[#555] transition-colors hover:bg-white/[0.04] hover:text-white"
               >
                 Cancelar
               </button>
               <button
                 onClick={salvarAgendamento}
-                className="flex-1 bg-[#C3F32C] hover:bg-[#C3F32C] text-black font-semibold rounded-lg py-2.5 text-sm transition-colors"
+                className="flex-1 rounded-xl bg-[#C3F32C] py-2.5 text-sm font-semibold text-black transition-opacity hover:opacity-90"
               >
                 Agendar
               </button>
@@ -311,12 +336,17 @@ export default function AgendamentosPage() {
 
       {/* ── Modal: Detalhe do agendamento ── */}
       {detalheAberto && eventoSelecionado && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-neutral-900 border border-neutral-800 rounded-2xl w-full max-w-sm p-6">
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-white font-bold text-lg">Agendamento</h2>
-              <button onClick={() => setDetalheAberto(false)} className="text-neutral-400 hover:text-white">
-                <X size={20} />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-2xl border border-white/[0.06] bg-[#111] p-6">
+
+            {/* Cabeçalho */}
+            <div className="mb-5 flex items-center justify-between">
+              <h2 className="text-base font-bold text-white">Agendamento</h2>
+              <button
+                onClick={() => setDetalheAberto(false)}
+                className="text-[#444] transition-colors hover:text-white"
+              >
+                <X size={18} />
               </button>
             </div>
 
@@ -324,51 +354,45 @@ export default function AgendamentosPage() {
             {(() => {
               const s = statusConfig[eventoSelecionado.extendedProps.status]
               return (
-                <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${s.bg} mb-5`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
+                <div className={`mb-5 inline-flex items-center gap-2 rounded-full px-3 py-1 ${s.bg}`}>
+                  <span className={`h-1.5 w-1.5 rounded-full ${s.dot}`} />
                   <span className={`text-xs font-medium ${s.text}`}>{s.label}</span>
                 </div>
               )
             })()}
 
-            <div className="space-y-3">
-              <div className="flex items-center gap-3 text-sm">
-                <User size={14} className="text-neutral-500 shrink-0" />
-                <div>
-                  <p className="text-neutral-400 text-xs">Cliente</p>
-                  <p className="text-white font-medium">{eventoSelecionado.extendedProps.cliente}</p>
+            {/* Detalhes */}
+            <div className="space-y-4">
+              {[
+                { icon: User, label: "Cliente", value: eventoSelecionado.extendedProps.cliente },
+                { icon: Phone, label: "Telefone", value: eventoSelecionado.extendedProps.telefone || "—" },
+                {
+                  icon: Scissors,
+                  label: "Barbeiro · Serviço",
+                  value: `${eventoSelecionado.extendedProps.barbeiro} · ${eventoSelecionado.extendedProps.servico}`,
+                },
+                {
+                  icon: Clock,
+                  label: "Horário",
+                  value: new Date(eventoSelecionado.start).toLocaleString("pt-BR", {
+                    day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit",
+                  }),
+                },
+              ].map(({ icon: Icon, label, value }) => (
+                <div key={label} className="flex items-start gap-3">
+                  <Icon size={14} className="mt-0.5 shrink-0 text-[#333]" />
+                  <div>
+                    <p className="text-[11px] text-[#444]">{label}</p>
+                    <p className="text-sm font-medium text-white">{value}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <Phone size={14} className="text-neutral-500 shrink-0" />
-                <div>
-                  <p className="text-neutral-400 text-xs">Telefone</p>
-                  <p className="text-white">{eventoSelecionado.extendedProps.telefone || "—"}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <Scissors size={14} className="text-neutral-500 shrink-0" />
-                <div>
-                  <p className="text-neutral-400 text-xs">Barbeiro · Serviço</p>
-                  <p className="text-white">{eventoSelecionado.extendedProps.barbeiro} · {eventoSelecionado.extendedProps.servico}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <Clock size={14} className="text-neutral-500 shrink-0" />
-                <div>
-                  <p className="text-neutral-400 text-xs">Horário</p>
-                  <p className="text-white">
-                    {new Date(eventoSelecionado.start).toLocaleString("pt-BR", {
-                      day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"
-                    })}
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
 
+            {/* Cancelar */}
             <button
               onClick={() => removerAgendamento(eventoSelecionado.id)}
-              className="w-full mt-6 border border-red-800 text-red-400 hover:bg-red-900/20 rounded-lg py-2.5 text-sm transition-colors"
+              className="mt-6 w-full rounded-xl py-2.5 text-sm text-red-500/60 transition-colors hover:bg-red-500/5 hover:text-red-400"
             >
               Cancelar agendamento
             </button>
