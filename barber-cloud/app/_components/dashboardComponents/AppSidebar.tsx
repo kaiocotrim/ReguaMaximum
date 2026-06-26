@@ -25,7 +25,9 @@ import {
   Store,
   Settings,
   MoreVertical,
+  LogOut
 } from "lucide-react"
+import { Button } from "@react-email/components"
 
 const mainItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -42,6 +44,7 @@ const financeiroItems = [
 const configItems = [
   { title: "Perfil da Barbearia", url: "/dashboard/perfil", icon: Store },
   { title: "Configurações", url: "/dashboard/configuracoes", icon: Settings },
+  { title: "Sair", url: "/", icon: LogOut}
 ]
 
 export function AppSidebar() {
@@ -51,7 +54,7 @@ export function AppSidebar() {
     <Sidebar className="bg-black border-r border-neutral-800">
       <SidebarHeader className="px-4 py-10 border-b border-neutral-800">
         <div className="flex items-center gap-3 leading-normal">
-          <div className="w-8 h-8 rounded-lg bg-lime-400 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-[#C3F32C] flex items-center justify-center shrink-0">
             <Scissors size={16} className="text-black" />
           </div>
           <span className="font-semibold text-sm text-white">
@@ -62,7 +65,7 @@ export function AppSidebar() {
 
       <SidebarContent className="bg-black">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-lime-400 font-bold tracking-widest text-[10px]">
+          <SidebarGroupLabel className="text-[#C3F32C] font-bold tracking-widest text-[10px]">
             Principal
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -74,7 +77,7 @@ export function AppSidebar() {
                     isActive={pathname === item.url}
                     className={
                       pathname === item.url
-                        ? "bg-lime-400 text-black font-semibold hover:bg-lime-300 hover:text-black"
+                        ? "bg-[#C3F32C] text-black font-semibold hover:bg-[#C3F32C] hover:text-black"
                         : "text-neutral-400 hover:bg-neutral-900 hover:text-white"
                     }
                   >
@@ -92,7 +95,7 @@ export function AppSidebar() {
         <SidebarSeparator className="bg-neutral-800" />
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-lime-400 font-bold tracking-widest text-[10px]">
+          <SidebarGroupLabel className="text-[#C3F32C] font-bold tracking-widest text-[10px]">
             Financeiro
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -104,7 +107,7 @@ export function AppSidebar() {
                     isActive={pathname === item.url}
                     className={
                       pathname === item.url
-                        ? "bg-lime-400 text-black font-semibold hover:bg-lime-300 hover:text-black"
+                        ? "bg-[#C3F32C] text-black font-semibold hover:bg-[#C3F32C] hover:text-black"
                         : "text-neutral-400 hover:bg-neutral-900 hover:text-white"
                     }
                   >
@@ -122,7 +125,7 @@ export function AppSidebar() {
         <SidebarSeparator className="bg-neutral-800" />
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-lime-400 font-bold tracking-widest text-[10px]">
+          <SidebarGroupLabel className="text-[#C3F32C] font-bold tracking-widest text-[10px]">
             Configurações
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -134,7 +137,7 @@ export function AppSidebar() {
                     isActive={pathname === item.url}
                     className={
                       pathname === item.url
-                        ? "bg-lime-400 text-black font-semibold hover:bg-lime-300 hover:text-black"
+                        ? "bg-[#C3F32C] text-black font-semibold hover:bg-[#C3F32C] hover:text-black"
                         : "text-neutral-400 hover:bg-neutral-900 hover:text-white"
                     }
                   >
@@ -157,15 +160,18 @@ export function AppSidebar() {
               size="lg"
               className="leading-normal hover:bg-neutral-900"
             >
-              <div className="w-8 h-8 rounded-full bg-neutral-900 border border-lime-400 flex items-center justify-center text-xs font-semibold text-lime-400 shrink-0">
+              <div className="w-8 h-8 rounded-full bg-neutral-900 border border-[#C3F32C] flex items-center justify-center text-xs font-semibold text-[#C3F32C] shrink-0">
                 GM
               </div>
               <div className="flex flex-col text-left">
                 <span className="text-sm font-semibold text-white">Gerente</span>
                 <span className="text-xs text-neutral-500">Admin</span>
               </div>
+
+              
               <MoreVertical size={16} className="ml-auto text-neutral-600" />
             </SidebarMenuButton>
+            
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

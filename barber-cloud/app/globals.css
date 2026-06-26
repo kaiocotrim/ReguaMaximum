@@ -189,3 +189,30 @@ body {
   100% { transform: translateX(100%); }
 }
 
+
+/* globals.css mapa de agendamente */ 
+.fc-dark {
+  --fc-border-color: #262626;
+  --fc-button-bg-color: #a3e635;
+  --fc-button-text-color: #000000;
+  --fc-button-border-color: #a3e635;
+  --fc-button-hover-bg-color: #84cc16;
+  --fc-button-active-bg-color: #65a30d;
+  --fc-today-bg-color: rgba(163, 230, 53, 0.08);
+  --fc-event-bg-color: #a3e635;
+  --fc-event-text-color: #000000;
+  --fc-event-border-color: #a3e635;
+  --fc-page-bg-color: #000000;
+}
+
+.fc-dark .fc-col-header-cell-cushion,
+.fc-dark .fc-daygrid-day-number,
+.fc-dark .fc-timegrid-slot-label {
+  color: #a3a3a3;
+}
+
+.fc-dark .fc-toolbar-title {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+}
