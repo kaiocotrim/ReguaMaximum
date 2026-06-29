@@ -1,41 +1,85 @@
 "use client"
 
 import { useState, useRef } from "react"
-import { ChevronRight, ChevronLeft, Scissors, Upload, AtSign, Clock, Palette, Phone, MapPin, Building2, Check } from "lucide-react"
+import {
+  ChevronRight,
+  ChevronLeft,
+  Scissors,
+  Upload,
+  AtSign,
+  Clock,
+  Palette,
+  Phone,
+  MapPin,
+  Building2,
+  Check,
+  FileText,
+} from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 const STEPS = [
   { id: 0, label: "Identidade", obrigatorio: true },
   { id: 1, label: "Endereço",   obrigatorio: true },
-  { id: 2, label: "Visual",     obrigatorio: false },
-  { id: 3, label: "Redes",      obrigatorio: false },
+  { id: 2, label: "Descrição",  obrigatorio: false },
+  { id: 3, label: "Visual",     obrigatorio: false },
+  { id: 4, label: "Redes",      obrigatorio: false },
+]
+
+const TAGS_OPCOES = [
+  "✂️ Corte clássico",
+  "🪒 Barba",
+  "🏆 Ambiente premium",
+  "📱 Agendamento online",
+  "🚗 Estacionamento",
+  "📶 Wifi grátis",
+  "👦 Atende crianças",
+  "🍺 Bebidas inclusas",
 ]
 
 const BarbieCreation = () => {
-  const [step, setStep]                         = useState(0)
-  const [direcao, setDirecao]                   = useState(1)
-  const [nomeBarbearia, setNomeBarbearia]       = useState("")
-  const [telefone, setTelefone]                 = useState("")
-  const [cidade, setCidade]                     = useState("")
-  const [endereco, setEndereco]                 = useState("")
-  const [instagram, setInstagram]               = useState("")
-  const [horarioAbertura, setHorarioAbertura]   = useState("09:00")
-  const [horarioFechamento, setHorarioFechamento] = useState("19:00")
-  const [corMarca, setCorMarca]                 = useState("#C3F32C")
-  const [logoPreview, setLogoPreview]           = useState<string | null>(null)
-  const [capaPreview, setCapaPreview]           = useState<string | null>(null)
-  const [erro, setErro]                         = useState("")
+  const [step, setStep]                             = useState(0)
+  const [direcao, setDirecao]                       = useState(1)
+
+  // Step 0 — Identidade
+  const [nomeBarbearia, setNomeBarbearia]           = useState("")
+  const [telefone, setTelefone]                     = useState("")
+  const [cidade, setCidade]                         = useState("")
+
+  // Step 1 — Endereço
+  const [endereco, setEndereco]                     = useState("")
+
+  // Step 2 — Descrição
+  const [descricao, setDescricao]                   = useState("")
+  const [tagsSelecionadas, setTagsSelecionadas]     = useState<string[]>([])
+
+  // Step 3 — Visual
+  const [logoPreview, setLogoPreview]               = useState<string | null>(null)
+  const [capaPreview, setCapaPreview]               = useState<string | null>(null)
+
+  // Step 4 — Redes
+  const [instagram, setInstagram]                   = useState("")
+  const [horarioAbertura, setHorarioAbertura]       = useState("09:00")
+  const [horarioFechamento, setHorarioFechamento]   = useState("19:00")
+  const [corMarca, setCorMarca]                     = useState("#C3F32C")
+
+  const [erro, setErro] = useState("")
 
   const logoRef = useRef<HTMLInputElement>(null)
   const capaRef = useRef<HTMLInputElement>(null)
 
+  // ─── Helpers ────────────────────────────────────────────────────────────────
+
   const formatarTelefone = (valor: string) => {
     const n = valor.replace(/\D/g, "")
-    if (n.length <= 10) return n.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3").replace(/-$/, "")
+    if (n.length <= 10)
+      return n.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3").replace(/-$/, "")
     return n.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3").replace(/-$/, "")
   }
 
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>, tipo: "logo" | "capa") => {
+  const handleUpload = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    tipo: "logo" | "capa"
+  ) => {
     const file = e.target.files?.[0]
     if (!file) return
     const reader = new FileReader()
@@ -46,6 +90,14 @@ const BarbieCreation = () => {
     }
     reader.readAsDataURL(file)
   }
+
+  const toggleTag = (tag: string) => {
+    setTagsSelecionadas((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    )
+  }
+
+  // ─── Validação ──────────────────────────────────────────────────────────────
 
   const validarStep = () => {
     if (step === 0) {
@@ -76,20 +128,26 @@ const BarbieCreation = () => {
     setStep((s) => s - 1)
   }
 
+  // ─── Animações ──────────────────────────────────────────────────────────────
+
   const variants = {
     enter:  (d: number) => ({ opacity: 0, x: d > 0 ? 60 : -60 }),
     center: { opacity: 1, x: 0 },
     exit:   (d: number) => ({ opacity: 0, x: d > 0 ? -60 : 60 }),
   }
 
+  // ─── Classes ────────────────────────────────────────────────────────────────
+
   const inputClass =
     "flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2.5 focus-within:border-[#C3F32C] transition-colors"
+
+  // ─── Render ─────────────────────────────────────────────────────────────────
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center bg-[#121212] p-6">
       <div className="w-full max-w-md space-y-6">
 
-        {/* Header */}
+        {/* ── Header ── */}
         <div className="flex flex-col items-center gap-3 text-center">
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#C3F32C]">
             <Scissors className="h-7 w-7 text-[#0a0a0a]" />
@@ -100,7 +158,7 @@ const BarbieCreation = () => {
           </div>
         </div>
 
-        {/* Stepper */}
+        {/* ── Stepper ── */}
         <div className="flex items-center justify-between px-1">
           {STEPS.map((s, i) => (
             <div key={s.id} className="flex flex-1 items-center">
@@ -135,7 +193,7 @@ const BarbieCreation = () => {
           ))}
         </div>
 
-        {/* Conteúdo animado */}
+        {/* ── Conteúdo animado ── */}
         <div className="overflow-hidden">
           <AnimatePresence mode="wait" custom={direcao}>
             <motion.div
@@ -148,6 +206,7 @@ const BarbieCreation = () => {
               transition={{ duration: 0.35, ease: "easeOut" }}
               className="space-y-4"
             >
+
               {/* STEP 0 — Identidade */}
               {step === 0 && (
                 <div className="space-y-4">
@@ -237,8 +296,71 @@ const BarbieCreation = () => {
                 </div>
               )}
 
-              {/* STEP 2 — Visual */}
+              {/* STEP 2 — Descrição */}
               {step === 2 && (
+                <div className="space-y-4">
+                  <p className="text-[11px] uppercase tracking-widest text-zinc-600">
+                    Descrição{" "}
+                    <span className="ml-1 rounded bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-500">
+                      opcional
+                    </span>
+                  </p>
+
+                  {/* Textarea */}
+                  <div className="space-y-1">
+                    <label className="flex items-center gap-1.5 text-xs text-zinc-500">
+                      <FileText className="h-3.5 w-3.5" />
+                      Conte um pouco sobre sua barbearia
+                    </label>
+                    <div className="rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2.5 focus-within:border-[#C3F32C] transition-colors">
+                      <textarea
+                        rows={5}
+                        maxLength={300}
+                        placeholder="Ex: Especializada em cortes clássicos e modernos, atendemos há mais de 10 anos com um ambiente aconchegante e profissionais experientes..."
+                        value={descricao}
+                        onChange={(e) => setDescricao(e.target.value)}
+                        className="w-full resize-none bg-transparent text-sm text-white placeholder-zinc-600 outline-none leading-relaxed"
+                      />
+                    </div>
+                    <p
+                      className={`text-right text-[11px] transition-colors ${
+                        descricao.length > 250 ? "text-orange-400" : "text-zinc-600"
+                      }`}
+                    >
+                      {descricao.length} / 300
+                    </p>
+                  </div>
+
+                  {/* Tags de diferenciais */}
+                  <div className="space-y-2">
+                    <p className="text-[11px] text-zinc-600">
+                      Destaque os diferenciais{" "}
+                      <span className="text-zinc-700">(opcional)</span>
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {TAGS_OPCOES.map((tag) => {
+                        const ativa = tagsSelecionadas.includes(tag)
+                        return (
+                          <button
+                            key={tag}
+                            onClick={() => toggleTag(tag)}
+                            className={`rounded-full border px-3 py-1.5 text-[11px] transition-all duration-200 ${
+                              ativa
+                                ? "border-[#C3F32C] bg-[#C3F32C]/10 text-[#C3F32C]"
+                                : "border-zinc-800 bg-zinc-900 text-zinc-500 hover:border-[#C3F32C]/40 hover:text-zinc-300"
+                            }`}
+                          >
+                            {tag}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 3 — Visual */}
+              {step === 3 && (
                 <div className="space-y-4">
                   <p className="text-[11px] uppercase tracking-widest text-zinc-600">
                     Visual{" "}
@@ -263,7 +385,13 @@ const BarbieCreation = () => {
                           </>
                         )}
                       </button>
-                      <input ref={logoRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleUpload(e, "logo")} />
+                      <input
+                        ref={logoRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => handleUpload(e, "logo")}
+                      />
                     </div>
                     <div className="space-y-1">
                       <label className="text-xs text-zinc-500">Foto de capa</label>
@@ -281,14 +409,20 @@ const BarbieCreation = () => {
                           </>
                         )}
                       </button>
-                      <input ref={capaRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleUpload(e, "capa")} />
+                      <input
+                        ref={capaRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => handleUpload(e, "capa")}
+                      />
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* STEP 3 — Redes */}
-              {step === 3 && (
+              {/* STEP 4 — Redes */}
+              {step === 4 && (
                 <div className="space-y-4">
                   <p className="text-[11px] uppercase tracking-widest text-zinc-600">
                     Redes e horário{" "}
@@ -357,11 +491,12 @@ const BarbieCreation = () => {
                   </div>
                 </div>
               )}
+
             </motion.div>
           </AnimatePresence>
         </div>
 
-        {/* Erro */}
+        {/* ── Erro ── */}
         <AnimatePresence>
           {erro && (
             <motion.p
@@ -376,7 +511,7 @@ const BarbieCreation = () => {
           )}
         </AnimatePresence>
 
-        {/* Navegação */}
+        {/* ── Navegação ── */}
         <div className="flex items-center justify-between pt-1">
           <AnimatePresence mode="popLayout">
             {step > 0 && (
@@ -396,11 +531,7 @@ const BarbieCreation = () => {
 
           <motion.button
             onClick={avancar}
-            className={`ml-auto flex cursor-pointer items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-medium transition-opacity hover:opacity-85 ${
-              step === STEPS.length - 1
-                ? "bg-[#C3F32C] text-[#0a0a0a]"
-                : "bg-[#C3F32C] text-[#0a0a0a]"
-            }`}
+            className="ml-auto flex cursor-pointer items-center gap-2 rounded-xl bg-[#C3F32C] px-6 py-2.5 text-sm font-medium text-[#0a0a0a] transition-opacity hover:opacity-85"
             whileTap={{ scale: 0.97 }}
           >
             {step === STEPS.length - 1 ? "Salvar perfil" : "Prosseguir"}
