@@ -16,12 +16,13 @@ import {
   FileText,
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import { uploadImagem } from "@/app/_lib/uploadImagem"
 
 const STEPS = [
   { id: 0, label: "Identidade", obrigatorio: true },
   { id: 1, label: "Endereço",   obrigatorio: true },
   { id: 2, label: "Descrição",  obrigatorio: false },
-  { id: 3, label: "Visual",     obrigatorio: false },
+  { id: 3, label: "Visual",     obrigatorio: true },
   { id: 4, label: "Redes",      obrigatorio: false },
 ]
 
@@ -55,6 +56,8 @@ const BarbieCreation = () => {
   // Step 3 — Visual
   const [logoPreview, setLogoPreview]               = useState<string | null>(null)
   const [capaPreview, setCapaPreview]               = useState<string | null>(null)
+  const [logoFile, setLogoFile]                     = useState<File | null>(null)
+  const [capaFile, setCapaFile]                     = useState<File | null>(null)
 
   // Step 4 — Redes
   const [instagram, setInstagram]                   = useState("")
@@ -63,6 +66,7 @@ const BarbieCreation = () => {
   const [corMarca, setCorMarca]                     = useState("#C3F32C")
 
   const [erro, setErro] = useState("")
+  const [salvando, setSalvando] = useState(false)
 
   const logoRef = useRef<HTMLInputElement>(null)
   const capaRef = useRef<HTMLInputElement>(null)
@@ -82,6 +86,11 @@ const BarbieCreation = () => {
   ) => {
     const file = e.target.files?.[0]
     if (!file) return
+
+    tipo === "logo"
+      ? setLogoFile(file)
+      : setCapaFile(file)
+
     const reader = new FileReader()
     reader.onload = (ev) => {
       tipo === "logo"
@@ -108,17 +117,58 @@ const BarbieCreation = () => {
     if (step === 1) {
       if (!endereco.trim()) { setErro("Digite o endereço."); return false }
     }
+    if (step === 3) {
+      if (!logoFile) { setErro("Envie a logo da barbearia."); return false }
+    }
     setErro("")
     return true
   }
 
-  const avancar = () => {
+  const avancar = async () => {
     if (!validarStep()) return
+
     if (step < STEPS.length - 1) {
       setDirecao(1)
       setStep((s) => s + 1)
-    } else {
+      return
+    }
+
+    // Último step — "Salvar perfil"
+    try {
+      setSalvando(true)
+
+      // logoFile sempre existe aqui, pois é validado no step 3
+      const logoUrl = await uploadImagem(logoFile as File, "logos", `logo-${Date.now()}.png`)
+
+      // capaFile é opcional, então só faz upload se existir
+      const capaUrl = capaFile
+        ? await uploadImagem(capaFile, "capas", `capa-${Date.now()}.png`)
+        : null
+
+      const dadosBarbearia = {
+        nome: nomeBarbearia,
+        telefone,
+        cidade,
+        endereco,
+        descricao,
+        tags: tagsSelecionadas,
+        logo_url: logoUrl,
+        capa_url: capaUrl,
+        instagram,
+        horario_abertura: horarioAbertura,
+        horario_fechamento: horarioFechamento,
+        cor_marca: corMarca,
+      }
+
+      // Próximo passo: enviar `dadosBarbearia` para a API que salva no banco Neo
+      console.log("Dados prontos para salvar:", dadosBarbearia)
+
       alert("Perfil salvo com sucesso!")
+    } catch (err) {
+      console.error(err)
+      setErro("Não foi possível salvar o perfil. Tente novamente.")
+    } finally {
+      setSalvando(false)
     }
   }
 
@@ -364,13 +414,15 @@ const BarbieCreation = () => {
                 <div className="space-y-4">
                   <p className="text-[11px] uppercase tracking-widest text-zinc-600">
                     Visual{" "}
-                    <span className="ml-1 rounded bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-500">
-                      opcional
+                    <span className="ml-1 rounded bg-[#C3F32C]/10 px-2 py-0.5 text-[10px] text-[#C3F32C]">
+                      obrigatório
                     </span>
                   </p>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="text-xs text-zinc-500">Logo</label>
+                      <label className="text-xs text-zinc-500">
+                        Logo <span className="text-[#C3F32C]">*</span>
+                      </label>
                       <button
                         onClick={() => logoRef.current?.click()}
                         className="flex w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-zinc-800 bg-zinc-900 py-6 transition-colors hover:border-[#C3F32C]/50"
@@ -531,11 +583,12 @@ const BarbieCreation = () => {
 
           <motion.button
             onClick={avancar}
-            className="ml-auto flex cursor-pointer items-center gap-2 rounded-xl bg-[#C3F32C] px-6 py-2.5 text-sm font-medium text-[#0a0a0a] transition-opacity hover:opacity-85"
+            disabled={salvando}
+            className="ml-auto flex cursor-pointer items-center gap-2 rounded-xl bg-[#C3F32C] px-6 py-2.5 text-sm font-medium text-[#0a0a0a] transition-opacity hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-60"
             whileTap={{ scale: 0.97 }}
           >
-            {step === STEPS.length - 1 ? "Salvar perfil" : "Prosseguir"}
-            <ChevronRight className="h-4 w-4" />
+            {salvando ? "Salvando..." : step === STEPS.length - 1 ? "Salvar perfil" : "Prosseguir"}
+            {!salvando && <ChevronRight className="h-4 w-4" />}
           </motion.button>
         </div>
 
