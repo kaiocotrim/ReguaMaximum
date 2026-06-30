@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import {
   ChevronRight,
   ChevronLeft,
@@ -17,6 +17,9 @@ import {
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { uploadImagem } from "@/app/_lib/uploadImagem"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
+import { Plan } from "../planos/page"
 
 const STEPS = [
   { id: 0, label: "Identidade", obrigatorio: true },
@@ -192,6 +195,18 @@ const BarbieCreation = () => {
     "flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2.5 focus-within:border-[#C3F32C] transition-colors"
 
   // ─── Render ─────────────────────────────────────────────────────────────────
+
+ const { data: session, status } = useSession()
+  const router = useRouter()
+ 
+
+  useEffect(() => {
+    if (status === "loading") return
+    if (session?.user?.role !== "BARBER") {
+      router.push("/")
+    }
+  }, [session, status, router])
+  
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center bg-[#121212] p-6">

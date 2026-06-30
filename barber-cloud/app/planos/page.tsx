@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
-type Plan = {
+export type Plan = {
   id: string
   name: string
   eyebrow: string
