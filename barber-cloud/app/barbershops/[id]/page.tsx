@@ -233,7 +233,7 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
           fill
           sizes="100vw"
           className="rounded-b-3xl object-cover"
-          src={barbershop.imageUrl}
+          src={barbershop.capaUrl}
           priority
         />
         <div className="absolute inset-x-0 bottom-0 h-20 rounded-b-3xl bg-gradient-to-t from-black/60 to-transparent" />
