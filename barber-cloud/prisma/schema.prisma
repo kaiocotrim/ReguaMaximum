@@ -28,12 +28,11 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  accounts Account[]
-  sessions Session[]
-
-  barber Barber?
-  client Client?
-  bookings Booking[]
+  accounts  Account[]
+  sessions  Session[]
+  barber    Barber?
+  client    Client?
+  bookings  Booking[]
   favorites FavoriteBarbershop[]
 
   @@map("users")
@@ -56,7 +55,7 @@ model Barber {
   id String @id @default(cuid())
 
   userId String @unique
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   nome           String?
   avatar         String?
@@ -72,12 +71,20 @@ model Barber {
 }
 
 model Barbershop {
-  id          String   @id @default(uuid())
-  name        String
-  address     String
-  phones      String[]
-  description String
-  imageUrl    String
+  id                String   @id @default(uuid())
+  name              String
+  address           String
+  phones            String[]
+  description       String
+  imageUrl          String
+  cidade            String?
+  capaUrl           String?
+  tags              String[]
+  instagram         String?
+  horarioAbertura   String?
+  horarioFechamento String?
+  corMarca          String?
+  ownerId           String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -89,43 +96,44 @@ model Barbershop {
 }
 
 model BarbeshopService {
-  id           String     @id @default(uuid())
-  name         String
-  description  String
-  imageUrl     String
-  price        Decimal    @db.Decimal(10, 2)
+  id          String  @id @default(uuid())
+  name        String
+  description String
+  imageUrl    String
+  price       Decimal @db.Decimal(10, 2)
 
   barbershopId String
   barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
 
   bookings Booking[]
 }
-model Booking {
-  id           String   @id @default(uuid())
 
-  userId       String
-  user         User     @relation(fields: [userId], references: [id])
+model Booking {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   barbershopId String
   barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
 
-  serviceId    String
-  service      BarbeshopService @relation(fields: [serviceId], references: [id])
+  serviceId String
+  service   BarbeshopService @relation(fields: [serviceId], references: [id])
 
-  barberId     String
-  barber       Barber @relation(fields: [barberId], references: [id])
+  barberId String
+  barber   Barber @relation(fields: [barberId], references: [id])
 
-  date         DateTime
+  date DateTime
 
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model FavoriteBarbershop {
   id String @id @default(cuid())
 
   userId String
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   barbershopId String
   barbershop   Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)

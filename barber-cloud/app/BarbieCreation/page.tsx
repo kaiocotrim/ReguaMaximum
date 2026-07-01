@@ -1,5 +1,6 @@
 "use client"
 
+import { createBarbershop } from "@/app/_actions/createBarbershop"
 import { useState, useRef, useEffect } from "react"
 import {
   ChevronRight,
@@ -19,7 +20,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { uploadImagem } from "@/app/_lib/uploadImagem"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { Plan } from "../planos/page"
+
 
 const STEPS = [
   { id: 0, label: "Identidade", obrigatorio: true },
@@ -164,9 +165,10 @@ const BarbieCreation = () => {
       }
 
       // Próximo passo: enviar `dadosBarbearia` para a API que salva no banco Neo
-      console.log("Dados prontos para salvar:", dadosBarbearia)
+      await createBarbershop(dadosBarbearia)
 
-      alert("Perfil salvo com sucesso!")
+
+  
     } catch (err) {
       console.error(err)
       setErro("Não foi possível salvar o perfil. Tente novamente.")

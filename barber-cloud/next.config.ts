@@ -19,19 +19,22 @@
 //   },
 // }
 
-
 // export default nextConfig
-
 
 // next.config.ts (ou next.config.js)
 
-// 
+//
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   allowedDevOrigins: ["172.16.1.109"],
 
   images: {
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "hbqxheedmamrmqiasflv.supabase.co",
+      },
+
       { protocol: "https", hostname: "utfs.io" },
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "www.barbeariamedina.com.br" },
