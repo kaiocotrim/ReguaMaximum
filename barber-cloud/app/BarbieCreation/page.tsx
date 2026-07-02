@@ -15,12 +15,12 @@ import {
   Building2,
   Check,
   FileText,
+  Loader2,
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { uploadImagem } from "@/app/_lib/uploadImagem"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-
 
 const STEPS = [
   { id: 0, label: "Identidade", obrigatorio: true },
@@ -40,6 +40,8 @@ const TAGS_OPCOES = [
   "👦 Atende crianças",
   "🍺 Bebidas inclusas",
 ]
+
+// ─── Componente principal ────────────────────────────────────────────────────
 
 const BarbieCreation = () => {
   const [step, setStep]                             = useState(0)
@@ -164,11 +166,8 @@ const BarbieCreation = () => {
         cor_marca: corMarca,
       }
 
-      // Próximo passo: enviar `dadosBarbearia` para a API que salva no banco Neo
       await createBarbershop(dadosBarbearia)
 
-
-  
     } catch (err) {
       console.error(err)
       setErro("Não foi possível salvar o perfil. Tente novamente.")
@@ -198,9 +197,8 @@ const BarbieCreation = () => {
 
   // ─── Render ─────────────────────────────────────────────────────────────────
 
- const { data: session, status } = useSession()
+  const { data: session, status } = useSession()
   const router = useRouter()
- 
 
   useEffect(() => {
     if (status === "loading") return
@@ -208,7 +206,6 @@ const BarbieCreation = () => {
       router.push("/")
     }
   }, [session, status, router])
-  
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center bg-[#121212] p-6">
@@ -353,7 +350,7 @@ const BarbieCreation = () => {
                       <MapPin className="h-4 w-4 shrink-0 text-zinc-600" />
                       <input
                         type="text"
-                        placeholder="Rua, número, bairro"
+                        placeholder="Digite o endereço completo"
                         value={endereco}
                         onChange={(e) => { setEndereco(e.target.value); setErro("") }}
                         className="w-full bg-transparent text-sm text-white placeholder-zinc-600 outline-none"

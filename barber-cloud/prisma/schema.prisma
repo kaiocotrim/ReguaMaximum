@@ -20,7 +20,9 @@ model User {
   emailVerified DateTime? @map("email_verified")
   image         String?
 
-  role          UserRole?
+  role UserRole?
+
+  ownedBarbershops Barbershop[] @relation("BarbershopOwner")
 
   resetPasswordToken  String?
   resetPasswordExpiry DateTime?
@@ -84,7 +86,11 @@ model Barbershop {
   horarioAbertura   String?
   horarioFechamento String?
   corMarca          String?
-  ownerId           String?
+  
+
+  ownerId String
+  owner   User @relation("BarbershopOwner", fields: [ownerId], references: [id])
+
 
   latitude  Float?
   longitude Float?

@@ -1,11 +1,35 @@
-import  {DashboardIntro } from "@/app/_components/agenda/dashboard-intro"
 
-export default function Dashboard() {
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { db } from "@/app/_lib/prisma";
+import { redirect } from "next/navigation";
+
+export default async function DashboardPage() {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.id) {
+    redirect("/planos");
+  }
+
+  const barbershop = await db.barbershop.findFirst({
+    where: {
+      ownerId: session.user.id,
+    },
+  });
+
+  
+
+  if (!barbershop) {
+    console.log("Nenhuma barbearia encontrada para este usuário.");
+    redirect("/planos"); // Depois troque para "/criar-barbearia"
+  }
+
   return (
     <div className="leading-normal">
-      <DashboardIntro></DashboardIntro>
-      <h1 className="text-2xl font-semibold mb-2">Dashboard</h1>
-      <p className="text-muted-foreground">Bem-vindo ao painel da barbearia.</p>
+      <h1 className="mb-2 text-2xl font-semibold">Dashboard</h1>
+      <p className="text-muted-foreground">
+        Bem-vindo ao painel da {barbershop.name}.
+      </p>
     </div>
-  )
+  );
 }

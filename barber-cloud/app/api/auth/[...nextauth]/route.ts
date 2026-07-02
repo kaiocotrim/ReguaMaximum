@@ -6,7 +6,7 @@ import GoogleProvider from "next-auth/providers/google"
 import GitHubProvider from "next-auth/providers/github"
 import FacebookProvider from "next-auth/providers/facebook"
 import { PrismaAdapter } from "@auth/prisma-adapter"
-
+console.log("AUTH ROUTE CARREGADA");
 export const authOptions = {
   adapter: PrismaAdapter(db),
 
