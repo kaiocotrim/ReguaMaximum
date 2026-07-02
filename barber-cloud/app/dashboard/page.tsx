@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/app/_lib/prisma";
 import { redirect } from "next/navigation";
+import TotalAgend from "@/app/_components/dashboardComponents/agendamentos/total/page";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -30,6 +31,9 @@ export default async function DashboardPage() {
       <p className="text-muted-foreground">
         Bem-vindo ao painel da {barbershop.name}.
       </p>
+
+
+        
     </div>
   );
 }

@@ -2,13 +2,19 @@ import { db } from "@/app/_lib/prisma"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 
+import TotalAgend from "@/app/_components/dashboardComponents/agendamentos/total/page"
+
 export default async function Agendamentos() {
   const session = await getServerSession(authOptions)
 
-  const agendamentos = await db.booking.findMany({
+  if (!session?.user?.id) {
+    return null // ou redirect("/login")
+  }
+
+  const bookings = await db.booking.findMany({
     where: {
       barbershop: {
-        ownerId: session!.user.id,
+        ownerId: session.user.id,
       },
     },
     include: {
@@ -23,13 +29,9 @@ export default async function Agendamentos() {
 
   return (
     <div>
-      <h1 className="mb-2 text-2xl font-semibold">Agendamentos</h1>
-      <p className="text-muted-foreground">
-        Aqui você pode gerenciar todos os agendamentos da sua barbearia.
-      </p>
-      {agendamentos.map((booking) => (
-        <div key={booking.id}>{booking.user.name}</div>
-      ))}
+
+    
+  
     </div>
   )
 }
