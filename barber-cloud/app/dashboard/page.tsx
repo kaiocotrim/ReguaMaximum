@@ -1,28 +1,26 @@
+import { getServerSession } from "next-auth"
+import {DashboardStatsCard} from "@/app/_components/dashboardComponents/agendamentos/total/DashboardStatsCard"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { db } from "@/app/_lib/prisma"
+import { redirect } from "next/navigation"
 
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { db } from "@/app/_lib/prisma";
-import { redirect } from "next/navigation";
-import TotalAgend from "@/app/_components/dashboardComponents/agendamentos/total/page";
 
 export default async function DashboardPage() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions)
 
   if (!session?.user?.id) {
-    redirect("/planos");
+    redirect("/planos")
   }
 
   const barbershop = await db.barbershop.findFirst({
     where: {
       ownerId: session.user.id,
     },
-  });
-
-  
+  })
 
   if (!barbershop) {
-    console.log("Nenhuma barbearia encontrada para este usuário.");
-    redirect("/planos"); // Depois troque para "/criar-barbearia"
+    console.log("Nenhuma barbearia encontrada para este usuário.")
+    redirect("/planos") // Depois troque para "/criar-barbearia"
   }
 
   return (
@@ -31,9 +29,6 @@ export default async function DashboardPage() {
       <p className="text-muted-foreground">
         Bem-vindo ao painel da {barbershop.name}.
       </p>
-
-
-        
     </div>
-  );
+  )
 }
