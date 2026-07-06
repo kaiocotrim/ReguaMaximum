@@ -3,6 +3,7 @@ import {DashboardStatsCard} from "@/app/_components/dashboardComponents/agendame
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { db } from "@/app/_lib/prisma"
 import { redirect } from "next/navigation"
+import { StatsBarber } from "@/app/_components/dashboardComponents/barbeiros/StatsBarber"
 import { Card } from "@/app/_components/ui/card"
 
 
@@ -30,6 +31,7 @@ export default async function DashboardPage() {
       <p className="text-muted-foreground">
         Bem-vindo ao painel da {barbershop.name}.
             <DashboardStatsCard />
+            <StatsBarber />
       </p>
       
     
