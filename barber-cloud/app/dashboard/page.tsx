@@ -3,6 +3,7 @@ import {DashboardStatsCard} from "@/app/_components/dashboardComponents/agendame
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { db } from "@/app/_lib/prisma"
 import { redirect } from "next/navigation"
+import { Card } from "@/app/_components/ui/card"
 
 
 export default async function DashboardPage() {
@@ -28,7 +29,12 @@ export default async function DashboardPage() {
       <h1 className="mb-2 text-2xl font-semibold">Dashboard</h1>
       <p className="text-muted-foreground">
         Bem-vindo ao painel da {barbershop.name}.
+            <DashboardStatsCard />
       </p>
+      
+    
+
+      
     </div>
   )
 }
