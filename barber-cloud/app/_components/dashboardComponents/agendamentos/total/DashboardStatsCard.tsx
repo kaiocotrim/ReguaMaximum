@@ -172,7 +172,7 @@ export async function DashboardStatsCard() {
       : TrendingDownIcon
 
   return (
-    <Card className="gap-2 rounded-2xl border-emerald-500/20 bg-emerald-500/5 p-6 shadow-sm">
+    <Card className="flex flex-col gap-2 rounded-2xl p-6 shadow-sm">
       <div className="flex items-center justify-between">
         <span className="text-sm text-muted-foreground">
           Total de Agendamentos
@@ -183,9 +183,12 @@ export async function DashboardStatsCard() {
             isNeutral
               ? "border-muted-foreground/30 text-muted-foreground"
               : isPositive
-                ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-500"
+                ? "border-transparent text-black"
                 : "border-red-500/30 text-red-500"
           }`}
+          style={
+            isPositive && !isNeutral ? { backgroundColor: "#C3F32C" } : undefined
+          }
         >
           <TrendIcon className="h-3 w-3" />
           {isPositive && !isNeutral ? "+" : ""}
@@ -193,11 +196,11 @@ export async function DashboardStatsCard() {
         </Badge>
       </div>
 
-      <p className="text-4xl font-bold tracking-tight text-emerald-500 tabular-nums">
+      <p className="text-4xl font-bold tracking-tight tabular-nums">
         {totalBookings}
       </p>
 
-      <div className="flex items-center gap-1 text-sm font-medium">
+      <div className="flex items-center gap-1 text-sm font-medium text-muted-foreground">
         {isNeutral
           ? "Sem variação este mês"
           : isPositive
@@ -206,8 +209,11 @@ export async function DashboardStatsCard() {
         <TrendIcon className="h-4 w-4" />
       </div>
 
-      <div className="flex items-center gap-1.5 rounded-lg bg-emerald-500/10 px-2.5 py-1.5 text-sm text-muted-foreground">
-        <CalendarCheckIcon className="h-3.5 w-3.5 text-emerald-500" />
+      <div
+        className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-black"
+        style={{ backgroundColor: "#C3F32C" }}
+      >
+        <CalendarCheckIcon className="h-3.5 w-3.5" />
         {currentMonthBookings} este mês (era {previousMonthBookings})
       </div>
     </Card>
