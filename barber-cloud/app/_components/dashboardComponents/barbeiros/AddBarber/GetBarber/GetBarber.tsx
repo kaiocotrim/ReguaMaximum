@@ -10,9 +10,14 @@ import {
   AlertDialogTrigger,
 } from "@/app/_components/ui/alert-dialog"
 
+import { db } from "@/app/_lib/prisma"
+
 import { Button } from "@/app/_components/ui/button"
 
-const GetBarber = () => {
+export default async function GetBarber() {
+
+    const produto = await db.barber.findMany()  
+
   return (
     <AlertDialog>
       <AlertDialogTrigger>
@@ -26,9 +31,18 @@ const GetBarber = () => {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>teste</AlertDialogTitle>
+          <AlertDialogTitle>
+            
+            teste
+
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            aa
+            <ul>
+            {produto.map((p) => (
+                <li key={p.id}>{p.nome}</li>
+            ) )}
+
+            </ul>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -39,5 +53,3 @@ const GetBarber = () => {
     </AlertDialog>
   )
 }
-
-export default GetBarber
