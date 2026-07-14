@@ -1,9 +1,9 @@
-import { Card } from "@/app/_components/ui/card";
+import { Card } from "@/app/_components/ui/card"
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/app/_components/ui/avatar";
+} from "@/app/_components/ui/avatar"
 import {
   Table,
   TableBody,
@@ -13,16 +13,20 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/app/_components/ui/table";
+} from "@/app/_components/ui/table"
 
-type StatusBarbeiro = "Cortando cabelo" | "Almoço" | "Pendente";
+import GetBarber from "@/app/_components/dashboardComponents/barbeiros/AddBarber/GetBarber/GetBarber"
+
+import { Button } from "@/app/_components/ui/button"
+
+type StatusBarbeiro = "Cortando cabelo" | "Almoço" | "Pendente"
 
 interface Barbeiro {
-  nome: string;
-  avatarUrl?: string;
-  cortesNoMes: number;
-  valorMensal: string;
-  status: StatusBarbeiro;
+  nome: string
+  avatarUrl?: string
+  cortesNoMes: number
+  valorMensal: string
+  status: StatusBarbeiro
 }
 
 const barbeiros: Barbeiro[] = [
@@ -51,13 +55,13 @@ const barbeiros: Barbeiro[] = [
     valorMensal: "R$ 1.650,00",
     status: "Cortando cabelo",
   },
-];
+]
 
 const statusStyles: Record<StatusBarbeiro, string> = {
   "Cortando cabelo": "text-black",
-  "Almoço": "bg-orange-100 text-orange-700",
-  "Pendente": "bg-gray-100 text-gray-600",
-};
+  Almoço: "bg-orange-100 text-orange-700",
+  Pendente: "bg-gray-100 text-gray-600",
+}
 
 const getIniciais = (nome: string) =>
   nome
@@ -65,10 +69,10 @@ const getIniciais = (nome: string) =>
     .map((parte) => parte[0])
     .slice(0, 2)
     .join("")
-    .toUpperCase();
+    .toUpperCase()
 
 const StatusBadge = ({ status }: { status: StatusBarbeiro }) => {
-  const isAtivo = status === "Cortando cabelo";
+  const isAtivo = status === "Cortando cabelo"
 
   return (
     <span
@@ -80,20 +84,24 @@ const StatusBadge = ({ status }: { status: StatusBarbeiro }) => {
       )}
       {status}
     </span>
-  );
-};
+  )
+}
 
 const AddBarber = () => {
   const totalMensal = barbeiros.reduce((acc, b) => {
     const valorNumerico = Number(
       b.valorMensal.replace(/[^\d,]/g, "").replace(",", "."),
-    );
-    return acc + valorNumerico;
-  }, 0);
+    )
+    return acc + valorNumerico
+  }, 0)
 
   return (
-    <Card className="flex flex-col gap-2 rounded-2xl p-6 shadow-sm mt-5 ">
-      <h1 className="text-lg font-semibold">Lista de barbeiros</h1>
+    <Card className="mt-5 flex flex-col gap-2 rounded-2xl p-6 shadow-sm">
+      <div className="flex gap-2">
+        <h1 className="text-lg font-semibold">Lista de barbeiros</h1>
+        <GetBarber></GetBarber>
+      </div>
+
       <Table>
         <TableCaption>Desempenho dos barbeiros neste mês.</TableCaption>
         <TableHeader>
@@ -110,10 +118,7 @@ const AddBarber = () => {
               <TableCell className="font-medium">
                 <div className="flex items-center gap-3">
                   <Avatar>
-                    <AvatarImage
-                      src={barbeiro.avatarUrl}
-                      alt={barbeiro.nome}
-                    />
+                    <AvatarImage src={barbeiro.avatarUrl} alt={barbeiro.nome} />
                     <AvatarFallback>
                       {getIniciais(barbeiro.nome)}
                     </AvatarFallback>
@@ -144,7 +149,7 @@ const AddBarber = () => {
         </TableFooter>
       </Table>
     </Card>
-  );
-};
+  )
+}
 
-export default AddBarber;
+export default AddBarber

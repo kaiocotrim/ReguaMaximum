@@ -11,6 +11,7 @@ export function BarbeirosPage() {
             </p>
     
             <AddBarber  />
+            
         </div> 
     )
 }
