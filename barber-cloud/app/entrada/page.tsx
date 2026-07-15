@@ -1,3 +1,5 @@
+import {Card} from "@/app/_components/ui/card"
+
 import Header from "../_components/header"
 
 const teste = () => {
@@ -6,8 +8,13 @@ const teste = () => {
             <Header />
             
             <div className="p-5">
-                <h1>Sua caixa de entrada...</h1>
-                    
+                <Card className="mb-5 ">
+                   <div>
+                   </div>
+                </Card> 
+               
+                <Card className="h-[500px]">
+                </Card>
             </div>
         </div>
      );
