@@ -10,15 +10,15 @@ import {
   AlertDialogTrigger,
 } from "@/app/_components/ui/alert-dialog"
 
-import { Card } from "@/app/_components/ui/card"
+import InviteBarber from "../InviteBarber"
 
-import { db } from "@/app/_lib/prisma"
+
 
 import { Button } from "@/app/_components/ui/button"
 import { Plus } from "lucide-react"
 
 export default async function GetBarber() {
-  const produto = await db.barber.findMany()
+  
 
   return (
     <AlertDialog>
@@ -39,21 +39,9 @@ export default async function GetBarber() {
           </AlertDialogTitle>
 
           <AlertDialogDescription asChild>
-            <Card className="mt-5 flex flex-col gap-2 rounded-2xl border border-zinc-800 bg-[#141414] p-6 shadow-sm">
-              <ul className="mt-1 flex flex-col divide-y divide-zinc-800">
-                {produto.map((p) => (
-                  <li
-                    key={p.id}
-                    className="group flex cursor-pointer items-center justify-between py-3"
-                  >
-                    <span className="text-sm text-zinc-300 transition-colors group-hover:text-white">
-                      {p.nome}
-                    </span>
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#C3F32C] opacity-0 transition-opacity group-hover:opacity-100" />
-                  </li>
-                ))}
-              </ul>
-            </Card>
+            <div>
+              <InviteBarber />
+            </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
 
