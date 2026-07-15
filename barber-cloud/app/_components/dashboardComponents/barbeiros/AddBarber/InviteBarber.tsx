@@ -83,7 +83,7 @@ export default function SearchEmail() {
     <div ref={containerRef} className="relative w-full max-w-sm">
       <div className="relative">
         <svg
-          className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400"
+          className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#C3F32C]"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -100,7 +100,7 @@ export default function SearchEmail() {
           value={query}
           onChange={(e) => handleChangeInput(e.target.value)}
           placeholder="Buscar por e-mail..."
-          className="w-full rounded-lg border border-gray-300 bg-white py-2.5 pr-9 pl-9 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
+          className="w-full rounded-lg border  bg-background py-2.5 pr-9 pl-9 text-sm text-gray-50 transition outline-none placeholder:text-gray-500 focus:border-[#C3F32C] focus:ring-1 focus:ring-gray-900"
         />
 
         {carregando && (
@@ -111,7 +111,7 @@ export default function SearchEmail() {
 
         {!carregando && selecionado && (
           <svg
-            className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-green-500"
+            className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-[#C3F32C]"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -129,7 +129,7 @@ export default function SearchEmail() {
       {erro && <p className="mt-1.5 text-xs text-red-500">{erro}</p>}
 
       {resultados.length > 0 && (
-        <ul className="absolute z-10 mt-1.5 w-full overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
+        <ul className="absolute z-10 mt-1.5 w-full overflow-hidden rounded-lg border border-gray-200 bg-black shadow-lg">
           {resultados.map((item) => {
             const isSelecionado = selecionado?.id === item.id
 
@@ -148,7 +148,7 @@ export default function SearchEmail() {
 
                 {isSelecionado && (
                   <svg
-                    className="h-4 w-4 shrink-0 text-green-500"
+                    className="h-4 w-4 shrink-0 text-[#C3F32C]"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"

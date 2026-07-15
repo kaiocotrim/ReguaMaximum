@@ -45,7 +45,8 @@ import {
   House,
   Lock,
   User,
-  CreditCard
+  CreditCard,Mail
+
 } from "lucide-react"
 import { Direction } from "radix-ui"
 import { LoginForm } from "../login-form"
@@ -110,7 +111,14 @@ const MENU_ITEMS = [
     requiresAuth: true,
     href: "/planos"
   },
-
+  {
+    icon: Mail,
+    label: "Inbox",
+    description: "Veja seus convites e notificações.",
+    requiresAuth: true,
+    href: "/entrada",
+    onlyBarber: true, // ← flag
+  },
   {
     icon: Settings,
     label: "Configurações",

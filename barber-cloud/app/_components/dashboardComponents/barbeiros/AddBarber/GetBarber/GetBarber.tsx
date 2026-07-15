@@ -32,13 +32,13 @@ export default async function GetBarber() {
         </Button>
       </AlertDialogTrigger>
 
-      <AlertDialogContent className="data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95 border border-zinc-800 bg-[#0d0d0d] shadow-[0_0_0_4px_rgba(195,243,44,0.1)]">
+      <AlertDialogContent className="data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95 border border-zinc-800 bg-[#0d0d0d]">
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-lg font-semibold text-white">
-            Escolha um barbeiro
+          <AlertDialogTitle className="text-lg font-semibold text-gray-100">
           </AlertDialogTitle>
 
           <AlertDialogDescription asChild>
+            
             <div>
               <InviteBarber />
             </div>
@@ -49,8 +49,8 @@ export default async function GetBarber() {
           <AlertDialogCancel className="border-zinc-700 bg-transparent text-zinc-300 hover:bg-zinc-800 hover:text-white">
             Cancelar
           </AlertDialogCancel>
-          <AlertDialogAction className="bg-[#C3F32C] font-medium text-black hover:bg-[#b3e025]">
-            Continuar
+          <AlertDialogAction className="font-medium text-black hover:bg-[#b3e025]">
+            Convidar
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
