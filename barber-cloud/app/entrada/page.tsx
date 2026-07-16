@@ -1,4 +1,4 @@
-import {Card} from "@/app/_components/ui/card"
+import { Card } from "@/app/_components/ui/card"
 
 import Header from "../_components/header"
 

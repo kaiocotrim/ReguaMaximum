@@ -1,3 +1,196 @@
+// generator client {
+//   provider = "prisma-client"
+//   output   = "../app/generated/prisma"
+// }
+
+// datasource db {
+//   provider = "postgresql"
+// }
+
+// enum UserRole {
+//   CLIENT
+//   BARBER
+// }
+
+// model User {
+//   id            String    @id @default(cuid())
+//   name          String?
+//   email         String?   @unique
+//   password      String?
+//   emailVerified DateTime? @map("email_verified")
+//   image         String?
+
+//   role UserRole?
+
+//   ownedBarbershops Barbershop[] @relation("BarbershopOwner")
+
+//   resetPasswordToken  String?
+//   resetPasswordExpiry DateTime?
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   accounts  Account[]
+//   sessions  Session[]
+//   barber    Barber?
+//   client    Client?
+//   bookings  Booking[]
+//   favorites FavoriteBarbershop[]
+
+//   @@map("users")
+// }
+
+// model Client {
+//   id String @id @default(cuid())
+
+//   userId String @unique
+//   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   nome   String?
+//   avatar String?
+//   cidade String?
+
+//   createdAt DateTime @default(now())
+// }
+
+// model Barber {
+//   id String @id @default(cuid())
+
+//   userId String @unique
+//   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   nome           String?
+//   avatar         String?
+//   bio            String?
+//   cidade         String?
+//   especialidades String[]
+
+//   barbershopId String?
+//   barbershop   Barbershop? @relation(fields: [barbershopId], references: [id])
+
+//   createdAt DateTime @default(now())
+//   bookings  Booking[]
+// }
+
+// model Barbershop {
+//   id                String   @id @default(uuid())
+//   name              String
+//   address           String
+//   phones            String[]
+//   description       String
+//   imageUrl          String
+//   cidade            String?
+//   capaUrl           String?
+//   tags              String[]
+//   instagram         String?
+//   horarioAbertura   String?
+//   horarioFechamento String?
+//   corMarca          String?
+
+//   ownerId String
+//   owner   User @relation("BarbershopOwner", fields: [ownerId], references: [id])
+
+//   latitude  Float?
+//   longitude Float?
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   barbers     Barber[]
+//   services    BarbeshopService[]
+//   bookings    Booking[]
+//   favoritedBy FavoriteBarbershop[]
+// }
+
+// model BarbeshopService {
+//   id          String  @id @default(uuid())
+//   name        String
+//   description String
+//   imageUrl    String
+//   price       Decimal @db.Decimal(10, 2)
+
+//   barbershopId String
+//   barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
+
+//   bookings Booking[]
+// }
+
+// model Booking {
+//   id String @id @default(uuid())
+
+//   userId String
+//   user   User   @relation(fields: [userId], references: [id])
+
+//   barbershopId String
+//   barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
+
+//   serviceId String
+//   service   BarbeshopService @relation(fields: [serviceId], references: [id])
+
+//   barberId String
+//   barber   Barber @relation(fields: [barberId], references: [id])
+
+//   date DateTime
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model FavoriteBarbershop {
+//   id String @id @default(cuid())
+
+//   userId String
+//   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   barbershopId String
+//   barbershop   Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+
+//   createdAt DateTime @default(now())
+
+//   @@unique([userId, barbershopId])
+// }
+
+// model Account {
+//   id                String @id @default(cuid())
+//   userId            String @map("user_id")
+//   type              String
+//   provider          String
+//   providerAccountId String @map("provider_account_id")
+
+//   refresh_token String?
+//   access_token  String?
+//   expires_at    Int?
+//   token_type    String?
+//   scope         String?
+//   id_token      String?
+//   session_state String?
+
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   @@unique([provider, providerAccountId])
+//   @@map("accounts")
+// }
+
+// model Session {
+//   id           String   @id @default(cuid())
+//   sessionToken String   @unique @map("session_token")
+//   userId       String   @map("user_id")
+//   expires      DateTime
+
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   @@map("sessions")
+// }
+
+// model VerificationToken {
+//   identifier String
+//   token      String
+//   expires    DateTime
+
+//   @@unique([identifier, token])
+//   @@map("verification_tokens")
+// }
+
 generator client {
   provider = "prisma-client"
   output   = "../app/generated/prisma"
@@ -10,6 +203,14 @@ datasource db {
 enum UserRole {
   CLIENT
   BARBER
+}
+
+enum InviteStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  CANCELED
+  EXPIRED
 }
 
 model User {
@@ -36,6 +237,10 @@ model User {
   client    Client?
   bookings  Booking[]
   favorites FavoriteBarbershop[]
+
+  // Convites enviados (como dono de barbearia) e recebidos (como barbeiro convidado)
+  invitesSent     BarbershopInvite[] @relation("InviteSender")
+  invitesReceived BarbershopInvite[] @relation("InviteReceiver")
 
   @@map("users")
 }
@@ -68,16 +273,9 @@ model Barber {
   barbershopId String?
   barbershop   Barbershop? @relation(fields: [barbershopId], references: [id])
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
   bookings  Booking[]
 }
-
-
-
-
-
-
-
 
 model Barbershop {
   id                String   @id @default(uuid())
@@ -93,11 +291,9 @@ model Barbershop {
   horarioAbertura   String?
   horarioFechamento String?
   corMarca          String?
-  
 
   ownerId String
-  owner   User @relation("BarbershopOwner", fields: [ownerId], references: [id])
-
+  owner   User   @relation("BarbershopOwner", fields: [ownerId], references: [id])
 
   latitude  Float?
   longitude Float?
@@ -109,6 +305,7 @@ model Barbershop {
   services    BarbeshopService[]
   bookings    Booking[]
   favoritedBy FavoriteBarbershop[]
+  invites     BarbershopInvite[]
 }
 
 model BarbeshopService {
@@ -157,6 +354,32 @@ model FavoriteBarbershop {
   createdAt DateTime @default(now())
 
   @@unique([userId, barbershopId])
+}
+
+/// Convite de um dono de barbearia para um barbeiro se juntar à equipe.
+/// O vínculo real só é criado (em Barber.barbershopId) quando o convite é aceito
+/// pelo service layer — esta tabela representa apenas o estado do processo.
+model BarbershopInvite {
+  id String @id @default(uuid())
+
+  barbershopId String
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+
+  inviterId String
+  inviter   User   @relation("InviteSender", fields: [inviterId], references: [id], onDelete: Cascade)
+
+  inviteeId String
+  invitee   User   @relation("InviteReceiver", fields: [inviteeId], references: [id], onDelete: Cascade)
+
+  status      InviteStatus @default(PENDING)
+  message     String?
+  expiresAt   DateTime
+  respondedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("barbershop_invites")
 }
 
 model Account {
