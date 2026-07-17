@@ -23,6 +23,7 @@ export async function GET(req: NextRequest) {
     },
     select: {
       id: true,
+      userId: true,
       user: {
         select: {
           email: true,
