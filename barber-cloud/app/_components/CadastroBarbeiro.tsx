@@ -15,11 +15,12 @@ import {
   Scissors,
   MapPin,
   FileText,
+  Phone,
 } from "lucide-react"
 
 type StepId = 0 | 1 | 2 | 3 | 4 | 5
 
-const TOTAL_STEPS = 6
+const TOTAL_STEPS = 7
 
 const SPECIALTIES = [
   "Corte clássico",
@@ -36,11 +37,12 @@ const SPECIALTIES = [
 
 const STEP_PCT: Record<number, number> = {
   0: 0,
-  1: 20,
-  2: 40,
-  3: 60,
-  4: 80,
-  5: 100,
+  1: 16,
+  2: 33,
+  3: 50,
+  4: 66,
+  5: 83,
+  6: 100,
 }
 
 const ACCENT = "#C3F32C"
@@ -145,6 +147,7 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
   const [bio, setBio] = useState("")
   const [specialties, setSpecialties] = useState<Set<string>>(new Set())
   const [cidade, setCidade] = useState("")
+  const [telefone, setTelefone] = useState("")
 
   // const salvarPerfil = async () => {
   //   try {
@@ -187,6 +190,7 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
           bio,
           cidade,
           especialidades: Array.from(specialties),
+          telefone: telefone.replace(/\D/g, ""),
         }),
       })
 
@@ -209,9 +213,10 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
       if (s === 2) return bio.trim().length >= 10
       if (s === 3) return specialties.size >= 1
       if (s === 4) return cidade.trim().length >= 2
+      if (s === 5) return telefone.replace(/\D/g, "").length >= 10
       return true
     },
-    [nome, avatar, bio, specialties, cidade],
+    [nome, avatar, bio, specialties, cidade, telefone],
   )
 
   const next = () => {
@@ -395,7 +400,23 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
       />
     </StepShell>,
 
-    // 5 — Sucesso
+    // 5 — Telefone
+    <StepShell
+      key="telefone"
+      icon={Phone}
+      title="Qual o seu telefone?"
+      subtitle="Para que clientes ou donos de barbearia entrem em contato."
+    >
+      <Input
+        value={telefone}
+        onChange={(e) => setTelefone(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && next()}
+        placeholder="Ex: (11) 99999-9999"
+        className="h-12 border-white/10 bg-white/[0.04] text-base text-white placeholder:text-white/20 focus-visible:border-[#C3F32C] focus-visible:ring-0"
+      />
+    </StepShell>,
+
+    // 6 — Sucesso
     <div key="sucesso" className="flex flex-col items-center py-6 text-center">
       <motion.div
         className="mb-8 flex h-16 w-16 items-center justify-center rounded-full border"

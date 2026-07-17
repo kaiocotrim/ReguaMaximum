@@ -32,6 +32,7 @@ export async function POST(req: Request) {
         },
         data: {
           role: "CLIENT",
+          telefone: body.telefone,
         },
       });
 

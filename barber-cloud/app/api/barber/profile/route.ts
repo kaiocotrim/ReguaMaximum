@@ -34,6 +34,7 @@ export async function POST(req: Request) {
         },
         data: {
           role: "BARBER",
+          telefone: body.telefone,
         },
       });
 

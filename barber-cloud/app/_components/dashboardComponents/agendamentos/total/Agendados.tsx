@@ -1,7 +1,7 @@
 import { Card } from "@/app/_components/ui/card"
 import { db } from "@/app/_lib/prisma"
-import { deleteBooking } from "@/app/api/deleteBokings/delete-bookingBarber"
 import { WhatsAppButton } from "../WhatsAppButton"
+import { DeleteBookingButton } from "../DeleteBookingButton"
 
 export default async function Agendados() {
   const appointments = await db.booking.findMany({
@@ -60,14 +60,7 @@ export default async function Agendados() {
               telefone={appointment.user.telefone}
               nomeCliente={appointment.user.name}
             />
-            <form action={deleteBooking.bind(null, appointment.id)}>
-              <button
-                type="submit"
-                className="text-red-400 cursor-pointer hover:text-white hover:bg-red-500 border border-red-500/30 hover:border-red-500 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
-              >
-                Excluir
-              </button>
-            </form>
+            <DeleteBookingButton bookingId={appointment.id} />
           </div>
         </div>
       ))}

@@ -12,17 +12,19 @@ import {
   User,
   Check,
   MapPin,
+  Phone,
 } from "lucide-react"
 
 type StepId = 0 | 1 | 2 | 3
 
-const TOTAL_STEPS = 4
+const TOTAL_STEPS = 5
 
 const STEP_PCT: Record<number, number> = {
   0: 0,
-  1: 33,
-  2: 66,
-  3: 100,
+  1: 25,
+  2: 50,
+  3: 75,
+  4: 100,
 }
 
 const ACCENT = "#C3F32C"
@@ -119,6 +121,7 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
   const [nome, setNome] = useState(nomeInicial)
   const [avatar, setAvatar] = useState<string | null>(null)
   const [cidade, setCidade] = useState("")
+  const [telefone, setTelefone] = useState("")
 
   // const salvarPerfil = async () => {
   //   try {
@@ -150,6 +153,7 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
           nome,
           avatar,
           cidade,
+          telefone: telefone.replace(/\D/g, ""),
         }),
       })
 
@@ -170,9 +174,10 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
       if (s === 0) return nome.trim().length >= 2
       if (s === 1) return avatar !== null
       if (s === 2) return cidade.trim().length >= 2
+      if (s === 3) return telefone.replace(/\D/g, "").length >= 10
       return true
     },
-    [nome, avatar, cidade],
+    [nome, avatar, cidade, telefone],
   )
 
   const next = () => {
@@ -293,7 +298,23 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
       />
     </StepShell>,
 
-    // 3 — Sucesso
+    // 3 — Telefone
+    <StepShell
+      key="telefone"
+      icon={Phone}
+      title="Qual o seu telefone?"
+      subtitle="Para receber avisos sobre os seus agendamentos."
+    >
+      <Input
+        value={telefone}
+        onChange={(e) => setTelefone(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && next()}
+        placeholder="Ex: (11) 99999-9999"
+        className="h-12 border-white/10 bg-white/[0.04] text-base text-white placeholder:text-white/20 focus-visible:border-[#C3F32C] focus-visible:ring-0"
+      />
+    </StepShell>,
+
+    // 4 — Sucesso
     <div key="sucesso" className="flex flex-col items-center py-6 text-center">
       <motion.div
         className="mb-8 flex h-16 w-16 items-center justify-center rounded-full border"
