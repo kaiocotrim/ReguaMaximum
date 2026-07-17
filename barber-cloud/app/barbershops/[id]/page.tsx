@@ -176,7 +176,8 @@ import {
   Smartphone,
   Share,
   CircleUser,
-  ChevronRight
+  ChevronRight,
+  User
 } from "lucide-react"
 import Link from "next/link"
 import { Card } from "@/app/_components/ui/card"
@@ -409,27 +410,43 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
                   Submit
                 </Button> */}
 
-                <Card className="border-none bg-black/10 p-4 " >
-                  <div className="flex items-center justify-between cursor-pointer">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={"https://avatars.githubusercontent.com/u/175139628?v=4"}
-                        alt={"https://avatars.githubusercontent.com/u/175139628?v=4"}
-                        className="h-10 w-10 rounded-full object-cover"
-                      />
-                      <span className="text-sm font-semibold text-white">
-                        Kaio Alan (Cotrim)
-                      </span>
-                    </div>
+                {barbershop.barbers.length === 0 ? (
+                  <p className="py-4 text-center text-sm text-zinc-500">
+                    Nenhum barbeiro cadastrado nesta barbearia.
+                  </p>
+                ) : (
+                  barbershop.barbers.map((barber) => {
+                    const name = barber.nome || barber.user.name || "Barbeiro"
+                    const avatarUrl = barber.avatar || barber.user.image
 
-                    <div>{/* Botão, avaliação, ação, etc. */} 
-                      <ChevronRight >
-                        
-                      </ChevronRight>
+                    return (
+                      <Card key={barber.id} className="border-none bg-black/10 p-4 mb-2">
+                        <div className="flex items-center justify-between cursor-pointer">
+                          <div className="flex items-center gap-3">
+                            {avatarUrl ? (
+                              <img
+                                src={avatarUrl}
+                                alt={name}
+                                className="h-10 w-10 rounded-full object-cover"
+                              />
+                            ) : (
+                              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-800">
+                                <User className="h-5 w-5 text-zinc-400" />
+                              </div>
+                            )}
+                            <span className="text-sm font-semibold text-white">
+                              {name}
+                            </span>
+                          </div>
 
-                      </div>
-                  </div>
-                </Card>
+                          <div>
+                            <ChevronRight className="h-5 w-5 text-zinc-400" />
+                          </div>
+                        </div>
+                      </Card>
+                    )
+                  })
+                )}
 
                 <DrawerClose>
                   <Button
