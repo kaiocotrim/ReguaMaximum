@@ -31,7 +31,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="dark min-h-full">
+      <body className="dark min-h-full custom-scrollbar overflow-y-auto">
         <AuthProvider>
           {children}
         </AuthProvider>

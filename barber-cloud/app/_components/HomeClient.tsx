@@ -261,14 +261,14 @@ export default function HomeClient({
             </motion.h2>
 
             <motion.h2
-              className="text-xs font-bold uppercase flex cursor-pointer text-[#C3F32C]"
+              className="text-xs font-bold uppercase flex cursor-pointer text-lime-400"
               variants={fadeIn}
               initial="hidden"
               animate="show"
               custom={6}
               onClick={() => router.push(`/map`)}
             >
-              Mapa 
+              Mapa
             </motion.h2>
           </div>
 
