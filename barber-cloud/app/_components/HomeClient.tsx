@@ -261,7 +261,7 @@ export default function HomeClient({
             </motion.h2>
 
             <motion.h2
-              className="text-xs font-bold uppercase flex cursor-pointer text-lime-400"
+              className="text-xs font-bold uppercase flex cursor-pointer text-[#C3F32C]"
               variants={fadeIn}
               initial="hidden"
               animate="show"

@@ -33,10 +33,10 @@
 //             <DashboardStatsCard />
 //             <StatsBarber />
 //       </p>
-      
-    
 
-      
+
+
+
 //     </div>
 //   )
 // }
@@ -89,7 +89,7 @@ import { db } from "@/app/_lib/prisma"
 import { redirect } from "next/navigation"
 import { StatsBarber } from "@/app/_components/dashboardComponents/barbeiros/StatsBarber"
 import { StatsClientes } from "@/app/_components/dashboardComponents/StatsClientes/page"
-import  Relatorios  from "@/app/_components/dashboardComponents/relatorios/page"
+import Relatorios from "@/app/_components/dashboardComponents/relatorios/page"
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions)
@@ -121,8 +121,8 @@ export default async function DashboardPage() {
         <StatsBarber />
         <StatsClientes />
         <div className="col-span-full">
-    <Relatorios />
-  </div>
+          <Relatorios />
+        </div>
       </div>
     </div>
   )

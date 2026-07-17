@@ -174,9 +174,9 @@ const Planos = () => {
             transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
           >
             {/* Header */}
-            <div className="text-center">
-              <p className="mb-2 text-xs font-medium uppercase tracking-widest text-lime-400">
-                Planos & Preços
+            <div className="mb-6">
+              <p className="mb-2 text-xs font-medium uppercase tracking-widest text-[#C3F32C]">
+                Mais Popular
               </p>
               <h1 className="text-3xl font-semibold text-white">
                 Escolha o plano ideal
