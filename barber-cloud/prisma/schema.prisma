@@ -220,6 +220,7 @@ model User {
   password      String?
   emailVerified DateTime? @map("email_verified")
   image         String?
+  telefone      String?
 
   role UserRole?
 

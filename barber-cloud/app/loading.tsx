@@ -5,5 +5,6 @@ export default function Loading() {
     <div className="flex h-screen items-center justify-center">
       <DashRing className="size-14" />
     </div>
+
   )
 }
