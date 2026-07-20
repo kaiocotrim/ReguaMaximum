@@ -30,10 +30,14 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
   const isDone = status === "CONCLUIDO"
 
   const toggleStatus = () => {
+    const previousStatus = status
     const newStatus: BookingStatus = isDone ? "EM_ANDAMENTO" : "CONCLUIDO"
     setStatus(newStatus) // update otimista
     startTransition(async () => {
-      await updateBookingStatus(appointment.id, newStatus)
+      const result = await updateBookingStatus(appointment.id, newStatus)
+      if (!result.success) {
+        setStatus(previousStatus) // rollback
+      }
     })
   }
 
@@ -41,7 +45,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
     <Card
       className={`group relative border rounded-2xl p-5 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 ${
         isDone
-          ? "border-emerald-500/30 bg-emerald-950/10 hover:border-emerald-500/50 hover:shadow-[0_8px_30px_rgba(16,185,129,0.08)]"
+          ? "border-[#C3F32C]/30 bg-[#C3F32C]/5 hover:border-[#C3F32C]/50 hover:shadow-[0_8px_30px_rgba(195,243,44,0.08)]"
           : "border-zinc-800/80 bg-zinc-950/60 hover:border-[#C3F32C]/30 hover:bg-zinc-900/60 hover:shadow-[0_8px_30px_rgba(195,243,44,0.06)]"
       }`}
     >
@@ -66,7 +70,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
           variant="outline"
           className={`shrink-0 font-medium text-xs px-2.5 py-0.5 transition-colors ${
             isDone
-              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+              ? "bg-[#C3F32C]/10 text-[#C3F32C] border-[#C3F32C]/30"
               : "bg-amber-500/10 text-amber-400 border-amber-500/20"
           }`}
         >
@@ -104,7 +108,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
         variant="ghost"
         className={`w-full mb-4 font-medium transition-all ${
           isDone
-            ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/25"
+            ? "bg-[#C3F32C]/15 text-[#C3F32C] border border-[#C3F32C]/30 hover:bg-[#C3F32C]/25"
             : "bg-amber-500/15 text-amber-400 border border-amber-500/30 hover:bg-amber-500/25"
         }`}
       >
@@ -132,4 +136,4 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
       </div>
     </Card>
   )
-}   
+}
