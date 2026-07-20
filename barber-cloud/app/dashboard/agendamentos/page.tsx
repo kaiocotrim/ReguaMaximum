@@ -8,7 +8,7 @@ const AgendamentosPage = () => {
             
             <h1>Agendamentos</h1>
             <Agendados></Agendados>
-
+            
             </Suspense>
         </div>
      );
