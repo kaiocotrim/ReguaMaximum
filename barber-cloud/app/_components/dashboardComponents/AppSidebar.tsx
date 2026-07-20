@@ -48,7 +48,7 @@ type AppSidebarProps = {
 const mainItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Agendamentos", url: "/dashboard/agendamentos", icon: Calendar },
-  { title: "Clientes", url: "/dashboard/clientes", icon: Users },
+  { title: "Serviços", url: "/dashboard/servicos", icon: Users },
   { title: "Barbeiros", url: "/dashboard/barbeiros", icon: Scissors },
 ]
 
