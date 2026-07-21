@@ -1,26 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import { createService } from "@/app/_actions/service/create-service";
 
 export function ServiceForm() {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    console.log({
-      name,
-      description,
-      price,
-    });
-  }
-
   return (
     <form
-      onSubmit={handleSubmit}
+      action={createService}
       className="mx-auto max-w-2xl space-y-6 rounded-2xl border border-zinc-800 bg-zinc-900 p-8"
     >
       <div>
@@ -40,11 +26,11 @@ export function ServiceForm() {
         </label>
 
         <input
+          name="name"
           type="text"
           placeholder="Ex: Corte Degradê"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
           className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-white outline-none transition focus:border-[#C3F32C]"
+          required
         />
       </div>
 
@@ -55,11 +41,11 @@ export function ServiceForm() {
         </label>
 
         <textarea
+          name="description"
           rows={4}
           placeholder="Descreva o serviço..."
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
           className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-white outline-none transition focus:border-[#C3F32C]"
+          required
         />
       </div>
 
@@ -70,12 +56,13 @@ export function ServiceForm() {
         </label>
 
         <input
+          name="price"
           type="number"
           step="0.01"
+          min="0"
           placeholder="0,00"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
           className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-white outline-none transition focus:border-[#C3F32C]"
+          required
         />
       </div>
 
