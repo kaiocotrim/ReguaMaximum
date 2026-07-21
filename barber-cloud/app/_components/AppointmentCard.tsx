@@ -4,7 +4,6 @@
 import { useState, useTransition } from "react"
 import { Card } from "@/app/_components/ui/card"
 import { Button } from "@/app/_components/ui/button"
-import { Badge } from "@/app/_components/ui/badge"
 import { Clock, Scissors, User2, Store, CheckCircle2, Loader2 } from "lucide-react"
 import { WhatsAppButton } from "@/app/_components/dashboardComponents/agendamentos/WhatsAppButton"
 import { DeleteBookingButton } from "@/app/_components/dashboardComponents/agendamentos/DeleteBookingButton"
@@ -42,17 +41,11 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
   }
 
   return (
-    <Card
-      className={`group relative border rounded-2xl p-5 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 ${
-        isDone
-          ? "border-[#C3F32C]/30 bg-[#C3F32C]/5 hover:border-[#C3F32C]/50 hover:shadow-[0_8px_30px_rgba(195,243,44,0.08)]"
-          : "border-zinc-800/80 bg-zinc-950/60 hover:border-[#C3F32C]/30 hover:bg-zinc-900/60 hover:shadow-[0_8px_30px_rgba(195,243,44,0.06)]"
-      }`}
-    >
+    <Card className="border border-zinc-800/60 rounded-2xl bg-zinc-950 p-5 transition-colors hover:border-zinc-700">
       {/* Header */}
       <div className="flex items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 shrink-0">
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 shrink-0">
             <User2 className="w-4 h-4" strokeWidth={1.75} />
           </div>
           <div className="min-w-0">
@@ -66,30 +59,29 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
           </div>
         </div>
 
-        <Badge
-          variant="outline"
-          className={`shrink-0 font-medium text-xs px-2.5 py-0.5 transition-colors ${
+        <span
+          className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${
             isDone
-              ? "bg-[#C3F32C]/10 text-[#C3F32C] border-[#C3F32C]/30"
-              : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+              ? "bg-[#C3F32C] text-black"
+              : "bg-zinc-900 text-zinc-400 border border-zinc-800"
           }`}
         >
           {isDone ? "Concluído" : "Em andamento"}
-        </Badge>
+        </span>
       </div>
 
       {/* Details */}
       <div className="space-y-2.5 mb-5">
         <div className="flex items-center gap-2 text-sm text-zinc-300">
-          <Scissors className="w-3.5 h-3.5 text-[#C3F32C]/70 shrink-0" />
+          <Scissors className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
           <span className="truncate">{appointment.service.name}</span>
         </div>
         <div className="flex items-center gap-2 text-sm text-zinc-300">
-          <User2 className="w-3.5 h-3.5 text-[#C3F32C]/70 shrink-0" />
+          <User2 className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
           <span className="truncate">{appointment.barber.nome ?? "Barbeiro"}</span>
         </div>
         <div className="flex items-center gap-2 text-sm text-zinc-300">
-          <Clock className="w-3.5 h-3.5 text-[#C3F32C]/70 shrink-0" />
+          <Clock className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
           <span>
             {appointment.date.toLocaleString("pt-BR", {
               day: "2-digit",
@@ -106,10 +98,10 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
         onClick={toggleStatus}
         disabled={isPending}
         variant="ghost"
-        className={`w-full mb-4 font-medium transition-all ${
+        className={`w-full mb-4 font-medium transition-colors ${
           isDone
-            ? "bg-[#C3F32C]/15 text-[#C3F32C] border border-[#C3F32C]/30 hover:bg-[#C3F32C]/25"
-            : "bg-amber-500/15 text-amber-400 border border-amber-500/30 hover:bg-amber-500/25"
+            ? "bg-[#C3F32C] text-black hover:bg-[#b3e023]"
+            : "bg-zinc-900 text-zinc-300 border border-zinc-800 hover:bg-zinc-800"
         }`}
       >
         {isPending ? (
