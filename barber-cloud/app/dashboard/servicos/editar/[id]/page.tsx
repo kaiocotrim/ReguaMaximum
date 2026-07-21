@@ -18,13 +18,18 @@ export default async function EditServicePage({ params }: Props) {
     return (
       <div>
         Serviço não encontrado.
-        
       </div>
     );
   }
 
 
+  const formattedService = {
+    ...service,
+    price: Number(service.price),
+  };
+
+
   return (
-    <ServiceForm service={service} />
+    <ServiceForm service={formattedService} />
   );
 }

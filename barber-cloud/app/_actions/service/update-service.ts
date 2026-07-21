@@ -1,8 +1,7 @@
 "use server";
 
 import { db } from "@/app/_lib/prisma";
-import { redirect } from "next/navigation";
-
+import { revalidatePath } from "next/cache";
 
 export async function updateService(
   id: string,
@@ -28,6 +27,5 @@ export async function updateService(
     },
   });
 
-
-  redirect("/dashboard/servicos");
+  revalidatePath("/dashboard/servicos");
 }

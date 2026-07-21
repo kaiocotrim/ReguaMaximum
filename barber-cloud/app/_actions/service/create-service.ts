@@ -3,7 +3,6 @@
 import { db } from "@/app/_lib/prisma"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
-import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 
 export async function createService(formData: FormData) {
@@ -35,6 +34,4 @@ export async function createService(formData: FormData) {
   })
 
   revalidatePath("/dashboard/servicos")
-
-  redirect("/dashboard/servicos")
 }

@@ -3,8 +3,10 @@
 import { useState, useTransition } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { Pencil, Trash2, Loader2 } from "lucide-react"
+import { toast } from "sonner"
 
 import { deleteService } from "@/app/_actions/service/delete-service"
 import {
@@ -30,13 +32,28 @@ interface ServiceCardProps {
 }
 
 export function ServiceCard({ service }: ServiceCardProps) {
+  const router = useRouter()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
 
   function handleDelete() {
     startTransition(async () => {
-      await deleteService(service.id)
-      setIsDialogOpen(false)
+      try {
+        const result = await deleteService(service.id)
+
+        if (!result.success) {
+          setIsDialogOpen(false)
+          toast.error(result.message)
+          return
+        }
+
+        setIsDialogOpen(false)
+        toast.success("Serviço excluído com sucesso.")
+        router.refresh()
+      } catch {
+        setIsDialogOpen(false)
+        toast.error("Não foi possível excluir o serviço.")
+      }
     })
   }
 
