@@ -30,6 +30,7 @@ export async function getServices() {
     return [];
   }
 
- 
+  
+
   return barbershop.services;
 }
