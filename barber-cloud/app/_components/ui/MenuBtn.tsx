@@ -45,7 +45,7 @@ import {
   House,
   Lock,
   User,
-  CreditCard,Mail
+  CreditCard, Mail
 
 } from "lucide-react"
 import { Direction } from "radix-ui"
@@ -123,6 +123,7 @@ const MENU_ITEMS = [
     icon: Settings,
     label: "Configurações",
     description: "Ajustes da conta",
+    href: "/configuracoes",
     requiresAuth: true,
   },
 ]
@@ -293,20 +294,18 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                     key={label}
                     variant="ghost"
                     onClick={() => !locked && href && router.push(href)}
-                    className={`group flex h-auto w-full cursor-pointer items-center justify-between rounded-xl border px-3.5 py-3 transition-all ${
-                      locked
+                    className={`group flex h-auto w-full cursor-pointer items-center justify-between rounded-xl border px-3.5 py-3 transition-all ${locked
                         ? "cursor-default border-white/[0.03] bg-[#161616]"
                         : "border-white/[0.05] bg-[#1a1a1a] hover:border-white/[0.08] hover:bg-[#222]"
-                    }`}
+                      }`}
                   >
                     {/* Ícone + texto do item */}
                     <div className="flex items-center gap-3">
                       <div
-                        className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[10px] border ${
-                          locked
+                        className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[10px] border ${locked
                             ? "border-white/[0.03] bg-white/[0.03]"
                             : "border-white/[0.05] bg-[#C3F32C]/10"
-                        }`}
+                          }`}
                       >
                         <Icon
                           className={`h-[17px] w-[17px] ${locked ? "text-[#333]" : "text-[#C3F32C]"}`}
