@@ -17,7 +17,7 @@ interface BarbershopItemProps {
 const BarbershopItem = ({ barbershop }: BarbershopItemProps) => {
   
   return (
-    <Card className="min-w-[167px] p-1 rounded-2xl hover:bg-black cursor-pointer transition-all">
+    <Card className="min-w-[167px] p-1 rounded-2xl hover:bg-accent cursor-pointer transition-all ">
       <CardContent className="p-0 px-1 pt-0 ">
         <div className="relative h-[159px] w-full ">
           <Image
@@ -38,7 +38,7 @@ const BarbershopItem = ({ barbershop }: BarbershopItemProps) => {
           <h3 className="truncate font-semibold">{barbershop.name}</h3>
           <p className="truncate text-sm text-gray-500">{barbershop.address}</p>
           <Link href={`/barbershops/${barbershop.id}`}>
-          <Button className="mt-3 w-full bg-white font-bold hover:bg-[#C3F32C] hover:text-[#254F50] cursor-pointer">
+          <Button className="mt-3 w-full font-bold text-foreground hover:bg-[#C3F32C] hover:text-[#254F50] cursor-pointer">
             Agendar
             <ChevronRight />
           </Button>

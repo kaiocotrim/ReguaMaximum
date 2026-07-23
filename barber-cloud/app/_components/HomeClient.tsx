@@ -16,6 +16,8 @@ import { useSession } from "next-auth/react"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { useRouter } from "next/navigation"
+import { useTheme } from "next-themes"
+import { useEffect, useState } from "react"
 
 import {
   Carousel,
@@ -42,7 +44,6 @@ const fadeIn = {
   }),
 }
 
-// Tipo com os includes do Prisma
 type BookingWithRelations = Booking & {
   service: Omit<BarbeshopService, "price"> & { price: number }
   barbershop: Barbershop
@@ -61,15 +62,26 @@ export default function HomeClient({
   confirmedBookings,
   loading,
 }: HomeClientProps) {
-  // ✅ Hook sempre primeiro
   const { data: session } = useSession()
-  const role = session?.user?.role // "BARBER" ou "CLIENT"
+  const role = session?.user?.role
   const router = useRouter()
-  // ✅ Lógica depois
+
+  const { resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   const bookingsToShow =
     confirmedBookings.length > 1
       ? [...confirmedBookings.slice(1), confirmedBookings[0]]
       : confirmedBookings
+
+  const banner =
+    resolvedTheme === "dark"
+      ? "/bannerReguaM-dark.png"
+      : "/bannerReguaM-light.png"
 
   if (loading) {
     return (
@@ -79,11 +91,10 @@ export default function HomeClient({
     )
   }
 
-  // Adiciona isso ANTES do return, junto com as outras variáveis
-
   return (
     <div>
       <Header />
+
       <div className="space-y-6 px-6 py-6">
         {/* Saudação */}
         <motion.div
@@ -103,8 +114,11 @@ export default function HomeClient({
                 : "iremos alinhar o cabelo?"}
             </span>
           </h2>
+
           <p className="text-sm text-gray-500">
-            {format(new Date(), "EEEE, dd 'de' MMMM", { locale: ptBR })}
+            {format(new Date(), "EEEE, dd 'de' MMMM", {
+              locale: ptBR,
+            })}
           </p>
         </motion.div>
 
@@ -130,17 +144,21 @@ export default function HomeClient({
             { src: "/cabeloIcon.png", label: "Cabelo" },
             { src: "/barbarIcon.png", label: "Barba" },
             { src: "/acabamentoIcon.png", label: "Acabamento" },
-            { src: "/acabamentoIcon.png", label: "Barberia perto de você" },
+            { src: "/acabamentoIcon.png", label: "Barbearias perto de você" },
             { src: "/acabamentoIcon.png", label: "Luzes" },
           ].map(({ src, label }) => (
             <motion.div
               key={label}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 20,
+              }}
             >
               <Button
-                className="cursor-pointer gap-1 p-4 whitespace-nowrap hover:bg-[#C3F32C] hover:text-white"
+                className="cursor-pointer gap-1 whitespace-nowrap p-4 hover:bg-[#C3F32C] hover:text-black"
                 variant="secondary"
               >
                 <Image src={src} alt={label} width={16} height={16} />
@@ -150,22 +168,29 @@ export default function HomeClient({
           ))}
         </motion.div>
 
-        {/* Banner */}
+        {/* Banner Dinâmico */}
         <motion.div
-          className="relative h-37.5 w-full overflow-hidden rounded-xl"
+          className="relative h-[150px] w-full overflow-hidden rounded-2xl border border-border/50 shadow-sm"
           variants={fadeUp}
           initial="hidden"
           animate="show"
           custom={3}
           whileHover={{ scale: 1.015 }}
-          transition={{ type: "spring", stiffness: 200, damping: 25 }}
+          transition={{
+            type: "spring",
+            stiffness: 200,
+            damping: 25,
+          }}
         >
-          <Image
-            src="/bannerReguaM.png"
-            alt="Banner-barberCloud"
-            fill
-            className="object-cover"
-          />
+          {mounted && (
+            <Image
+              src={banner}
+              alt="Banner Maximum"
+              fill
+              priority
+              className="object-cover transition-all duration-500"
+            />
+          )}
         </motion.div>
 
         <div className="space-y-4">

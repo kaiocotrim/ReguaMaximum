@@ -15,10 +15,10 @@ export function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="relative inline-flex items-center h-6 w-11 rounded-full transition-colors shrink-0 bg-[#C3F32C]"
+      className="cursor-pointer relative inline-flex items-center h-6 w-11 rounded-full transition-colors shrink-0 bg-[#C3F32C]"
     >
       <span
-        className={`inline-block h-5 w-5 rounded-full bg-black transform transition-transform ${
+        className={`inline-block h-5 w-5 rounded-full bg-[#204749] transform transition-transform ${
           isDark ? "translate-x-5" : "translate-x-0.5"
         }`}
       />
