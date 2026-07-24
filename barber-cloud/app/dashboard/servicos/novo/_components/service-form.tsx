@@ -44,7 +44,7 @@ const item = {
 }
 
 const inputClasses =
-  "w-full rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-white placeholder:text-zinc-600 outline-none transition-colors focus:border-[#C3F32C]"
+  "w-full rounded-xl border border-zinc-800 dark:bg-zinc-950 px-4 py-3  dark:text-white placeholder:text--600 dark:placeholder:text-zinc-600 outline-none transition-colors focus:border-[#C3F32C]"
 
 export function ServiceForm({ service }: ServiceFormProps) {
   const router = useRouter()
@@ -96,11 +96,11 @@ export function ServiceForm({ service }: ServiceFormProps) {
       variants={container}
       initial="hidden"
       animate="show"
-      className="mx-auto max-w-2xl space-y-6 rounded-2xl border border-zinc-800/60 bg-zinc-950 p-8"
+      className="mx-auto max-w-2xl space-y-6 rounded-2xl border dark:border-zinc-800/60 dark:bg-zinc-950 p-8"
     >
       <motion.div variants={item} className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-white">
+          <h1 className="text-2xl font-semibold tracking-tight dark:text-white">
             {service ? "Editar Serviço" : "Novo Serviço"}
           </h1>
           <p className="mt-1.5 text-sm text-zinc-500">
@@ -114,14 +114,14 @@ export function ServiceForm({ service }: ServiceFormProps) {
               <button
                 type="button"
                 disabled={isSubmitting}
-                className="flex shrink-0 items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-xs font-medium text-red-500 transition-colors hover:border-red-500/30 hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-60"
+                className="cursor-pointer flex shrink-0 items-center gap-1.5 rounded-lg border dark:border-zinc-800 dark:bg-zinc-900 px-3 py-2 text-xs font-medium text-red-500 transition-colors hover:border-red-500/30 hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <Trash2 size={14} strokeWidth={2} />
                 Excluir
               </button>
             </AlertDialogTrigger>
 
-            <AlertDialogContent className="border-zinc-800 bg-zinc-950">
+            <AlertDialogContent className="dark:border-zinc-800 dark:bg-zinc-950">
               <AlertDialogHeader>
                 <AlertDialogTitle className="text-white">Excluir serviço</AlertDialogTitle>
                 <AlertDialogDescription className="text-zinc-500">
@@ -132,7 +132,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
               </AlertDialogHeader>
 
               <AlertDialogFooter>
-                <AlertDialogCancel className="border-zinc-800 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 hover:text-white">
+                <AlertDialogCancel className="cursor-pointer dark:border-zinc-800 text-black  dark:text-zinc-300 hover:bg-zinc-800 hover:text-white">
                   Cancelar
                 </AlertDialogCancel>
 
@@ -142,7 +142,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
                     handleDelete()
                   }}
                   disabled={isDeleting}
-                  className="bg-red-500 text-white hover:bg-red-600"
+                  className="bg-red-500 dark:text-white hover:bg-red-600 cursor-pointer"
                 >
                   {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Excluir"}
                 </AlertDialogAction>
@@ -154,7 +154,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
 
       {/* Nome */}
       <motion.div variants={item}>
-        <label className="mb-2 block text-sm font-medium text-zinc-400">Nome do Serviço</label>
+        <label className="mb-2 block text-sm font-medium  text-zinc-400">Nome do Serviço</label>
         <input
           name="name"
           type="text"
@@ -226,7 +226,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
       <motion.div variants={item} className="flex justify-end gap-3 pt-2">
         <Link
           href="/dashboard/servicos"
-          className={`rounded-xl border border-zinc-800 px-6 py-3 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-900 ${
+          className={`rounded-xl border border-zinc-800 px-6 py-3 text-sm font-medium dark:text-zinc-300 transition-colors hover:bg-zinc-900 ${
             isSubmitting ? "pointer-events-none opacity-60" : ""
           }`}
         >

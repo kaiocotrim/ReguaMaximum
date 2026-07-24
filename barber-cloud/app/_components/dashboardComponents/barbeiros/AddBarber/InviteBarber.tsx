@@ -482,7 +482,7 @@ export default function SearchEmail({ onSelect }: SearchEmailProps) {
           value={query}
           onChange={(e) => handleChangeInput(e.target.value)}
           placeholder="Buscar por e-mail..."
-          className="w-full rounded-lg border border-zinc-800 bg-zinc-950 py-2.5 pr-9 pl-9 text-sm text-gray-50 transition outline-none placeholder:text-zinc-500 focus:border-[#C3F32C] focus:ring-1 focus:ring-[#C3F32C]/30"
+          className="w-full rounded-lg border text-black border-zinc-800 dark:bg-zinc-950 py-2.5 pr-9 pl-9 text-sm dark:text-gray-50 transition outline-none placeholder:text-zinc-500 focus:border-[#C3F32C] focus:ring-1 focus:ring-[#C3F32C]/30"
         />
 
         {carregando && (
@@ -511,7 +511,7 @@ export default function SearchEmail({ onSelect }: SearchEmailProps) {
       {erro && <p className="mt-1.5 text-xs text-red-400">{erro}</p>}
 
       {resultados.length > 0 && (
-        <ul className="absolute z-10 mt-1.5 w-full overflow-hidden rounded-lg border border-zinc-800 bg-zinc-950 shadow-lg shadow-black/50">
+        <ul className="absolute z-10 mt-1.5 w-full overflow-hidden rounded-lg border dark:border-zinc-800 dark:bg-zinc-950 shadow-lg shadow-black/50">
           {resultados.map((item) => {
             const isSelecionado = selecionado?.id === item.id
 
@@ -554,7 +554,7 @@ export default function SearchEmail({ onSelect }: SearchEmailProps) {
         resultados.length === 0 &&
         !erro &&
         !selecionado && (
-          <div className="absolute z-10 mt-1.5 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm text-zinc-500 shadow-lg shadow-black/50">
+          <div className="absolute z-10 mt-1.5 w-full rounded-lg border dark:border-zinc-800 dark:bg-zinc-950 px-4 py-3 text-sm text-zinc-500 shadow-lg shadow-black/50">
             Nenhum resultado encontrado.
           </div>
         )}

@@ -52,7 +52,7 @@ export function ServicesHeader({ total }: ServicesHeaderProps) {
       className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"
     >
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+        <h1 className="text-2xl font-semibold tracking-tight text-[#244C4E] dark:text-white sm:text-3xl">
           Serviços
         </h1>
 
@@ -60,7 +60,7 @@ export function ServicesHeader({ total }: ServicesHeaderProps) {
           Gerencie os serviços oferecidos pela sua barbearia.
         </p>
 
-        <span className="mt-3 inline-flex items-center rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs font-medium text-zinc-400">
+        <span className="mt-3 inline-flex items-center rounded-full border dark:border-zinc-800 dark:bg-zinc-900 px-3 py-1 text-xs font-medium dark:text-zinc-400 bg-[#244C4E] text-white">
           {total} serviço{total !== 1 && "s"}
         </span>
       </div>

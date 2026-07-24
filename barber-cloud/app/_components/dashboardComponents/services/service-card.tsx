@@ -68,15 +68,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
       whileHover={{
         y: -3,
       }}
-      className="
-        overflow-hidden
-        rounded-2xl
-        border
-        border-zinc-800/60
-        bg-zinc-950
-        transition-colors
-        hover:border-zinc-700
-      "
+      className="overflow-hidden rounded-2xl border dark:border-zinc-800/60 dark:bg-zinc-950 transition-colors dark:hover:border-zinc-700"
     >
       <div className="relative h-32 w-full bg-zinc-900">
         <Image
@@ -90,76 +82,41 @@ export function ServiceCard({ service }: ServiceCardProps) {
 
       <div className="space-y-2 p-4">
         <div>
-          <h2 className="text-sm font-semibold text-white">
-            {service.name}
-          </h2>
+          <h2 className="text-sm font-semibold text-[#244C4E] dark:text-white">{service.name}</h2>
 
           <p className="mt-0.5 line-clamp-2 text-xs text-zinc-500">
             {service.description}
           </p>
         </div>
-
+ 
         <div className="flex items-center justify-between pt-1">
-          <span
-            className="
-              rounded-full
-              bg-[#C3F32C]
-              px-2.5
-              py-0.5
-              text-xs
-              font-semibold
-              text-black
-            "
-          >
+          <span className="rounded-full bg-[#C3F32C] px-2.5 py-0.5 text-xs font-semibold dark:text-black text-[#244C4E]">
             R$ {Number(service.price).toFixed(2)}
           </span>
 
           <div className="flex gap-1.5">
             <Link
               href={`/dashboard/servicos/editar/${service.id}`}
-              className="
-                rounded-lg
-                border
-                border-zinc-800
-                bg-zinc-900
-                p-1.5
-                text-zinc-400
-                transition-colors
-                hover:bg-zinc-800
-                hover:text-white
-              "
+              className="rounded-lg border  dark:border-zinc-800 hover:border-[#244C4E] dark:bg-zinc-900 p-1.5 text-[#244C4E] transition-colors dark:hover:bg-zinc-800 hover:text-[#244C4E] hover:bg-[#619294]"
             >
               <Pencil size={14} strokeWidth={2} />
             </Link>
 
             <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <AlertDialogTrigger asChild>
-                <button
-                  className="
-                    cursor-pointer
-                    rounded-lg
-                    border
-                    border-zinc-800
-                    bg-zinc-900
-                    p-1.5
-                    text-red-500
-                    transition-colors
-                    hover:border-red-500/30
-                    hover:bg-red-500/10
-                  "
-                >
+                <button className="cursor-pointer rounded-lg border dark:border-zinc-800 dark:bg-zinc-900 p-1.5 text-red-500 transition-colors hover:border-red-500/30 hover:bg-red-500/10">
                   <Trash2 size={14} strokeWidth={2} />
                 </button>
               </AlertDialogTrigger>
 
-              <AlertDialogContent className="border-zinc-800 bg-zinc-950">
+              <AlertDialogContent className="dark:border-zinc-800 dark:bg-zinc-950">
                 <AlertDialogHeader>
-                  <AlertDialogTitle className="text-white">
+                  <AlertDialogTitle className="dark:text-white">
                     Excluir serviço
                   </AlertDialogTitle>
                   <AlertDialogDescription className="text-zinc-500">
                     Tem certeza que deseja excluir{" "}
-                    <span className="font-medium text-zinc-300">
+                    <span className="font-medium dark:text-zinc-300 text-black">
                       {service.name}
                     </span>
                     ? Essa ação não pode ser desfeita.
@@ -167,7 +124,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
                 </AlertDialogHeader>
 
                 <AlertDialogFooter>
-                  <AlertDialogCancel className="border-zinc-800 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 hover:text-white cursor-pointer">
+                  <AlertDialogCancel className="cursor-pointer dark:border-zinc-800 dark:bg-zinc-900 text-black hover:bg-zinc-800 hover:text-white">
                     Cancelar
                   </AlertDialogCancel>
 
@@ -177,10 +134,10 @@ export function ServiceCard({ service }: ServiceCardProps) {
                       handleDelete()
                     }}
                     disabled={isPending}
-                    className="bg-red-500 text-white hover:bg-red-600 cursor-pointer"
+                    className="cursor-pointer bg-red-500 text-white hover:bg-red-600"
                   >
                     {isPending ? (
-                      <Loader2 className="h-4 w-4 animate-spin " />
+                      <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
                       "Excluir"
                     )}

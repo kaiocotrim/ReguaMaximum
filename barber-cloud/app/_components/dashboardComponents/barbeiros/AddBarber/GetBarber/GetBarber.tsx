@@ -67,7 +67,7 @@ export default function GetBarber({ barbershopId }: GetBarberProps) {
         <Button
           size="icon"
           variant="secondary"
-          className="cursor-pointer bg-zinc-800 text-[#C3F32C] hover:bg-zinc-700"
+          className="cursor-pointer dark:bg-zinc-800 dark:text-[#C3F32C] dark:hover:bg-zinc-700"
         >
           <Plus className="h-4 w-4" />
         </Button>
@@ -80,20 +80,20 @@ export default function GetBarber({ barbershopId }: GetBarberProps) {
         manual total do espaçamento.
       */}
       <AlertDialogContent
-        className="!grid-rows-none !gap-0 !space-y-0 w-full max-w-md overflow-hidden border border-zinc-800 bg-[#0d0d0d] p-0 data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95"
+        className="!grid-rows-none !gap-0 !space-y-0 w-full max-w-md overflow-hidden dark:border dark:border-zinc-800 dark:bg-[#0d0d0d] p-0 data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95"
       >
-        <div className="flex flex-col border-b border-zinc-800 px-6 py-4">
+        <div className="flex flex-col border-b dark:border-zinc-800 px-6 py-4">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#C3F32C]/10">
-              <UserPlus className="h-4 w-4 text-[#C3F32C]" />
+              <UserPlus className="h-4 w-4 dark:text-[#C3F32C] text-blac"/>
             </div>
-            <AlertDialogTitle className="text-lg font-semibold text-gray-100">
+            <AlertDialogTitle className="text-lg font-semibold dark:text-gray-100">
               Convidar barbeiro
             </AlertDialogTitle>
           </div>
 
           <AlertDialogDescription asChild>
-            <p className="mt-2 text-sm text-zinc-500">
+            <p className="mt-2 text-sm text-zinc-500 ">
               Busque um usuário cadastrado pelo e-mail para adicioná-lo à sua barbearia.
             </p>
           </AlertDialogDescription>
@@ -127,8 +127,8 @@ export default function GetBarber({ barbershopId }: GetBarberProps) {
           {erro && <p className="mt-3 text-xs text-red-400">{erro}</p>}
         </div>
 
-        <div className="flex items-center justify-end gap-2 border-t border-zinc-800 px-6 py-4">
-          <AlertDialogCancel className="mt-0 border-zinc-700 bg-transparent text-zinc-300 hover:bg-zinc-800 hover:text-white">
+        <div className="flex items-center justify-end gap-2 border-t dark:border-zinc-800 px-6 py-4">
+          <AlertDialogCancel className="mt-0 dark:border-zinc-700 bg-transparent dark:text-zinc-300 hover:bg-zinc-800 hover:text-white">
             Cancelar
           </AlertDialogCancel>
           <Button

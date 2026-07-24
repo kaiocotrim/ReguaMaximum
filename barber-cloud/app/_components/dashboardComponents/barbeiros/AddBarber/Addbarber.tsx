@@ -225,7 +225,7 @@ const AddBarber = async () => {
   const melhorId = barbeiros[0]?.id
 
   return (
-    <Card className="mt-5 flex flex-col gap-4 rounded-2xl p-6 shadow-sm">
+    <Card className="mt-5 flex flex-col gap-4 rounded-2xl p-6 shadow-sm ">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold">Lista de barbeiros</h2>

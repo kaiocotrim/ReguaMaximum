@@ -42,13 +42,13 @@ export function DeleteBookingButton({ bookingId }: DeleteBookingButtonProps) {
         </button>
       </AlertDialogTrigger>
 
-      <AlertDialogContent className="w-[90vw] max-w-md bg-[#121212] border border-white/10 rounded-2xl p-6 shadow-2xl">
+      <AlertDialogContent className="w-[90vw] max-w-md dark:bg-[#121212] border border-white/10 rounded-2xl p-6 shadow-2xl">
         <AlertDialogHeader className="space-y-4">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-500/10">
             <AlertTriangle className="h-7 w-7 text-red-500" />
           </div>
           <div className="space-y-2 text-center">
-            <AlertDialogTitle className="text-xl font-bold text-white text-center">
+            <AlertDialogTitle className="text-xl font-bold dark:text-white text-center">
               Confirmar exclusão
             </AlertDialogTitle>
             <AlertDialogDescription className="text-sm text-zinc-400 text-center">
@@ -59,12 +59,12 @@ export function DeleteBookingButton({ bookingId }: DeleteBookingButtonProps) {
         </AlertDialogHeader>
 
         <AlertDialogFooter className="mt-6 flex flex-row gap-3 sm:gap-3 sm:justify-center">
-          <AlertDialogCancel className="flex-1 mt-0 h-11 border-white/10 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-colors">
+          <AlertDialogCancel className="cursor-pointer flex-1 mt-0 h-11 hover:bg-white dark:border-white/10 bg-white/5 hover:bg-white/10 dark:text-white rounded-xl transition-colors">
             Cancelar
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
-            className="flex-1 h-11 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl transition-colors shadow-lg shadow-red-900/20"
+            className="flex-1 h-11 bg-red-600 hover:bg-red-700 cursor-pointer text-white font-medium rounded-xl transition-colors shadow-lg shadow-red-900/20"
           >
             Excluir Agendamento
           </AlertDialogAction>
