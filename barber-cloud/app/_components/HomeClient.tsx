@@ -236,6 +236,7 @@ export default function HomeClient({
                         key={booking.id}
                         className="basis-[90%] pl-2"
                       >
+                        
                         <Card
                           className="cursor-pointer dark:hover:bg-[#262626] hover:bg-black hover:bg-[#E6F4D4] "
                           onClick={() => router.push(`/appointments`)}
