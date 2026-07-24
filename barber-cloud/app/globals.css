@@ -1,8 +1,14 @@
+/* ==========================================================================
+   1. IMPORTS
+   ========================================================================== */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* ==========================================================================
+   2. FONTES CUSTOMIZADAS
+   ========================================================================== */
 @font-face {
   font-family: "Satoshi";
   src: url("/fonts/Satoshi-Bold.woff2") format("woff2");
@@ -11,6 +17,16 @@
   font-display: swap;
 }
 
+/* ==========================================================================
+   3. TAILWIND: VARIANTE DARK
+   Ativa o prefixo `dark:` (e as variáveis abaixo) quando existir
+   um ancestral com a classe `.dark` no HTML (controlado pelo next-themes)
+   ========================================================================== */
+@custom-variant dark (&:is(.dark *));
+
+/* ==========================================================================
+   4. UTILITIES CUSTOMIZADAS
+   ========================================================================== */
 @utility custom-scrollbar {
   &::-webkit-scrollbar {
     width: 8px;
@@ -19,32 +35,26 @@
     background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: #3f3f46;
+    background: var(--border);
     border-radius: 9999px;
   }
   &::-webkit-scrollbar-thumb:hover {
-    background: #c3f32c;
+    background: var(--primary);
   }
 }
 
-body {
-  font-family: "General Sans", sans-serif;
-  font-weight: 010;
-  line-height: 0.95;
-  letter-spacing: -0.04em;
-}
-
-body {
-  font-family: "Satoshi", "Inter", "General Sans", sans-serif;
-}
-@custom-variant dark (&:is(.dark *));
-
+/* ==========================================================================
+   5. MAPEAMENTO DAS VARIÁVEIS PARA O TAILWIND
+   Isso permite usar classes como bg-background, text-foreground, bg-card etc.
+   Cada uma delas reage automaticamente ao tema, sem precisar de dark: em nada.
+   ========================================================================== */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -53,15 +63,18 @@ body {
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
+
   --color-chart-5: var(--chart-5);
   --color-chart-4: var(--chart-4);
   --color-chart-3: var(--chart-3);
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
+
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -74,6 +87,7 @@ body {
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -83,55 +97,68 @@ body {
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* ==========================================================================
+   6. TEMA CLARO (padrão)
+   ========================================================================== */
 :root {
   --background: oklch(96.715% 0.00011 271.152);
   --foreground: #244c4e;
+
   --card: oklch(97.913% 0.00011 271.152);
   --card-foreground: #244c4e;
+
   --popover: oklch(1 0 0);
   --popover-foreground: #244c4e;
+
   --primary: #c3f32c;
   --primary-foreground: oklch(0.985 0 0);
+
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: #244c4e;
+
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
+
   --accent: oklch(0.97 0 0);
   --accent-foreground: #244c4e;
+
   --destructive: oklch(0.577 0.245 27.325);
+
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
+
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: #244c4e;
+
   --radius: 0.625rem;
+
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: #244c4e;
   --sidebar-primary: #244c4e;
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: #244c4e;
-  --sidebar-border: #244c4e;
+  --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: #244c4e;
-  --card: #244c4e;
 }
 
+/* ==========================================================================
+   7. TEMA ESCURO
+   ========================================================================== */
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
 
-  /* Cards */
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
 
-  /* Dialog, Sheet, Popover, Dropdown */
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
 
-  /* Cores principais */
   --primary: #c3f32c;
   --primary-foreground: #111111;
 
@@ -146,44 +173,49 @@ body {
 
   --destructive: oklch(0.704 0.191 22.216);
 
-  /* Bordas */
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: #c3f32c;
 
-  /* Gráficos */
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
 
-  /* Sidebar */
   --sidebar: oklch(0.145 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
-
   --sidebar-primary: #c3f32c;
   --sidebar-primary-foreground: #111111;
-
   --sidebar-accent: oklch(0.205 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
-
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: #c3f32c;
 }
 
+/* ==========================================================================
+   8. ESTILOS BASE
+   ========================================================================== */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground h-full;
+    font-family: "Satoshi", "Inter", "General Sans", sans-serif;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
   }
+
   html {
-    @apply h-full;
-    @apply font-sans;
+    @apply h-full font-sans;
   }
 }
+
+/* ==========================================================================
+   9. EFEITOS VISUAIS
+   ========================================================================== */
 .shine-text {
   display: inline-block;
 
@@ -210,7 +242,6 @@ body {
   from {
     background-position: 200% center;
   }
-
   to {
     background-position: -200% center;
   }
@@ -225,7 +256,9 @@ body {
   }
 }
 
-/* globals.css mapa de agendamente */
+/* ==========================================================================
+   10. FULLCALENDAR — TEMA ESCURO (mapa de agendamentos)
+   ========================================================================== */
 .fc-dark {
   --fc-border-color: #262626;
   --fc-button-bg-color: #a3e635;

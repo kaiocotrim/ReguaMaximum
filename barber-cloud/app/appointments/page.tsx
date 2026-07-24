@@ -33,22 +33,22 @@ const AppointmentsPage = async () => {
   })
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950">
+    <div className="min-h-screen bg-background">
       <Header />
 
       <div className="m-5 flex flex-col gap-5">
 
         {/* Banner */}
-        <div className="flex gap-2 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md px-5">
+        <div className="flex gap-2 rounded-2xl border border-border bg-card backdrop-blur-md px-5">
           <div className="flex flex-col justify-center">
             <div className="mt-5 mb-4 flex items-center gap-1.5 text-[11px] font-medium tracking-widest text-[#C3F32C] uppercase">
               <CalendarCheck2 className="h-3 w-3" />
               Agendamentos
             </div>
-            <h1 className="mb-1 text-[15px] leading-snug font-medium text-white">
+            <h1 className="mb-1 text-[15px] leading-snug font-medium text-foreground">
               Seus agendamentos
             </h1>
-            <p className="text-zinc-500 mb-6 text-[10px]">
+            <p className="text-muted-foreground mb-6 text-[10px]">
               Aqui você pode visualizar e gerenciar seus agendamentos.
             </p>
           </div>
@@ -71,7 +71,7 @@ const AppointmentsPage = async () => {
               width={200}
               height={200}
             />
-            <p className="text-zinc-500 text-sm">
+            <p className="text-muted-foreground text-sm">
               Você ainda não tem nenhum agendamento.
             </p>
           </div>
