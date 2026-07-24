@@ -85,12 +85,12 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
           <Button
             size="icon"
             variant="secondary"
-            className="absolute top-4 left-4 cursor-pointer bg-black/70 backdrop-blur-sm hover:bg-black/90"
+            className="absolute top-4 left-4 cursor-pointer  bg-white hover:bg-[#EAECEC]  dark:bg-black/70 backdrop-blur-sm bg-white"
           >
-            <ChevronLeft className="h-5 w-5 text-[#C3F32C]" />
+            <ChevronLeft className="h-5 w-5 dark:text-[#C3F32C]"/>
           </Button>
         </Link>
-        <MenuBtn className="absolute top-4 right-4 cursor-pointer bg-black/70 text-[#C3F32C] backdrop-blur-sm hover:bg-black/90" />
+        <MenuBtn className="absolute top-4 right-4 cursor-pointer dark:bg-black/70 dark:text-[#C3F32C]  backdrop-blur-sm dark:hover:bg-black/90  bg-white hover:bg-[#EAECEC] text-[#254F50] backdrop-blur-sm hover:bg-white" />
 
         {/* ─── Logo da barbearia ─── */}
         {/* TODO: trocar por barbershop.logoUrl quando o campo existir no schema */}
@@ -171,29 +171,29 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
 
           <div className="mb-1.5 flex items-center gap-1.5">
             <MapIcon className="h-4 w-4 shrink-0 text-[#254F50]" />
-            <p className="truncate text-sm text-zinc-300">
+            <p className="truncate text-sm text-[#254F50] dark:text-zinc-300">
               {barbershop.address}
             </p>
           </div>
 
           <div className="flex items-center gap-1.5">
-            <StarIcon className="h-4 w-4 shrink-0 fill-[#254F50] text-[#254F50]" />
-            <p className="text-sm text-zinc-300">4,8 · 899 avaliações</p>
+            <StarIcon className="h-4 w-4 shrink-0 fill-[#254F50] text-[#254F50] " />
+            <p className="text-sm text-[#254F50] dark:text-zinc-300">4,8 · 899 avaliações</p>
           </div>
         </div>
 
-        <div className="flex shrink-0 flex-col items-stretch gap-2">
-          <FavoriteButton
+        <div className="flex shrink-0 flex-col items-stretch gap-2 ">
+          <FavoriteButton 
             barbershopId={barbershop.id}
             initialFavorited={isFavorited}
           />
 
           <Button
-            className="cursor-pointer justify-start gap-2 bg-black/10 text-xs"
+            className="cursor-pointer justify-start gap-2 bg-background dark:bg-black/10 text-xs"
             variant="secondary"
             size="sm"
           >
-            <Share className="h-3.5 w-3.5 shrink-0 text-[#C3F32C]" />
+            <Share className="h-3.5 w-3.5 shrink-0 text-[#C3F32C] " />
             Compartilhar
           </Button>
 
@@ -228,7 +228,7 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
           <Drawer>
             <DrawerTrigger className="">
               <Button
-                className="cursor-pointer justify-start gap-2 bg-black/10 text-xs"
+                className="cursor-pointer justify-start gap-2 bg-background dark:bg-black/10 text-xs"
                 variant="secondary"
                 size="sm"
               >
@@ -306,13 +306,13 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
 
       {/* Sobre nós */}
       <div className="px-6 pt-6">
-        <Card className="border-none bg-black/10 p-4">
+        <Card className="border-none bg-background dark:bg-black/10 p-4">
           <div className="mb-2 flex items-center gap-2">
-            <h2 className="text-xs font-bold tracking-wide text-[#C3F32C] uppercase">
+            <h2 className="text-xs font-bold tracking-wide text-[#254F50] dark:text-[#C3F32C] uppercase">
               Sobre nós
             </h2>
           </div>
-          <p className="text-sm leading-relaxed text-zinc-300">
+          <p className="text-sm leading-relaxed dark:text-zinc-300 text-[#254F50]">
             {barbershop.description}
           </p>
         </Card>
@@ -331,7 +331,7 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
 
       {/* Serviços */}
       <div className="px-6 pt-8">
-        <h2 className="mb-3 text-xs font-bold tracking-wide text-[#C3F32C] uppercase">
+        <h2 className="mb-3 text-xs font-bold tracking-wide text-[#254F50] dark:text-[#C3F32C] uppercase">
           Serviços
         </h2>
         <div className="flex flex-col gap-3">
@@ -358,13 +358,13 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
           {barbershop.phones.map((phone) => (
             <div
               key={phone}
-              className="flex items-center justify-between gap-2 rounded-xl border border-white/10 bg-black/10 p-4"
+              className="flex items-center justify-between gap-2 rounded-xl border bg-background dark:border-white/10 dark:bg-black/10 p-4"
             >
               <div className="flex items-center gap-2.5">
                 <Smartphone className="h-4 w-4 text-[#C3F32C]" />
-                <p className="text-sm text-zinc-200">{phone}</p>
+                <p className="text-sm  dark:text-zinc-200 ">{phone}</p>
               </div>
-              <PhoneItem phone={phone} />
+              <PhoneItem  phone={phone} />
             </div>
           ))}
         </div>

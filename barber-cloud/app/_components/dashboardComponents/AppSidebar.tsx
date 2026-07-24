@@ -134,7 +134,7 @@ export function AppSidebar({
   const pathname = usePathname()
 
   return (
-    <Sidebar className="border-r border-white/[0.04] bg-[#0e0e0e]">
+    <Sidebar className="bg-[#0e0e0e]">
 
       {/* Header */}
       <SidebarHeader className="px-5 py-6">
@@ -156,7 +156,7 @@ export function AppSidebar({
           )}
 
           <div className="min-w-0">
-            <p className="truncate text-[13px] font-bold text-white">
+            <p className="truncate text-[13px] font-bold text-[#244C4E] dark:text-white">
               {barbershop.name}
             </p>
 
@@ -169,7 +169,7 @@ export function AppSidebar({
       </SidebarHeader>
 
       {/* Menu */}
-      <SidebarContent className="bg-[#0e0e0e] px-3">
+      <SidebarContent className="bg-[#FAFAFA] dark:bg-[#0e0e0e] px-3">
 
         <SidebarGroup className="p-0">
           <SectionLabel label="Principal" />
@@ -222,7 +222,7 @@ export function AppSidebar({
       </SidebarContent>
 
       {/* Footer */}
-      <SidebarFooter className="bg-[#0e0e0e] px-4 pb-5 pt-3">
+      <SidebarFooter className="bg-[#FAFAFA] dark:bg-[#0e0e0e] px-4 pb-5 pt-3">
 
         <div className="mb-3 h-px w-full bg-white/[0.04]" />
 

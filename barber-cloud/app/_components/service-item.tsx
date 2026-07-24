@@ -395,7 +395,7 @@ const ServiceItem = ({ service, barbershopId, barbers }: ServiceItemProps) => {
   }
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 mb-3 flex items-center gap-4 rounded-2xl border border-white/10 bg-zinc-900/80 p-3 backdrop-blur-sm transition-all duration-300 duration-500 hover:-translate-y-0.5 hover:border-[#C3F32C]/30 hover:shadow-[0_0_20px_rgba(195,243,44,0.08)]">
+    <div className="animate-in fade-in slide-in-from-bottom-4 mb-3 flex items-center gap-4 rounded-2xl border dark:border-white/10 dark:bg-zinc-900/80 p-3 backdrop-blur-sm transition-all duration-300 duration-500 hover:-translate-y-0.5 hover:border-[#C3F32C]/30 hover:shadow-[0_0_20px_rgba(195,243,44,0.08)]">
       {/* Imagem do serviço */}
       <div className="relative max-h-[110px] min-h-[110px] max-w-[110px] min-w-[110px] overflow-hidden rounded-xl">
         <Image
@@ -410,17 +410,17 @@ const ServiceItem = ({ service, barbershopId, barbers }: ServiceItemProps) => {
 
       {/* Direita: nome, descrição, preço e botão */}
       <div className="flex-1 space-y-2 pr-2">
-        <h3 className="animate-in fade-in slide-in-from-left-2 text-base font-bold tracking-wide text-[#C3F32C] delay-100">
+        <h3 className="animate-in fade-in slide-in-from-left-2 text-base font-bold tracking-wide dark:text-[#C3F32C] delay-100 text-[#254F50]">
           {service.name}
         </h3>
-        <p className="animate-in fade-in line-clamp-2 text-xs leading-relaxed text-zinc-400 delay-150">
+        <p className="animate-in fade-in line-clamp-2 text-xs leading-relaxed dark:text-zinc-400 delay-150 text-[#254F50]">
           {service.description}
         </p>
 
         <div className="flex items-center justify-between pt-1">
-          <p className="animate-in fade-in text-lg font-bold text-white delay-200">
+          <p className="animate-in fade-in text-lg font-bold text-black dark:text-white delay-200">
             R${" "}
-            <span className="animate-pulse text-[#C3F32C] [animation-duration:3s]">
+            <span className="animate-pulse text-black dark:text-[#C3F32C] [animation-duration:3s]">
               {service.price.toFixed(2)}
             </span>
           </p>

@@ -60,7 +60,7 @@ const FavoriteButton = ({
     <>
       <div className="relative inline-flex w-full">
         <Button
-          className="w-full cursor-pointer bg-black/10"
+          className="w-full cursor-pointer bg-background dark:bg-black/10"
           variant="secondary"
           onClick={handleFavorite}
         >
