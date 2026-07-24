@@ -92,7 +92,7 @@ const InboxPage = async () => {
       <div className="mx-auto max-w-xl px-5 py-10">
         <div className="mb-8 flex flex-col gap-1">
           <h1 className="text-foreground text-xl font-semibold tracking-tight">
-            Con<span className="text-primary">vites</span>
+            Convites
           </h1>
           <p className="text-muted-foreground text-sm">
             {convites.length > 0
