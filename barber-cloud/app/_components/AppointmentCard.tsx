@@ -41,18 +41,18 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
   }
 
   return (
-    <Card className="border border-zinc-800/60 rounded-2xl bg-zinc-950 p-5 transition-colors hover:border-zinc-700">
+    <Card className="border border-border rounded-2xl bg-card p-5 transition-colors hover:border-ring/40">
       {/* Header */}
       <div className="flex items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 shrink-0">
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-muted border border-border text-muted-foreground shrink-0">
             <User2 className="w-4 h-4" strokeWidth={1.75} />
           </div>
           <div className="min-w-0">
-            <h3 className="text-base font-semibold text-white truncate">
+            <h3 className="text-base font-semibold text-foreground truncate">
               {appointment.user.name ?? "Cliente"}
             </h3>
-            <p className="text-xs text-zinc-500 flex items-center gap-1 truncate">
+            <p className="text-xs text-muted-foreground flex items-center gap-1 truncate">
               <Store className="w-3 h-3 shrink-0" />
               {appointment.barbershop.name}
             </p>
@@ -63,7 +63,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
           className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${
             isDone
               ? "bg-[#C3F32C] text-black"
-              : "bg-zinc-900 text-zinc-400 border border-zinc-800"
+              : "bg-muted text-muted-foreground border border-border"
           }`}
         >
           {isDone ? "Concluído" : "Em andamento"}
@@ -72,16 +72,16 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
 
       {/* Details */}
       <div className="space-y-2.5 mb-5">
-        <div className="flex items-center gap-2 text-sm text-zinc-300">
-          <Scissors className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+        <div className="flex items-center gap-2 text-sm text-foreground/80">
+          <Scissors className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
           <span className="truncate">{appointment.service.name}</span>
         </div>
-        <div className="flex items-center gap-2 text-sm text-zinc-300">
-          <User2 className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+        <div className="flex items-center gap-2 text-sm text-foreground/80">
+          <User2 className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
           <span className="truncate">{appointment.barber.nome ?? "Barbeiro"}</span>
         </div>
-        <div className="flex items-center gap-2 text-sm text-zinc-300">
-          <Clock className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+        <div className="flex items-center gap-2 text-sm text-foreground/80">
+          <Clock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
           <span>
             {appointment.date.toLocaleString("pt-BR", {
               day: "2-digit",
@@ -101,7 +101,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
         className={`w-full mb-4 font-medium transition-colors ${
           isDone
             ? "bg-[#C3F32C] text-black hover:bg-[#b3e023]"
-            : "bg-zinc-900 text-zinc-300 border border-zinc-800 hover:bg-zinc-800"
+            : "bg-muted text-muted-foreground border border-border hover:bg-accent"
         }`}
       >
         {isPending ? (
@@ -117,7 +117,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
       </Button>
 
       {/* Actions */}
-      <div className="flex items-center justify-between pt-4 border-t border-zinc-800/60">
+      <div className="flex items-center justify-between pt-4 border-t border-border">
         <DeleteBookingButton bookingId={appointment.id} />
         {appointment.user.telefone && (
           <WhatsAppButton

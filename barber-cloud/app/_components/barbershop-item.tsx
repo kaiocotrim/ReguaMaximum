@@ -6,16 +6,11 @@ import { Star, ChevronRight } from "lucide-react"
 import { Badge } from "./ui/badge"
 import Link from "next/link"
 
-{/* Este componente é responsável por exibir as informações de uma barbearia em um formato de cartão, incluindo a imagem, nome, endereço e uma avaliação. Ele recebe um objeto do tipo `Barbershop` como prop e utiliza o Next.js Image para exibir a imagem da barbearia, além de estilizar o layout para apresentar as informações de forma clara e atraente. O componente também inclui um botão que direciona o usuário para a página de detalhes da barbearia. */}
-
 interface BarbershopItemProps {
   barbershop: Barbershop
 }
 
-{/*este componente é responsável por exibir as informações de uma barbearia em um formato de cartão, incluindo a imagem, nome, endereço e uma avaliação. Ele recebe um objeto do tipo `Barbershop` como prop e utiliza o Next.js Image para exibir a imagem da barbearia, além de estilizar o layout para apresentar as informações de forma clara e atraente. O componente também inclui um botão que direciona o usuário para a página de detalhes da barbearia.*/}
-
 const BarbershopItem = ({ barbershop }: BarbershopItemProps) => {
-  
   return (
     <Card className="min-w-[167px] p-1 rounded-2xl hover:bg-accent cursor-pointer transition-all ">
       <CardContent className="p-0 px-1 pt-0 ">
@@ -35,16 +30,15 @@ const BarbershopItem = ({ barbershop }: BarbershopItemProps) => {
 
         {/* Nome da barbearia */}
         <div className="px-1 py-3">
-          <h3 className="truncate font-semibold">{barbershop.name}</h3>
-          <p className="truncate text-sm text-gray-500">{barbershop.address}</p>
+          <h3 className="truncate font-semibold text-foreground">{barbershop.name}</h3>
+          <p className="truncate text-sm text-muted-foreground">{barbershop.address}</p>
           <Link href={`/barbershops/${barbershop.id}`}>
-          <Button className="mt-3 w-full font-bold text-foreground hover:bg-[#C3F32C] hover:text-[#254F50] cursor-pointer">
-            Agendar
-            <ChevronRight />
-          </Button>
+            <Button className="mt-3 w-full font-bold text-foreground dark:text-[#254F50] hover:bg-[#C3F32C] hover:text-[#254F50] dark:hover:text-[#254F50] cursor-pointer">
+              Agendar
+              <ChevronRight />
+            </Button>
           </Link>
         </div>
-        
       </CardContent>
     </Card>
   )

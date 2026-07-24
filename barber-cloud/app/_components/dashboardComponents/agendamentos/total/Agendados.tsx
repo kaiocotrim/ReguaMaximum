@@ -37,15 +37,15 @@ export default async function Agendados() {
 
   if (serializedAppointments.length === 0) {
     return (
-      <div className="mt-5 bg-white dark:bg-zinc-950 rounded-2xl border border-zinc-200 dark:border-zinc-800/60 p-6 md:p-10">
+      <div className="mt-5 bg-card rounded-2xl border border-border p-6 md:p-10">
         <div className="flex flex-col items-center justify-center text-center py-16 px-6">
-          <div className="flex items-center justify-center w-16 h-16 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 mb-5">
-            <CalendarX2 className="w-8 h-8 text-zinc-500" strokeWidth={1.5} />
+          <div className="flex items-center justify-center w-16 h-16 rounded-xl bg-muted border border-border mb-5">
+            <CalendarX2 className="w-8 h-8 text-muted-foreground" strokeWidth={1.5} />
           </div>
-          <h3 className="text-lg font-semibold text-zinc-900 dark:text-white tracking-tight">
+          <h3 className="text-lg font-semibold text-foreground tracking-tight">
             Nenhum agendamento no sistema
           </h3>
-          <p className="mt-2 max-w-sm text-sm text-zinc-500 leading-relaxed">
+          <p className="mt-2 max-w-sm text-sm text-muted-foreground leading-relaxed">
             Ainda não há agendamentos cadastrados. Quando um cliente realizar
             um agendamento, ele aparecerá aqui.
           </p>
@@ -55,13 +55,13 @@ export default async function Agendados() {
   }
 
   return (
-    <div className="mt-5 bg-white dark:bg-zinc-950 rounded-2xl border border-zinc-200 dark:border-zinc-800/60 p-4 md:p-6">
+    <div className="mt-5 bg-card rounded-2xl border border-border p-4 md:p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-lg font-semibold text-zinc-900 dark:text-white tracking-tight">
+          <h2 className="text-lg font-semibold text-foreground tracking-tight">
             Agendamentos
           </h2>
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-muted-foreground">
             {serializedAppointments.length}{" "}
             {serializedAppointments.length === 1
               ? "agendamento cadastrado"
