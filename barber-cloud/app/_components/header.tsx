@@ -1,27 +1,24 @@
-import { MenuIcon } from "lucide-react"
-import { Button } from "./ui/button"
-import { Card, CardContent } from "./ui/card"
 import Image from "next/image"
-import { SheetContent, SheetTrigger } from "./ui/sheet"
 import MenuBtn from "./ui/MenuBtn"
 import Link from "next/link"
 
 const Header = () => {
   return (
-    <Card className="rounded-none bg-background border-border opacity-100">
-      <CardContent className="flex flex-row items-center justify-between cursor-pointer">
+    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/95 backdrop-blur">
+      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-20 lg:px-8">
         <Link href="/">
           <Image
             src="/LogoMComBorder3.png"
             alt="BarberCloud Logo"
             width={60}
             height={50}
+            className="h-auto w-14 lg:w-16"
           />
         </Link>
 
         <MenuBtn />
-      </CardContent>
-    </Card>
+      </div>
+    </header>
   )
 }
 

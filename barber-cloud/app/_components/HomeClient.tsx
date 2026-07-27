@@ -106,19 +106,19 @@ export default function HomeClient({
   }
 
   return (
-    <div>
+    <div className="min-h-screen bg-background">
       <Header />
 
-      <div className="space-y-6 px-6 py-6">
+      <main className="mx-auto w-full max-w-7xl space-y-6 px-4 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
         {/* Saudação */}
         <motion.div
-          className="space-y-1"
+          className="space-y-1 lg:space-y-2"
           variants={fadeUp}
           initial="hidden"
           animate="show"
           custom={0}
         >
-          <h2 className="text-xl font-bold">
+          <h2 className="text-xl font-bold sm:text-2xl lg:text-3xl">
             Olá,{" "}
             <span className="shine-text">
               {session?.user?.name
@@ -129,7 +129,7 @@ export default function HomeClient({
             </span>
           </h2>
 
-          <p className="text-sm text-gray-500">
+          <p className="text-sm capitalize text-muted-foreground">
             {format(new Date(), "EEEE, dd 'de' MMMM", {
               locale: ptBR,
             })}
@@ -148,7 +148,7 @@ export default function HomeClient({
 
          {/* Busca rápida */}
         <motion.div
-          className="mt-6 flex gap-3 overflow-x-scroll [&::-webkit-scrollbar]:hidden "
+          className="mt-6 flex gap-3 overflow-x-auto pb-1 lg:flex-wrap lg:overflow-visible [&::-webkit-scrollbar]:hidden"
           variants={fadeUp}
           initial="hidden"
           animate="show"
@@ -198,7 +198,7 @@ export default function HomeClient({
 
         {/* Banner Dinâmico */}
         <motion.div
-          className="relative h-[150px] w-full overflow-hidden rounded-2xl border border-border/50 shadow-sm"
+          className="relative h-[150px] w-full overflow-hidden rounded-2xl border border-border/50 shadow-sm sm:h-[230px] lg:h-[320px] lg:rounded-3xl"
           variants={fadeUp}
           initial="hidden"
           animate="show"
@@ -221,7 +221,7 @@ export default function HomeClient({
           )}
         </motion.div>
 
-        <div className="space-y-4">
+        <div className="space-y-6 lg:space-y-8">
           <PendingBookingReviews initialReviews={pendingReviews} />
 
           {/* ✅ Agendamentos — só aparece se tiver algum */}
@@ -250,7 +250,7 @@ export default function HomeClient({
                     {bookingsToShow.map((booking) => (
                       <CarouselItem
                         key={booking.id}
-                        className="basis-[90%] pl-2"
+                        className="basis-[90%] pl-2 sm:basis-[60%] lg:basis-1/2 xl:basis-1/3"
                       >
                         <Card
                           className="cursor-pointer dark:hover:bg-[#262626] hover:bg-black hover:bg-[#E6F4D4] "
@@ -328,7 +328,7 @@ export default function HomeClient({
           </div>
 
           <motion.div
-            className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden"
+            className="grid grid-flow-col auto-cols-[minmax(180px,220px)] gap-4 overflow-x-auto pb-2 lg:grid-flow-row lg:grid-cols-3 lg:overflow-visible xl:grid-cols-4 [&::-webkit-scrollbar]:hidden"
             variants={fadeUp}
             initial="hidden"
             animate="show"
@@ -343,7 +343,7 @@ export default function HomeClient({
                 custom={7 + i * 0.5}
                 whileHover={{ y: -4, scale: 1.02 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className="pt-2"
+                className="min-w-0 pt-2"
               >
                 <BarbershopItem barbershop={barbershop} />
               </motion.div>
@@ -362,7 +362,7 @@ export default function HomeClient({
           </motion.h2>
 
           <motion.div
-            className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden"
+            className="grid grid-flow-col auto-cols-[minmax(180px,220px)] gap-4 overflow-x-auto pb-2 lg:grid-flow-row lg:grid-cols-3 lg:overflow-visible xl:grid-cols-4 [&::-webkit-scrollbar]:hidden"
             variants={fadeUp}
             initial="hidden"
             animate="show"
@@ -377,14 +377,14 @@ export default function HomeClient({
                 custom={10 + i * 0.5}
                 whileHover={{ y: -4, scale: 1.02 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className="pt-2"
+                className="min-w-0 pt-2"
               >
                 <BarbershopItem barbershop={barbershop} />
               </motion.div>
             ))}
           </motion.div>
         </div>
-      </div>
+      </main>
     </div>
   )
 }
