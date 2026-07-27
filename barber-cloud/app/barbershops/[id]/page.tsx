@@ -17,7 +17,6 @@ import {
   MapIcon,
   StarIcon,
   Smartphone,
-  Share,
   CircleUser,
   ChevronRight,
   User
@@ -30,6 +29,8 @@ import MenuBtn from "@/app/_components/ui/MenuBtn"
 import FavoriteButton from "@/app/_components/favorite-button"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { BarbershopContentTabs } from "@/app/_components/BarbershopContentTabs"
+import { BarbershopStoryCarousel } from "@/app/_components/BarbershopStoryCarousel"
 
 interface BarbershopPageProps {
   params: {
@@ -44,9 +45,23 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
     where: { id },
     include: {
       services: true,
+      photos: { orderBy: [{ position: "asc" }, { createdAt: "asc" }] },
+      reviews: {
+        select: {
+          id: true,
+          rating: true,
+          comment: true,
+          createdAt: true,
+          user: { select: { name: true } },
+        },
+        orderBy: { createdAt: "desc" },
+      },
       barbers: {
         include: {
           user: true,
+          reviews: {
+            select: { rating: true },
+          },
         },
       },
     },
@@ -54,13 +69,22 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
 
   if (!barbershop) return <p>Barbearia não encontrada.</p>
 
+  const barbershopReviewCount = barbershop.reviews.length
+  const barbershopAverage =
+    barbershopReviewCount > 0
+      ? barbershop.reviews.reduce(
+          (total, review) => total + review.rating,
+          0,
+        ) / barbershopReviewCount
+      : 0
+
   const session = await getServerSession(authOptions)
 
   const isFavorited = session?.user?.id
     ? !!(await db.favoriteBarbershop.findUnique({
         where: {
           userId_barbershopId: {
-            userId: (session.user as any).id,
+          userId: session.user.id,
             barbershopId: id,
           },
         },
@@ -108,32 +132,12 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
           </div> */}
 
         {/* OPÇÃO 2 — Clássico Instagram (gradiente colorido) */}
-        <div
-          className="absolute -bottom-10 left-6 h-20 w-20 rounded-full"
-          style={{
-            background: "conic-gradient(#f9ce34, #ee2a7b, #6228d7, #f9ce34)",
-            padding: "4px",
-          }}
-        >
-          <div
-            style={{
-              borderRadius: "50%",
-              background: "#171717",
-              width: "100%",
-              height: "100%",
-              position: "relative",
-              overflow: "hidden",
-              padding: "5px",
-            }}
-          >
-            <Image
-              alt={`Logo da barbearia ${barbershop.name}`}
-              fill
-              sizes="80px"
-              className="rounded-full object-cover p-1"
-              src={barbershop.imageUrl}
-            />
-          </div>
+        <div className="absolute -bottom-10 left-6">
+          <BarbershopStoryCarousel
+            name={barbershop.name}
+            logoUrl={barbershop.imageUrl}
+            photos={barbershop.photos}
+          />
         </div>
 
         {/* OPÇÃO 3 — Verde (melhores amigos) ✅ ATIVO */}
@@ -179,7 +183,11 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
 
           <div className="flex items-center gap-1.5">
             <StarIcon className="h-4 w-4 shrink-0 fill-[#254F50] text-[#254F50] " />
-            <p className="text-sm text-[#254F50] dark:text-zinc-300">4,8 · 899 avaliações</p>
+            <p className="text-sm text-[#254F50] dark:text-zinc-300">
+              {barbershopReviewCount > 0 ? barbershopAverage.toFixed(1) : "Novo"} ·{" "}
+              {barbershopReviewCount} avaliaç
+              {barbershopReviewCount === 1 ? "ão" : "ões"}
+            </p>
           </div>
         </div>
 
@@ -264,15 +272,26 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
                   barbershop.barbers.map((barber) => {
                     const name = barber.nome || barber.user.name || "Barbeiro"
                     const avatarUrl = barber.avatar || barber.user.image
+                    const reviewCount = barber.reviews.length
+                    const averageRating =
+                      reviewCount > 0
+                        ? barber.reviews.reduce(
+                            (total, review) => total + review.rating,
+                            0,
+                          ) / reviewCount
+                        : 0
 
                     return (
-                      <Card key={barber.id} className="border-none bg-black/10 p-4 mb-2">
+                      <Link key={barber.id} href={`/barbers/${barber.id}`}>
+                      <Card className="border-none bg-black/10 p-4 mb-2 transition-colors hover:bg-black/20">
                         <div className="flex items-center justify-between cursor-pointer">
                           <div className="flex items-center gap-3">
                             {avatarUrl ? (
-                              <img
+                              <Image
                                 src={avatarUrl}
                                 alt={name}
+                                width={40}
+                                height={40}
                                 className="h-10 w-10 rounded-full object-cover"
                               />
                             ) : (
@@ -280,9 +299,21 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
                                 <User className="h-5 w-5 text-zinc-400" />
                               </div>
                             )}
-                            <span className="text-sm font-semibold text-white">
-                              {name}
-                            </span>
+                            <div>
+                              <span className="text-sm font-semibold text-white">
+                                {name}
+                              </span>
+                              <div className="mt-1 flex items-center gap-1 text-xs text-zinc-400">
+                                <StarIcon className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                                <span className="font-semibold text-amber-400">
+                                  {reviewCount > 0 ? averageRating.toFixed(1) : "Novo"}
+                                </span>
+                                <span>
+                                  · {reviewCount} avaliaç
+                                  {reviewCount === 1 ? "ão" : "ões"}
+                                </span>
+                              </div>
+                            </div>
                           </div>
 
                           <div>
@@ -290,6 +321,7 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
                           </div>
                         </div>
                       </Card>
+                      </Link>
                     )
                   })
                 )}
@@ -333,12 +365,17 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
         </div>
       </div> */}
 
-      {/* Serviços */}
-      <div className="px-6 pt-8">
-        <h2 className="mb-3 text-xs font-bold tracking-wide text-[#254F50] dark:text-[#C3F32C] uppercase">
-          Serviços
-        </h2>
-        <div className="flex flex-col gap-3">
+      <BarbershopContentTabs
+        average={barbershopAverage}
+        reviews={barbershop.reviews.map((review) => ({
+          id: review.id,
+          rating: review.rating,
+          comment: review.comment,
+          clientName: review.user.name ?? "Cliente",
+          createdAt: review.createdAt.toISOString(),
+        }))}
+        services={
+          <div className="flex flex-col gap-3">
           {barbershop.services.map((service) => (
             <ServiceItem
               key={service.id}
@@ -350,8 +387,9 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
               barbers={barbershop.barbers}
             />
           ))}
-        </div>
-      </div>
+          </div>
+        }
+      />
 
       {/* Contato */}
       <div className="px-6 pt-8">

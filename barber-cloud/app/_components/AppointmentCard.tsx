@@ -1,17 +1,15 @@
 // app/_components/dashboardComponents/agendamentos/total/AppointmentCard.tsx
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState } from "react"
 import { Card } from "@/app/_components/ui/card"
 import { Button } from "@/app/_components/ui/button"
-import { Clock, Scissors, User2, Store, CheckCircle2, Loader2 } from "lucide-react"
+import { Clock, Scissors, User2, Store, CheckCircle2 } from "lucide-react"
 import { WhatsAppButton } from "@/app/_components/dashboardComponents/agendamentos/WhatsAppButton"
 import { DeleteBookingButton } from "@/app/_components/dashboardComponents/agendamentos/DeleteBookingButton"
 import { CancelBookingButton } from "@/app/_components/dashboardComponents/agendamentos/CancelBookingButton"
-import { updateBookingStatus } from "@/app/_actions/updateBookingStatus"
-import { BookingStatus } from "@/app/generated/prisma"
-import { toast } from "sonner"
-import { useRouter } from "next/navigation"
+import { BookingStatus } from "@/app/generated/prisma/client"
+import { CompleteBookingButton } from "@/app/_components/dashboardComponents/agendamentos/CompleteBookingButton"
 
 interface AppointmentCardProps {
   appointment: {
@@ -20,39 +18,15 @@ interface AppointmentCardProps {
     status: BookingStatus
     user: { name: string | null; telefone: string | null }
     barber: { nome: string | null }
-    service: { name: string }
+    service: { name: string; price: number }
     barbershop: { name: string }
   }
 }
 
 export function AppointmentCard({ appointment }: AppointmentCardProps) {
   const [status, setStatus] = useState<BookingStatus>(appointment.status)
-  const [isPending, startTransition] = useTransition()
-  const router = useRouter()
-
   const isDone = status === "CONCLUIDO"
   const isCancelled = status === "CANCELADO"
-
-  const toggleStatus = () => {
-    if (isCancelled) return
-    const newStatus: BookingStatus = isDone ? "EM_ANDAMENTO" : "CONCLUIDO"
-
-    startTransition(async () => {
-      const result = await updateBookingStatus(appointment.id, newStatus)
-
-      if (result.success) {
-        setStatus(result.status)
-        toast.success(
-          result.status === "CONCLUIDO"
-            ? "Agendamento marcado como concluído."
-            : "Agendamento reaberto.",
-        )
-        router.refresh()
-      } else {
-        toast.error(result.error)
-      }
-    })
-  }
 
   return (
     <Card className="border border-border rounded-2xl bg-card p-5 transition-colors hover:border-ring/40">
@@ -110,31 +84,36 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
       </div>
 
       {/* Status toggle button */}
-      <Button
-        onClick={toggleStatus}
-        disabled={isPending || isCancelled}
+      {isDone || isCancelled ? (
+        <Button
+        disabled
         variant="ghost"
-        className={`w-full mb-4 font-medium transition-colors ${
+        className={`w-full mb-4 font-medium ${
           isCancelled
             ? "bg-red-500/10 text-red-500 border border-red-500/20"
-            : isDone
-            ? "bg-[#C3F32C] text-black hover:bg-[#b3e023]"
-            : "bg-muted text-muted-foreground border border-border hover:bg-accent"
+            : "bg-[#C3F32C] text-black"
         }`}
       >
         {isCancelled ? (
           "Agendamento cancelado"
-        ) : isPending ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
-        ) : isDone ? (
+        ) : (
           <>
             <CheckCircle2 className="w-4 h-4 mr-2" />
-            Corte concluído
+            Atendimento concluído
           </>
-        ) : (
-          "Marcar como concluído"
         )}
       </Button>
+      ) : (
+        <div className="mb-4">
+          <CompleteBookingButton
+            bookingId={appointment.id}
+            clientName={appointment.user.name ?? "Cliente"}
+            serviceName={appointment.service.name}
+            servicePrice={appointment.service.price}
+            onSuccess={() => setStatus("CONCLUIDO")}
+          />
+        </div>
+      )}
 
       {/* Actions */}
       <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-border">

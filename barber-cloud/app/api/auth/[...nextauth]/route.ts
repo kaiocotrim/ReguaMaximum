@@ -73,9 +73,11 @@ export const authOptions: AuthOptions = {
       if (token.sub) {
         const userFromDb = await db.user.findUnique({
           where: { id: token.sub },
-          select: { role: true },
+          select: { role: true, name: true, image: true },
         })
         token.role = userFromDb?.role
+        token.name = userFromDb?.name
+        token.picture = userFromDb?.image
       }
 
       return token
@@ -85,6 +87,8 @@ export const authOptions: AuthOptions = {
       if (session.user) {
         session.user.id = token.sub
         session.user.role = token.role
+        session.user.name = token.name
+        session.user.image = token.picture
       }
       return session
     },

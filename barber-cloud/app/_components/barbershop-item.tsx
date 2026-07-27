@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { Barbershop } from "@prisma/client"
+import { Barbershop } from "@/app/generated/prisma/client"
 import { Card, CardContent } from "./ui/card"
 import { Button } from "./ui/button"
 import { Star, ChevronRight } from "lucide-react"
@@ -7,10 +7,21 @@ import { Badge } from "./ui/badge"
 import Link from "next/link"
 
 interface BarbershopItemProps {
-  barbershop: Barbershop
+  barbershop: Barbershop & {
+    reviews: { rating: number }[]
+  }
 }
 
 const BarbershopItem = ({ barbershop }: BarbershopItemProps) => {
+  const reviewCount = barbershop.reviews.length
+  const averageRating =
+    reviewCount > 0
+      ? barbershop.reviews.reduce(
+          (total, review) => total + review.rating,
+          0,
+        ) / reviewCount
+      : null
+
   return (
     <Card className="min-w-[167px] p-1 rounded-2xl hover:bg-accent cursor-pointer transition-all ">
       <CardContent className="p-0 px-1 pt-0 ">
@@ -24,7 +35,7 @@ const BarbershopItem = ({ barbershop }: BarbershopItemProps) => {
 
           <Badge className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-[#C3F32C] px-2 py-1 text-xs text-[#254F50]">
             <Star className="h-3 w-3" fill="#254F50" />
-            4.8
+            {averageRating === null ? "Novo" : averageRating.toFixed(1)}
           </Badge>
         </div>
 

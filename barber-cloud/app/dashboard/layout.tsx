@@ -23,19 +23,25 @@ export default async function DashboardLayout({
   }
 
   // Busca apenas os dados necessários da barbearia
-  const barbershop = await db.barbershop.findFirst({
-    where: {
-      ownerId: session.user.id,
-    },
-    select: {
-      id: true,
-      name: true,
-      imageUrl: true,
-      cidade: true,
-      corMarca: true,
-      instagram: true,
-    },
-  });
+  const [barbershop, currentUser] = await Promise.all([
+    db.barbershop.findFirst({
+      where: {
+        ownerId: session.user.id,
+      },
+      select: {
+        id: true,
+        name: true,
+        imageUrl: true,
+        cidade: true,
+        corMarca: true,
+        instagram: true,
+      },
+    }),
+    db.user.findUnique({
+      where: { id: session.user.id },
+      select: { name: true, email: true, image: true },
+    }),
+  ]);
 
   // Caso o usuário ainda não tenha criado uma barbearia
   if (!barbershop) {
@@ -48,9 +54,9 @@ export default async function DashboardLayout({
         <AppSidebar
           user={{
             id: session.user.id,
-            name: session.user.name,
-            email: session.user.email,
-            image: session.user.image,
+            name: currentUser?.name ?? session.user.name,
+            email: currentUser?.email ?? session.user.email,
+            image: currentUser?.image ?? session.user.image,
           }}
           barbershop={barbershop}
         />

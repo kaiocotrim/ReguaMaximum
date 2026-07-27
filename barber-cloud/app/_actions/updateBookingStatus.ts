@@ -1,7 +1,7 @@
 "use server"
 
 import { db } from "@/app/_lib/prisma"
-import { BookingStatus } from "@/app/generated/prisma"
+import { BookingStatus } from "@/app/generated/prisma/client"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { revalidatePath } from "next/cache"
 import { getServerSession } from "next-auth"
@@ -20,7 +20,10 @@ export async function updateBookingStatus(
     const result = await db.booking.updateMany({
       where: {
         id: bookingId,
-        barbershop: { ownerId: session.user.id },
+        OR: [
+          { barbershop: { ownerId: session.user.id } },
+          { barber: { userId: session.user.id } },
+        ],
         status: { not: "CANCELADO" },
       },
       data: { status },

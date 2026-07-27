@@ -19,6 +19,9 @@ const BarbershopsPage = async ({ searchParams }: BarbershopsPageProps) => {
         mode: "insensitive",
       },
     },
+    include: {
+      reviews: { select: { rating: true } },
+    },
   })
 
   return (

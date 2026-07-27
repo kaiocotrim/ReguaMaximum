@@ -72,7 +72,10 @@ export default async function Agendados({
                 telefone: appointment.user.telefone,
               },
               barber: { nome: appointment.barber.nome },
-              service: { name: appointment.service.name },
+              service: {
+                name: appointment.service.name,
+                price: Number(appointment.service.price),
+              },
               barbershop: { name: appointment.barbershop.name },
             }}
           />

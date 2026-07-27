@@ -19,7 +19,11 @@ const FavoritesPage = async () => {
       userId: session.user.id,
     },
     include: {
-      barbershop: true,
+      barbershop: {
+        include: {
+          reviews: { select: { rating: true } },
+        },
+      },
     },
   })
 

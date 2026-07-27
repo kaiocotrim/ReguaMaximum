@@ -26,6 +26,7 @@ import {
   MoreVertical,
   LogOut,
 } from "lucide-react"
+import Image from "next/image"
 
 type AppSidebarProps = {
   user: {
@@ -141,9 +142,11 @@ export function AppSidebar({
         <div className="flex items-center gap-3">
 
           {barbershop.imageUrl ? (
-            <img
+            <Image
               src={barbershop.imageUrl}
               alt={barbershop.name}
+              width={40}
+              height={40}
               className="h-10 w-10 rounded-lg object-cover"
             />
           ) : (
@@ -234,17 +237,27 @@ export function AppSidebar({
               className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-white/[0.04]"
             >
 
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#C3F32C] font-bold text-black">
-                {user.name?.charAt(0).toUpperCase() ?? "U"}
+              <div className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#C3F32C] font-bold text-black">
+                {user.image ? (
+                  <Image
+                    src={user.image}
+                    alt={user.name ?? "Usuário"}
+                    fill
+                    sizes="36px"
+                    className="object-cover"
+                  />
+                ) : (
+                  user.name?.charAt(0).toUpperCase() ?? "U"
+                )}
               </div>
 
               <div className="min-w-0 flex-1">
 
-                <p className="truncate text-[13px] font-semibold text-white">
+                <p className="truncate text-[13px] font-semibold text-black dark:text-white">
                   {user.name}
                 </p>
 
-                <p className="truncate text-[11px] text-[#666]">
+                <p className="truncate text-[11px] text-[#555] dark:text-[#888]">
                   {user.email}
                 </p>
 

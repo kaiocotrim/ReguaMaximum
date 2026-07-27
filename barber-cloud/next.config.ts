@@ -30,6 +30,12 @@ const nextConfig = {
 
   images: {
     remotePatterns: [
+      // Serviços podem usar uma URL de imagem informada pelo proprietário.
+      // Restringimos a HTTPS, mas aceitamos qualquer hostname.
+      {
+        protocol: "https",
+        hostname: "**",
+      },
       {
         protocol: "https",
         hostname: "hbqxheedmamrmqiasflv.supabase.co",

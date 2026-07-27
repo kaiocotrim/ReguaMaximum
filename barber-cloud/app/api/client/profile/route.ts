@@ -15,6 +15,9 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
+    if (typeof body.avatar !== "string" || !body.avatar.startsWith("https://")) {
+      return NextResponse.json({ error: "Foto obrigatória." }, { status: 400 })
+    }
 
     const client = await db.$transaction(async (tx) => {
       const client = await tx.client.create({
@@ -33,6 +36,7 @@ export async function POST(req: Request) {
         data: {
           role: "CLIENT",
           telefone: body.telefone,
+          image: body.avatar,
         },
       });
 

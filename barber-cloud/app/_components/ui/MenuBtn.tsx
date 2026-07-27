@@ -391,10 +391,7 @@
 "use client"
 import { useRouter } from "next/navigation"
 
-import { LoginProviders } from "@/app/_components/LoginProviders"
-
-import Image from "next/image"
-import { signIn, signOut, useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 
 import {
   Sheet,
@@ -420,7 +417,6 @@ import {
 import {
   CalendarCheck2,
   ChevronRight,
-  Crown,
   Heart,
   LogInIcon,
   LogOut,
@@ -544,7 +540,11 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
                     className="rounded-2xl object-cover"
                   />
                   <AvatarFallback className="rounded-2xl bg-[#C3F32C] text-base font-bold text-black">
-                    CN
+                    {data.user.name
+                      ?.split(" ")
+                      .slice(0, 2)
+                      .map((part: string) => part.charAt(0).toUpperCase())
+                      .join("") || "U"}
                   </AvatarFallback>
                 </Avatar>
 

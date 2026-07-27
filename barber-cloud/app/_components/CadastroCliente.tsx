@@ -15,6 +15,7 @@ import {
   Phone,
 } from "lucide-react"
 import { ThemeToggle } from "@/app/_components/ui/theme-toggle"
+import { uploadImagem } from "@/app/_lib/uploadImagem"
 
 type StepId = 0 | 1 | 2 | 3
 
@@ -121,6 +122,7 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
   const [dir, setDir] = useState<1 | -1>(1)
   const [nome, setNome] = useState(nomeInicial)
   const [avatar, setAvatar] = useState<string | null>(null)
+  const [avatarFile, setAvatarFile] = useState<File | null>(null)
   const [cidade, setCidade] = useState("")
   const [telefone, setTelefone] = useState("")
 
@@ -145,6 +147,13 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
   // };
   const salvarPerfil = async () => {
     try {
+      if (!avatarFile) return
+      const extension = avatarFile.name.split(".").pop() ?? "jpg"
+      const avatarUrl = await uploadImagem(
+        avatarFile,
+        "logos",
+        `avatars/cliente-${Date.now()}.${extension}`,
+      )
       const response = await fetch("/api/client/profile", {
         method: "POST",
         headers: {
@@ -152,7 +161,7 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
         },
         body: JSON.stringify({
           nome,
-          avatar,
+          avatar: avatarUrl,
           cidade,
           telefone: telefone.replace(/\D/g, ""),
         }),
@@ -194,7 +203,11 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
 
   const handleAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) setAvatar(URL.createObjectURL(file))
+    if (!file) return
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) return
+    if (file.size > 5 * 1024 * 1024) return
+    setAvatarFile(file)
+    setAvatar(URL.createObjectURL(file))
   }
 
   const isSuccess = step === TOTAL_STEPS - 1
@@ -249,7 +262,7 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
           <input
             id="avatar-cliente-input"
             type="file"
-            accept="image/png,image/jpeg"
+            accept="image/png,image/jpeg,image/webp"
             className="hidden"
             onChange={handleAvatar}
           />

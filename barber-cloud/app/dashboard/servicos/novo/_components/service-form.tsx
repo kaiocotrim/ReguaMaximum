@@ -2,14 +2,16 @@
 
 import { useState, useTransition } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { Loader2, Trash2 } from "lucide-react"
+import { ImagePlus, Link2, Loader2, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { createService } from "@/app/_actions/service/create-service"
 import { updateService } from "@/app/_actions/service/update-service"
 import { deleteService } from "@/app/_actions/service/delete-service"
+import { uploadImagem } from "@/app/_lib/uploadImagem"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,7 +29,7 @@ type ServiceFormProps = {
     id: string
     name: string
     description: string
-    price: any
+    price: number
     duration: number
     imageUrl: string
   }
@@ -40,7 +42,11 @@ const container = {
 
 const item = {
   hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: "easeOut" as const },
+  },
 }
 
 const inputClasses =
@@ -51,12 +57,40 @@ export function ServiceForm({ service }: ServiceFormProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isDeleting, startDeleteTransition] = useTransition()
   const [isSubmitting, startSubmitTransition] = useTransition()
+  const [imageMode, setImageMode] = useState<"url" | "upload">(
+    service?.imageUrl ? "url" : "upload",
+  )
+  const [imageUrl, setImageUrl] = useState<string>(
+    service?.imageUrl ?? "",
+  )
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string>(
+    service?.imageUrl ?? "",
+  )
 
   function handleSubmit(formData: FormData) {
     if (isSubmitting) return // trava extra contra cliques simultâneos
 
     startSubmitTransition(async () => {
       try {
+        let finalImageUrl = imageUrl.trim()
+
+        if (imageMode === "upload" && imageFile) {
+          const extension = imageFile.name.split(".").pop() ?? "jpg"
+          finalImageUrl = await uploadImagem(
+            imageFile,
+            "capas",
+            `servicos/servico-${Date.now()}.${extension}`,
+          )
+        }
+
+        if (!finalImageUrl) {
+          toast.error("Adicione uma foto ou informe o link da imagem.")
+          return
+        }
+
+        formData.set("imageUrl", finalImageUrl)
+
         if (service) {
           await updateService(service.id, formData)
           toast.success("Serviço atualizado com sucesso.")
@@ -220,6 +254,94 @@ export function ServiceForm({ service }: ServiceFormProps) {
             </span>
           </div>
         </div>
+      </motion.div>
+
+      <motion.div variants={item}>
+        <label className="mb-2 block text-sm font-medium text-zinc-400">
+          Foto do serviço
+        </label>
+        <div className="mb-3 grid grid-cols-2 rounded-xl border border-border bg-muted/30 p-1">
+          <button
+            type="button"
+            onClick={() => setImageMode("upload")}
+            className={`flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg text-sm font-medium ${
+              imageMode === "upload"
+                ? "bg-[#C3F32C] text-black"
+                : "text-muted-foreground"
+            }`}
+          >
+            <ImagePlus className="h-4 w-4" />
+            Enviar imagem
+          </button>
+          <button
+            type="button"
+            onClick={() => setImageMode("url")}
+            className={`flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg text-sm font-medium ${
+              imageMode === "url"
+                ? "bg-[#C3F32C] text-black"
+                : "text-muted-foreground"
+            }`}
+          >
+            <Link2 className="h-4 w-4" />
+            Usar link
+          </button>
+        </div>
+
+        {imageMode === "upload" ? (
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            disabled={isSubmitting}
+            className={inputClasses}
+            onChange={(event) => {
+              const file = event.target.files?.[0] ?? null
+              if (!file) return
+              if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+                toast.error("Use uma imagem JPG, PNG ou WEBP.")
+                event.target.value = ""
+                return
+              }
+              if (file.size > 5 * 1024 * 1024) {
+                toast.error("A imagem deve ter no máximo 5 MB.")
+                event.target.value = ""
+                return
+              }
+              if (previewUrl.startsWith("blob:")) URL.revokeObjectURL(previewUrl)
+              const preview = URL.createObjectURL(file)
+              setImageFile(file)
+              setPreviewUrl(preview)
+            }}
+          />
+        ) : (
+          <input
+            type="url"
+            value={imageUrl ?? ""}
+            onChange={(event) => {
+              const nextUrl = event.currentTarget.value ?? ""
+              setImageUrl(nextUrl)
+              setPreviewUrl(nextUrl)
+            }}
+            placeholder="https://exemplo.com/foto-do-servico.jpg"
+            disabled={isSubmitting}
+            className={inputClasses}
+          />
+        )}
+
+        <p className="mt-2 text-xs text-muted-foreground">
+          JPG, PNG ou WEBP. Tamanho máximo de 5 MB.
+        </p>
+
+        {previewUrl && (
+          <div className="relative mt-4 aspect-video overflow-hidden rounded-xl border border-border bg-muted">
+            <Image
+              src={previewUrl}
+              alt="Pré-visualização da foto do serviço"
+              fill
+              unoptimized
+              className="object-cover"
+            />
+          </div>
+        )}
       </motion.div>
 
       {/* Botões */}

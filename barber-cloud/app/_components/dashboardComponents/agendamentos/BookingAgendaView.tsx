@@ -24,6 +24,8 @@ export async function BookingAgendaView({
         id: true,
         date: true,
         status: true,
+        attendance: true,
+        notes: true,
         barberId: true,
         serviceId: true,
         user: { select: { name: true, telefone: true } },
@@ -81,6 +83,8 @@ export async function BookingAgendaView({
       duration: appointment.service.duration,
       price: Number(appointment.service.price),
       status: appointment.status,
+      attendance: appointment.attendance,
+      notes: appointment.notes,
     },
   }))
 

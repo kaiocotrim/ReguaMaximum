@@ -28,6 +28,7 @@ import {
 import { CancelBookingButton } from "./CancelBookingButton"
 import { DeleteBookingButton } from "./DeleteBookingButton"
 import { WhatsAppButton } from "./WhatsAppButton"
+import { CompleteBookingButton } from "./CompleteBookingButton"
 import { updateBookingDetails } from "@/app/_actions/updateBookingDetails"
 import { toast } from "sonner"
 
@@ -43,6 +44,8 @@ type BookingEvent = EventInput & {
     duration: number
     price: number
     status: "EM_ANDAMENTO" | "CONCLUIDO" | "CANCELADO"
+    attendance: "PENDENTE" | "COMPARECEU" | "FALTOU"
+    notes: string | null
   }
 }
 
@@ -50,6 +53,12 @@ const statusLabel = {
   EM_ANDAMENTO: "Em andamento",
   CONCLUIDO: "Concluído",
   CANCELADO: "Cancelado",
+} as const
+
+const attendanceLabel = {
+  PENDENTE: "Pendente",
+  COMPARECEU: "Compareceu",
+  FALTOU: "Faltou",
 } as const
 
 function EventContent({ event, timeText }: EventContentArg) {
@@ -111,6 +120,11 @@ export function BookingCalendar({
         barberId: String(formData.get("barberId")),
         serviceId: String(formData.get("serviceId")),
         date: parsedDate.toISOString(),
+        attendance: String(formData.get("attendance")) as
+          | "PENDENTE"
+          | "COMPARECEU"
+          | "FALTOU",
+        notes: String(formData.get("notes") ?? ""),
       })
 
       if (result.success) {
@@ -251,11 +265,33 @@ export function BookingCalendar({
                     minute: "2-digit",
                   })}` : ""} (${details.duration} min)`}
                 />
+                <Detail
+                  icon={UserRound}
+                  label="Comparecimento"
+                  value={attendanceLabel[details.attendance]}
+                />
+                <Detail
+                  icon={Pencil}
+                  label="Observações"
+                  value={details.notes ?? "Nenhuma observação"}
+                />
                   </>
                 )}
               </div>
 
               {!isEditing && (
+                <>
+                {details.status === "EM_ANDAMENTO" && (
+                  <div className="border-t border-border px-6 pt-4">
+                    <CompleteBookingButton
+                      bookingId={String(selectedEvent?.id)}
+                      clientName={details.client}
+                      serviceName={details.service}
+                      servicePrice={details.price}
+                      onSuccess={closeModal}
+                    />
+                  </div>
+                )}
                 <div className="flex flex-wrap items-center gap-2 border-t border-border px-6 py-4">
                 <button
                   type="button"
@@ -285,6 +321,7 @@ export function BookingCalendar({
                   </div>
                 )}
               </div>
+                </>
               )}
             </>
           )}
@@ -356,6 +393,31 @@ function EditBookingForm({
           required
           className="h-10 rounded-lg border border-border bg-background px-3"
         />
+      </label>
+      <label className="grid gap-1.5 text-sm">
+        <span className="font-medium">Comparecimento</span>
+        <select
+          name="attendance"
+          defaultValue={details.attendance}
+          required
+          className="h-10 rounded-lg border border-border bg-background px-3"
+        >
+          <option value="PENDENTE">Pendente</option>
+          <option value="COMPARECEU">Compareceu</option>
+          <option value="FALTOU">Faltou</option>
+        </select>
+      </label>
+      <label className="col-span-full grid gap-1.5 text-sm">
+        <span className="font-medium">Observações internas</span>
+        <textarea
+          name="notes"
+          defaultValue={details.notes ?? ""}
+          maxLength={500}
+          rows={3}
+          placeholder="Preferências do cliente, instruções ou informações importantes..."
+          className="resize-none rounded-lg border border-border bg-background px-3 py-2"
+        />
+        <span className="text-xs text-muted-foreground">Máximo de 500 caracteres.</span>
       </label>
       <div className="col-span-full mt-2 flex justify-end gap-2">
         <button

@@ -222,16 +222,19 @@
 
 import { db } from "./_lib/prisma"
 import HomeClient from "./_components/HomeClient"
-import { authOptions } from "./_providers/auth"
+import { authOptions } from "./api/auth/[...nextauth]/route"
 import { getServerSession } from "next-auth"
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
 
-  const barbershops = await db.barbershop.findMany()
+  const barbershops = await db.barbershop.findMany({
+    include: { reviews: { select: { rating: true } } },
+  })
 
   const popularBarbershops = await db.barbershop.findMany({
     orderBy: { name: "desc" },
+    include: { reviews: { select: { rating: true } } },
   })
 
   const confirmedBookings = session?.user
@@ -250,6 +253,28 @@ export default async function Home() {
       })
     : []
 
+  const pendingReviews = session?.user?.id
+    ? await db.booking.findMany({
+        where: {
+          userId: session.user.id,
+          status: "CONCLUIDO",
+          OR: [{ review: null }, { barbershopReview: null }],
+        },
+        select: {
+          id: true,
+          date: true,
+          review: { select: { id: true } },
+          barbershopReview: { select: { id: true } },
+          service: { select: { name: true } },
+          barbershop: { select: { name: true } },
+          barber: {
+            select: { nome: true, user: { select: { name: true } } },
+          },
+        },
+        orderBy: { date: "desc" },
+      })
+    : []
+
   // ✅ serializa Decimal corretamente
   const serializedBookings = confirmedBookings.map((booking) => ({
     ...booking,
@@ -264,6 +289,15 @@ export default async function Home() {
       barbershops={barbershops}
       popularBarbershops={popularBarbershops}
       confirmedBookings={serializedBookings}
+      pendingReviews={pendingReviews.map((booking) => ({
+        id: booking.id,
+        date: booking.date.toISOString(),
+        service: booking.service.name,
+        barbershop: booking.barbershop.name,
+        barber: booking.barber.nome ?? booking.barber.user.name ?? "Barbeiro",
+        barberReviewed: Boolean(booking.review),
+        barbershopReviewed: Boolean(booking.barbershopReview),
+      }))}
     />
   )
 }

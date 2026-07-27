@@ -10,6 +10,8 @@ interface UpdateBookingDetailsInput {
   barberId: string
   serviceId: string
   date: string
+  attendance: "PENDENTE" | "COMPARECEU" | "FALTOU"
+  notes: string
 }
 
 export async function updateBookingDetails(input: UpdateBookingDetailsInput) {
@@ -21,6 +23,18 @@ export async function updateBookingDetails(input: UpdateBookingDetailsInput) {
   const date = new Date(input.date)
   if (Number.isNaN(date.getTime())) {
     return { success: false as const, error: "Data ou horário inválido." }
+  }
+
+  if (!["PENDENTE", "COMPARECEU", "FALTOU"].includes(input.attendance)) {
+    return { success: false as const, error: "Situação de comparecimento inválida." }
+  }
+
+  const notes = input.notes.trim()
+  if (notes.length > 500) {
+    return {
+      success: false as const,
+      error: "As observações devem ter no máximo 500 caracteres.",
+    }
   }
 
   const booking = await db.booking.findFirst({
@@ -91,6 +105,8 @@ export async function updateBookingDetails(input: UpdateBookingDetailsInput) {
       barberId: barber.id,
       serviceId: service.id,
       date,
+      attendance: input.attendance,
+      notes: notes || null,
     },
   })
 

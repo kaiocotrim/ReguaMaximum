@@ -361,3 +361,31 @@
   border-top-color: #ef4444;
   border-bottom-color: #ef4444;
 }
+
+@keyframes barbershop-story-pulse {
+  0% {
+    opacity: 0.75;
+    transform: scale(0.96);
+    box-shadow: 0 0 0 0 rgba(195, 243, 44, 0.55);
+  }
+  70% {
+    opacity: 0;
+    transform: scale(1.18);
+    box-shadow: 0 0 0 10px rgba(195, 243, 44, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.18);
+    box-shadow: 0 0 0 0 rgba(195, 243, 44, 0);
+  }
+}
+
+.barbershop-story-pulse {
+  animation: barbershop-story-pulse 2s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .barbershop-story-pulse {
+    animation: none;
+  }
+}

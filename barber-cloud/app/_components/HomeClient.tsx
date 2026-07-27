@@ -9,22 +9,28 @@ import { Badge } from "./ui/badge"
 import { Avatar, AvatarImage } from "./ui/avatar"
 import BarbershopItem from "./barbershop-item"
 import SearchBar from "./SearchBar"
-import { MapPin, Map, MapPinSearch } from "lucide-react"
+import { MapPin } from "lucide-react"
 import { motion } from "framer-motion"
-import { Barbershop, Booking, BarbeshopService } from "@prisma/client"
+import {
+  Barbershop,
+  Booking,
+  BarbeshopService,
+} from "@/app/generated/prisma/client"
 import { useSession } from "next-auth/react"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
+import {
+  PendingBookingReviews,
+  type PendingReview,
+} from "./PendingBookingReviews"
 
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
 } from "@/app/_components/ui/carousel"
 
 const fadeUp = {
@@ -32,7 +38,7 @@ const fadeUp = {
   show: (i: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.45, delay: i * 0.08, ease: "easeOut" },
+    transition: { duration: 0.45, delay: i * 0.08, ease: "easeOut" as const },
   }),
 }
 
@@ -49,10 +55,15 @@ type BookingWithRelations = Booking & {
   barbershop: Barbershop
 }
 
+type BarbershopWithReviews = Barbershop & {
+  reviews: { rating: number }[]
+}
+
 interface HomeClientProps {
-  barbershops: Barbershop[]
-  popularBarbershops: Barbershop[]
+  barbershops: BarbershopWithReviews[]
+  popularBarbershops: BarbershopWithReviews[]
   confirmedBookings: BookingWithRelations[]
+  pendingReviews: PendingReview[]
   loading?: boolean
 }
 
@@ -60,6 +71,7 @@ export default function HomeClient({
   barbershops,
   popularBarbershops,
   confirmedBookings,
+  pendingReviews,
   loading,
 }: HomeClientProps) {
   const { data: session } = useSession()
@@ -70,6 +82,8 @@ export default function HomeClient({
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    // O tema só pode ser determinado com segurança após a hidratação.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true)
   }, [])
 
@@ -208,6 +222,8 @@ export default function HomeClient({
         </motion.div>
 
         <div className="space-y-4">
+          <PendingBookingReviews initialReviews={pendingReviews} />
+
           {/* ✅ Agendamentos — só aparece se tiver algum */}
           {confirmedBookings.length > 0 && (
             <>
