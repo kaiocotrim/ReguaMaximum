@@ -284,3 +284,80 @@
   font-size: 1rem;
   font-weight: 600;
 }
+
+/* Agenda administrativa — visual inspirado no Google Calendar */
+.booking-calendar {
+  --fc-border-color: color-mix(in srgb, var(--border) 82%, transparent);
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: color-mix(in srgb, var(--muted) 55%, transparent);
+  --fc-today-bg-color: rgba(195, 243, 44, 0.08);
+  --fc-now-indicator-color: #ef4444;
+}
+
+.booking-calendar .fc {
+  color: var(--foreground);
+  font-family: inherit;
+}
+
+.booking-calendar .fc-toolbar {
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.booking-calendar .fc-toolbar-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.booking-calendar .fc-button {
+  border-color: var(--border) !important;
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+  box-shadow: none !important;
+  text-transform: capitalize !important;
+}
+
+.booking-calendar .fc-button:hover,
+.booking-calendar .fc-button-active {
+  border-color: #c3f32c !important;
+  background: #c3f32c !important;
+  color: #000 !important;
+}
+
+.booking-calendar .fc-col-header-cell {
+  background: color-mix(in srgb, var(--muted) 35%, transparent);
+}
+
+.booking-calendar .fc-col-header-cell-cushion,
+.booking-calendar .fc-timegrid-slot-label-cushion,
+.booking-calendar .fc-daygrid-day-number {
+  color: var(--muted-foreground);
+  text-decoration: none;
+}
+
+.booking-calendar .fc-event {
+  cursor: pointer;
+  border: 0;
+  border-left: 3px solid rgba(0, 0, 0, 0.28);
+  border-radius: 5px;
+  background: #c3f32c;
+  color: #142000;
+}
+
+.booking-calendar .booking-event-concluido {
+  background: #60a5fa;
+  color: #071a38;
+}
+
+.booking-calendar .booking-event-cancelado {
+  background: #71717a;
+  color: #fff;
+  opacity: 0.72;
+  text-decoration: line-through;
+}
+
+.booking-calendar .fc-timegrid-now-indicator-arrow {
+  border-top-color: #ef4444;
+  border-bottom-color: #ef4444;
+}

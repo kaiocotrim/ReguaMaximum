@@ -7,6 +7,7 @@ import { Button } from "@/app/_components/ui/button"
 import { Clock, Scissors, User2, Store, CheckCircle2, Loader2 } from "lucide-react"
 import { WhatsAppButton } from "@/app/_components/dashboardComponents/agendamentos/WhatsAppButton"
 import { DeleteBookingButton } from "@/app/_components/dashboardComponents/agendamentos/DeleteBookingButton"
+import { CancelBookingButton } from "@/app/_components/dashboardComponents/agendamentos/CancelBookingButton"
 import { updateBookingStatus } from "@/app/_actions/updateBookingStatus"
 import { BookingStatus } from "@/app/generated/prisma"
 import { toast } from "sonner"
@@ -136,13 +137,16 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
       </Button>
 
       {/* Actions */}
-      <div className="flex items-center justify-between pt-4 border-t border-border">
-        {!isCancelled && <DeleteBookingButton bookingId={appointment.id} />}
+      <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-border">
+        {!isCancelled && <CancelBookingButton bookingId={appointment.id} />}
+        <DeleteBookingButton bookingId={appointment.id} />
         {appointment.user.telefone && (
-          <WhatsAppButton
-            telefone={appointment.user.telefone}
-            nomeCliente={appointment.user.name ?? "Cliente"}
-          />
+          <div className="ml-auto">
+            <WhatsAppButton
+              telefone={appointment.user.telefone}
+              nomeCliente={appointment.user.name ?? "Cliente"}
+            />
+          </div>
         )}
       </div>
     </Card>

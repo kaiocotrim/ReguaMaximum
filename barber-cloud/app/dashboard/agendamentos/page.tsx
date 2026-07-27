@@ -4,6 +4,8 @@ import { getServerSession } from "next-auth"
 import Agendados from "@/app/_components/dashboardComponents/agendamentos/total/Agendados"
 import AgendadosSkeleton from "@/app/_components/dashboardComponents/agendamentos/total/AgendadosSkeleton"
 import { AdvancedBookingSearch } from "@/app/_components/dashboardComponents/agendamentos/AdvancedBookingSearch"
+import { BookingAgendaView } from "@/app/_components/dashboardComponents/agendamentos/BookingAgendaView"
+import { BookingViewToggle } from "@/app/_components/dashboardComponents/agendamentos/BookingViewToggle"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { db } from "@/app/_lib/prisma"
 import {
@@ -36,6 +38,7 @@ export default async function AgendamentosPage({
   searchParams: Promise<Record<string, SearchValue>>
 }) {
   const params = await searchParams
+  const view = params.visualizacao === "agenda" ? "agenda" : "cards"
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) return null
 
@@ -101,6 +104,9 @@ export default async function AgendamentosPage({
   if (filters.maxPrice !== undefined)
     exportParams.set("precoMax", String(filters.maxPrice))
   exportParams.set("ordem", filters.sort)
+  const cardsParams = new URLSearchParams(exportParams)
+  const agendaParams = new URLSearchParams(exportParams)
+  agendaParams.set("visualizacao", "agenda")
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
@@ -111,7 +117,13 @@ export default async function AgendamentosPage({
             Combine barbeiro, serviço, status, período e faixa de preço.
           </p>
         </div>
-        <div className="flex flex-col gap-2 sm:flex-row">
+        <div className="flex flex-col gap-2">
+          <BookingViewToggle
+            view={view}
+            cardsHref={`/dashboard/agendamentos?${cardsParams.toString()}`}
+            agendaHref={`/dashboard/agendamentos?${agendaParams.toString()}`}
+          />
+          <div className="flex flex-col gap-2 sm:flex-row">
           <AdvancedBookingSearch
             barbers={barbers.map((barber) => ({
               id: barber.id,
@@ -120,6 +132,7 @@ export default async function AgendamentosPage({
             services={services}
             filters={filters}
             resultCount={resultCount}
+            view={view}
           />
           <a
             href={`/api/relatorios/agendamentos?${exportParams.toString()}`}
@@ -128,6 +141,7 @@ export default async function AgendamentosPage({
             <FileSpreadsheet className="h-4 w-4" />
             Baixar Excel filtrado
           </a>
+          </div>
         </div>
       </div>
 
@@ -135,7 +149,11 @@ export default async function AgendamentosPage({
         key={exportParams.toString()}
         fallback={<AgendadosSkeleton />}
       >
-        <Agendados filters={filters} />
+        {view === "agenda" ? (
+          <BookingAgendaView filters={filters} />
+        ) : (
+          <Agendados filters={filters} />
+        )}
       </Suspense>
     </div>
   )

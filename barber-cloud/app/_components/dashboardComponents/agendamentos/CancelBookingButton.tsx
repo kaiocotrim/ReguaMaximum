@@ -1,7 +1,7 @@
 "use client"
 
 import { useTransition } from "react"
-import { deleteBooking } from "@/app/api/deleteBokings/delete-bookingBarber"
+import { cancelBooking } from "@/app/api/deleteBokings/delete-bookingBarber"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,10 +13,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/app/_components/ui/alert-dialog"
-import { AlertTriangle, Trash2 } from "lucide-react"
+import { AlertTriangle, Ban } from "lucide-react"
 import { toast } from "sonner"
 
-export function DeleteBookingButton({
+export function CancelBookingButton({
   bookingId,
   onSuccess,
 }: {
@@ -25,11 +25,11 @@ export function DeleteBookingButton({
 }) {
   const [isPending, startTransition] = useTransition()
 
-  const handleDelete = () => {
+  const handleCancel = () => {
     startTransition(async () => {
-      const result = await deleteBooking(bookingId)
+      const result = await cancelBooking(bookingId)
       if (result.success) {
-        toast.success("Agendamento excluído com sucesso.")
+        toast.success("Agendamento cancelado e mantido no histórico.")
         onSuccess?.()
       } else {
         toast.error(result.error)
@@ -43,25 +43,25 @@ export function DeleteBookingButton({
         <button
           type="button"
           disabled={isPending}
-          aria-label="Excluir agendamento"
-          className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-red-500/30 text-red-400 transition-colors hover:border-red-500 hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
-          title="Excluir agendamento"
+          className="flex cursor-pointer items-center gap-2 rounded-lg border border-amber-500/30 px-3 py-1.5 text-sm font-medium text-amber-500 transition-colors hover:border-amber-500 hover:bg-amber-500 hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+          title="Cancelar agendamento"
         >
-          <Trash2 size={16} className={isPending ? "animate-pulse" : ""} />
+          <Ban size={16} />
+          <span>{isPending ? "Cancelando..." : "Cancelar"}</span>
         </button>
       </AlertDialogTrigger>
       <AlertDialogContent className="w-[90vw] max-w-md rounded-2xl border border-white/10 p-6 shadow-2xl dark:bg-[#121212]">
         <AlertDialogHeader className="space-y-4">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-500/10">
-            <AlertTriangle className="h-7 w-7 text-red-500" />
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-amber-500/10">
+            <AlertTriangle className="h-7 w-7 text-amber-500" />
           </div>
           <div className="space-y-2 text-center">
             <AlertDialogTitle className="text-center text-xl font-bold dark:text-white">
-              Excluir agendamento?
+              Confirmar cancelamento
             </AlertDialogTitle>
             <AlertDialogDescription className="text-center text-sm text-zinc-400">
-              Esta ação é permanente. O agendamento também será removido do
-              histórico e dos relatórios.
+              O agendamento será cancelado, mas continuará salvo no histórico e
+              nos relatórios mensais.
             </AlertDialogDescription>
           </div>
         </AlertDialogHeader>
@@ -70,10 +70,10 @@ export function DeleteBookingButton({
             Voltar
           </AlertDialogCancel>
           <AlertDialogAction
-            onClick={handleDelete}
-            className="h-11 flex-1 cursor-pointer rounded-xl bg-red-600 font-medium text-white hover:bg-red-700"
+            onClick={handleCancel}
+            className="h-11 flex-1 cursor-pointer rounded-xl bg-amber-500 font-medium text-black hover:bg-amber-600"
           >
-            Excluir definitivamente
+            Cancelar agendamento
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

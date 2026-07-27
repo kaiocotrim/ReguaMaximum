@@ -23,11 +23,13 @@ export function AdvancedBookingSearch({
   services,
   filters,
   resultCount,
+  view = "cards",
 }: {
   barbers: FilterOption[]
   services: FilterOption[]
   filters: BookingFilters
   resultCount: number
+  view?: "cards" | "agenda"
 }) {
   const router = useRouter()
 
@@ -53,6 +55,9 @@ export function AdvancedBookingSearch({
         </DialogHeader>
 
         <form method="get" className="grid gap-5" id="advanced-booking-filter">
+          {view === "agenda" && (
+            <input type="hidden" name="visualizacao" value="agenda" />
+          )}
           <div className="grid gap-4 md:grid-cols-2">
             <fieldset className="space-y-2">
               <legend className="text-sm font-semibold">Barbeiros</legend>
@@ -195,7 +200,13 @@ export function AdvancedBookingSearch({
         <DialogFooter>
           <button
             type="button"
-            onClick={() => router.push("/dashboard/agendamentos")}
+            onClick={() =>
+              router.push(
+                view === "agenda"
+                  ? "/dashboard/agendamentos?visualizacao=agenda"
+                  : "/dashboard/agendamentos",
+              )
+            }
             className="flex h-10 items-center justify-center gap-2 rounded-lg border border-border px-4 text-sm font-medium hover:bg-accent"
           >
             <SearchX className="h-4 w-4" />

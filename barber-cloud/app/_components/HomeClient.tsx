@@ -80,8 +80,8 @@ export default function HomeClient({
 
   const banner =
     resolvedTheme === "dark"
-      ? "/bannerReguaM-dark.png"
-      : "/bannerReguaM-light.png"
+      ? "/bannerReguaM-dark1.png"
+      : "/bannerReguaM-light1.png"
 
   if (loading) {
     return (
