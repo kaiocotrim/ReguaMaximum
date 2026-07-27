@@ -9,6 +9,8 @@ import { WhatsAppButton } from "@/app/_components/dashboardComponents/agendament
 import { DeleteBookingButton } from "@/app/_components/dashboardComponents/agendamentos/DeleteBookingButton"
 import { updateBookingStatus } from "@/app/_actions/updateBookingStatus"
 import { BookingStatus } from "@/app/generated/prisma"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 interface AppointmentCardProps {
   appointment: {
@@ -25,17 +27,28 @@ interface AppointmentCardProps {
 export function AppointmentCard({ appointment }: AppointmentCardProps) {
   const [status, setStatus] = useState<BookingStatus>(appointment.status)
   const [isPending, startTransition] = useTransition()
+  const router = useRouter()
 
   const isDone = status === "CONCLUIDO"
+  const isCancelled = status === "CANCELADO"
 
   const toggleStatus = () => {
-    const previousStatus = status
+    if (isCancelled) return
     const newStatus: BookingStatus = isDone ? "EM_ANDAMENTO" : "CONCLUIDO"
-    setStatus(newStatus) // update otimista
+
     startTransition(async () => {
       const result = await updateBookingStatus(appointment.id, newStatus)
-      if (!result.success) {
-        setStatus(previousStatus) // rollback
+
+      if (result.success) {
+        setStatus(result.status)
+        toast.success(
+          result.status === "CONCLUIDO"
+            ? "Agendamento marcado como concluído."
+            : "Agendamento reaberto.",
+        )
+        router.refresh()
+      } else {
+        toast.error(result.error)
       }
     })
   }
@@ -61,12 +74,14 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
 
         <span
           className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${
-            isDone
+            isCancelled
+              ? "bg-red-500/10 text-red-500 border border-red-500/30"
+              : isDone
               ? "bg-[#C3F32C] text-black"
               : "bg-muted text-muted-foreground border border-border"
           }`}
         >
-          {isDone ? "Concluído" : "Em andamento"}
+          {isCancelled ? "Cancelado" : isDone ? "Concluído" : "Em andamento"}
         </span>
       </div>
 
@@ -96,15 +111,19 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
       {/* Status toggle button */}
       <Button
         onClick={toggleStatus}
-        disabled={isPending}
+        disabled={isPending || isCancelled}
         variant="ghost"
         className={`w-full mb-4 font-medium transition-colors ${
-          isDone
+          isCancelled
+            ? "bg-red-500/10 text-red-500 border border-red-500/20"
+            : isDone
             ? "bg-[#C3F32C] text-black hover:bg-[#b3e023]"
             : "bg-muted text-muted-foreground border border-border hover:bg-accent"
         }`}
       >
-        {isPending ? (
+        {isCancelled ? (
+          "Agendamento cancelado"
+        ) : isPending ? (
           <Loader2 className="w-4 h-4 animate-spin" />
         ) : isDone ? (
           <>
@@ -118,7 +137,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
 
       {/* Actions */}
       <div className="flex items-center justify-between pt-4 border-t border-border">
-        <DeleteBookingButton bookingId={appointment.id} />
+        {!isCancelled && <DeleteBookingButton bookingId={appointment.id} />}
         {appointment.user.telefone && (
           <WhatsAppButton
             telefone={appointment.user.telefone}

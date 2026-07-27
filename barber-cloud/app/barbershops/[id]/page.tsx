@@ -11,6 +11,7 @@ import {
 import { db } from "../../_lib/prisma"
 import Image from "next/image"
 import { Button } from "../../_components/ui/button"
+import ShareButton from "@/app/_components/ShareButton"
 import {
   ChevronLeft,
   MapIcon,
@@ -188,14 +189,17 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
             initialFavorited={isFavorited}
           />
 
-          <Button
+          {/* <Button
             className="cursor-pointer justify-start gap-2 bg-background dark:bg-black/10 text-xs"
             variant="secondary"
             size="sm"
           >
             <Share className="h-3.5 w-3.5 shrink-0 text-[#C3F32C] " />
             Compartilhar
-          </Button>
+          </Button> */}
+
+          <ShareButton />
+
 
           {/* <Drawer  >
             <DrawerTrigger className="bg-black">
@@ -238,12 +242,12 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
               </Button>
             </DrawerTrigger>
 
-            <DrawerContent className="border-t border-zinc-800 bg-zinc-950">
+            <DrawerContent className="border-t dark:border-zinc-800 dark:bg-zinc-950">
               <DrawerHeader>
-                <DrawerTitle className="text-2xl font-black tracking-tight text-white">
+                <DrawerTitle className="text-2xl font-black tracking-tight dakr:text-white">
                   Nossos barbeiros
                 </DrawerTitle>
-                <DrawerDescription className="text-xs tracking-widest text-zinc-500 uppercase">
+                <DrawerDescription className="text-xs tracking-widest dark:text-zinc-500 uppercase">
                   {/* This action cannot be undone. */}
                 </DrawerDescription>
               </DrawerHeader>
@@ -293,7 +297,7 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
                 <DrawerClose>
                   <Button
                     variant="outline"
-                    className="h-11 w-full rounded-xl border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white cursor-pointer"
+                    className="h-11 w-full rounded-xl bg-[#C3F32C] hover:bg-[#254F50] hover:text-[#C3F32C] dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white cursor-pointer"
                   >
                     Cancelar
                   </Button>

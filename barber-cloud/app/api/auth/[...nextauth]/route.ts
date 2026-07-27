@@ -2,12 +2,13 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt"
 import { db } from "@/app/_lib/prisma"
 import NextAuth from "next-auth"
+import type { AuthOptions } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import GitHubProvider from "next-auth/providers/github"
 import FacebookProvider from "next-auth/providers/facebook"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 console.log("AUTH ROUTE CARREGADA");
-export const authOptions = {
+export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(db),
 
   session: {
@@ -64,7 +65,7 @@ export const authOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user }: any) {
+    async jwt({ token, user }) {
       if (user) {
         token.role = user.role
       }
@@ -80,7 +81,7 @@ export const authOptions = {
       return token
     },
 
-    async session({ session, token }: any) {
+    async session({ session, token }) {
       if (session.user) {
         session.user.id = token.sub
         session.user.role = token.role
