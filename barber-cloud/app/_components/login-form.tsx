@@ -12,6 +12,9 @@ import { signIn } from "next-auth/react"
 
 type Mode = "login" | "register" | "success"
 
+const inputClassName =
+  "h-12 rounded-md border border-input bg-card px-4 text-sm text-foreground transition-all placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0"
+
 export function LoginForm({
   className,
   ...props
@@ -119,7 +122,7 @@ export function LoginForm({
   return (
     <div
       className={cn(
-        "flex min-h-screen flex-col items-center justify-center bg-[#121212] px-6 py-12",
+        "flex w-full flex-col items-center justify-center bg-background px-6 py-12 text-foreground",
         className,
       )}
       {...props}
@@ -127,7 +130,7 @@ export function LoginForm({
       <div className="w-full max-w-[400px] space-y-8">
         {/* Logo + título */}
         <div className="flex flex-col items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
             <Image src="/logoPretoBranco2.png" alt="Logo" width={40} height={40} />
           </div>
 
@@ -138,7 +141,7 @@ export function LoginForm({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
-              className="text-center text-3xl font-bold tracking-tight text-white"
+              className="text-center text-3xl font-bold tracking-tight text-foreground"
             >
               {mode === "login"
                 ? "Entre na sua conta"
@@ -162,9 +165,9 @@ export function LoginForm({
             >
               <LoginProviders />
               <div className="relative flex items-center">
-                <div className="flex-1 border-t border-zinc-700" />
-                <span className="mx-4 text-xs font-medium uppercase tracking-widest text-zinc-500">ou</span>
-                <div className="flex-1 border-t border-zinc-700" />
+                <div className="flex-1 border-t border-border" />
+                <span className="mx-4 text-xs font-medium uppercase tracking-widest text-muted-foreground">ou</span>
+                <div className="flex-1 border-t border-border" />
               </div>
             </motion.div>
           )}
@@ -192,7 +195,7 @@ export function LoginForm({
             >
               <FieldGroup className="space-y-0">
                 <Field className="space-y-2">
-                  <FieldLabel htmlFor="email" className="text-sm font-bold text-white">
+                  <FieldLabel htmlFor="email" className="text-sm font-bold text-foreground">
                     E-mail ou nome de usuário
                   </FieldLabel>
                   <Input
@@ -204,7 +207,7 @@ export function LoginForm({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     onFocus={() => setShowPassword(true)}
-                    className="h-12 rounded-md border border-zinc-600 bg-[#121212] px-4 text-sm text-white transition-all placeholder:text-zinc-500 focus-visible:border-white focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className={inputClassName}
                   />
                 </Field>
 
@@ -220,7 +223,7 @@ export function LoginForm({
                     >
                       <Field className="space-y-2 pt-3">
                         <div className="flex items-center justify-between">
-                          <FieldLabel htmlFor="password" className="text-sm font-bold text-white">
+                          <FieldLabel htmlFor="password" className="text-sm font-bold text-foreground">
                             Senha
                           </FieldLabel>
                           <button
@@ -228,7 +231,7 @@ export function LoginForm({
                             onClick={handleForgot}
                             className={cn(
                               "text-xs transition-colors",
-                              forgotOpen ? "text-[#C3F32C]" : "text-zinc-400 hover:text-white",
+                              forgotOpen ? "text-primary" : "text-muted-foreground hover:text-foreground",
                             )}
                           >
                             Esqueceu a senha?
@@ -243,16 +246,16 @@ export function LoginForm({
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: -4 }}
                               transition={{ duration: 0.25, ease: "easeOut" }}
-                              className="border-t border-zinc-800 pt-3"
+                              className="border-t border-border pt-3"
                             >
                               <div className="flex flex-col gap-1">
-                                <p className="flex items-center gap-1.5 text-[13px] font-bold text-white">
-                                  <span className="h-1.5 w-1.5 rounded-full bg-[#C3F32C]" />
+                                <p className="flex items-center gap-1.5 text-[13px] font-bold text-foreground">
+                                  <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                                   Recuperação de senha
                                 </p>
-                                <p className="pl-[18px] text-[12px] leading-relaxed text-zinc-600">
+                                <p className="pl-[18px] text-[12px] leading-relaxed text-muted-foreground">
                                   Enviaremos um link para o{" "}
-                                  <span className="font-medium text-zinc-500">e-mail cadastrado</span>.
+                                  <span className="font-medium text-foreground/70">e-mail cadastrado</span>.
                                   Verifique também a pasta de spam.
                                 </p>
                               </div>
@@ -273,7 +276,7 @@ export function LoginForm({
                                 autoComplete="current-password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="h-12 rounded-md border border-zinc-600 bg-[#121212] px-4 text-sm text-white placeholder:text-zinc-500 focus-visible:border-white focus-visible:ring-0 focus-visible:ring-offset-0"
+                                className={inputClassName}
                               />
                             </motion.div>
                           )}
@@ -311,7 +314,7 @@ export function LoginForm({
             >
               <FieldGroup className="space-y-3">
                 <Field className="space-y-2">
-                  <FieldLabel htmlFor="reg-name" className="text-sm font-bold text-white">
+                  <FieldLabel htmlFor="reg-name" className="text-sm font-bold text-foreground">
                     Nome de usuário
                   </FieldLabel>
                   <Input
@@ -322,12 +325,12 @@ export function LoginForm({
                     placeholder="seu nome de usuário"
                     required
                     autoComplete="username"
-                    className="h-12 rounded-md border border-zinc-600 bg-[#121212] px-4 text-sm text-white placeholder:text-zinc-500 focus-visible:border-white focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className={inputClassName}
                   />
                 </Field>
 
                 <Field className="space-y-2">
-                  <FieldLabel htmlFor="reg-email" className="text-sm font-bold text-white">
+                  <FieldLabel htmlFor="reg-email" className="text-sm font-bold text-foreground">
                     E-mail
                   </FieldLabel>
                   <Input
@@ -338,7 +341,7 @@ export function LoginForm({
                     placeholder="seu@email.com"
                     required
                     autoComplete="email"
-                    className="h-12 rounded-md border border-zinc-600 bg-[#121212] px-4 text-sm text-white placeholder:text-zinc-500 focus-visible:border-white focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className={inputClassName}
                   />
                 </Field>
 
@@ -349,7 +352,7 @@ export function LoginForm({
                   className="overflow-hidden"
                 >
                   <Field className="space-y-2">
-                    <FieldLabel htmlFor="reg-password" className="text-sm font-bold text-white">
+                    <FieldLabel htmlFor="reg-password" className="text-sm font-bold text-foreground">
                       Senha
                     </FieldLabel>
                     <Input
@@ -360,7 +363,7 @@ export function LoginForm({
                       placeholder="Crie uma senha"
                       required
                       autoComplete="new-password"
-                      className="h-12 rounded-md border border-zinc-600 bg-[#121212] px-4 text-sm text-white placeholder:text-zinc-500 focus-visible:border-white focus-visible:ring-0 focus-visible:ring-offset-0"
+                      className={inputClassName}
                     />
                   </Field>
                 </motion.div>
@@ -372,7 +375,7 @@ export function LoginForm({
                   className="overflow-hidden"
                 >
                   <Field className="space-y-2">
-                    <FieldLabel htmlFor="reg-confirm" className="text-sm font-bold text-white">
+                    <FieldLabel htmlFor="reg-confirm" className="text-sm font-bold text-foreground">
                       Confirmar senha
                     </FieldLabel>
                     <Input
@@ -383,7 +386,7 @@ export function LoginForm({
                       placeholder="Repita a senha"
                       required
                       autoComplete="new-password"
-                      className="h-12 rounded-md border border-zinc-600 bg-[#121212] px-4 text-sm text-white placeholder:text-zinc-500 focus-visible:border-white focus-visible:ring-0 focus-visible:ring-offset-0"
+                      className={inputClassName}
                     />
                   </Field>
                 </motion.div>
@@ -414,7 +417,13 @@ export function LoginForm({
                 transition={{ type: "spring", stiffness: 220, damping: 16, delay: 0.1 }}
               >
                 <svg width="88" height="88" viewBox="0 0 88 88" fill="none">
-                  <circle cx="44" cy="44" r="32" stroke="#1e1e1e" strokeWidth="3.5" />
+                  <circle
+                    cx="44"
+                    cy="44"
+                    r="32"
+                    strokeWidth="3.5"
+                    className="stroke-border"
+                  />
                   <motion.circle
                     cx="44" cy="44" r="32"
                     stroke="#C3F32C" strokeWidth="3.5" strokeLinecap="round"
@@ -441,10 +450,10 @@ export function LoginForm({
                 transition={{ delay: 1.15, duration: 0.3 }}
                 className="space-y-1"
               >
-                <h2 className="text-2xl font-bold text-white">Conta criada!</h2>
-                <p className="text-sm leading-relaxed text-zinc-400">
+                <h2 className="text-2xl font-bold text-foreground">Conta criada!</h2>
+                <p className="text-sm leading-relaxed text-muted-foreground">
                   Tudo certo,{" "}
-                  <span className="font-semibold text-zinc-200">{registeredName}</span>.
+                  <span className="font-semibold text-foreground">{registeredName}</span>.
                   <br />
                   Vamos configurar seu perfil agora.
                 </p>
@@ -456,8 +465,8 @@ export function LoginForm({
                 transition={{ delay: 1.3, duration: 0.3 }}
                 className="w-full space-y-3"
               >
-                <p className="text-xs text-zinc-600">Redirecionando em 3s...</p>
-                <div className="h-[3px] w-full overflow-hidden rounded-full bg-zinc-800">
+                <p className="text-xs text-muted-foreground">Redirecionando em 3s...</p>
+                <div className="h-[3px] w-full overflow-hidden rounded-full bg-muted">
                   <motion.div
                     className="h-full rounded-full bg-[#C3F32C]"
                     initial={{ width: "0%" }}
@@ -479,7 +488,7 @@ export function LoginForm({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="text-center text-sm text-zinc-400"
+              className="text-center text-sm text-muted-foreground"
             >
               {mode === "login" ? (
                 <>
@@ -487,7 +496,7 @@ export function LoginForm({
                   <button
                     type="button"
                     onClick={() => handleModeSwitch("register")}
-                    className="cursor-pointer font-bold text-white underline underline-offset-2 transition-colors hover:text-[#C3F32C]"
+                    className="cursor-pointer font-bold text-foreground underline underline-offset-2 transition-colors hover:text-primary"
                   >
                     Cadastre-se
                   </button>
@@ -498,7 +507,7 @@ export function LoginForm({
                   <button
                     type="button"
                     onClick={() => handleModeSwitch("login")}
-                    className="cursor-pointer font-bold text-white underline underline-offset-2 transition-colors hover:text-[#C3F32C]"
+                    className="cursor-pointer font-bold text-foreground underline underline-offset-2 transition-colors hover:text-primary"
                   >
                     Entrar
                   </button>

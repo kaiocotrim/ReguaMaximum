@@ -395,7 +395,7 @@ const ServiceItem = ({ service, barbershopId, barbers }: ServiceItemProps) => {
   }
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 mb-3 flex items-center gap-4 rounded-2xl border dark:border-white/10 dark:bg-zinc-900/80 p-3 backdrop-blur-sm transition-all duration-300 duration-500 hover:-translate-y-0.5 hover:border-[#C3F32C]/30 hover:shadow-[0_0_20px_rgba(195,243,44,0.08)]">
+    <div className="animate-in fade-in slide-in-from-bottom-4 mb-3 flex items-center gap-4 rounded-2xl border border-border bg-card p-3 backdrop-blur-sm transition-all duration-500 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_0_20px_rgba(195,243,44,0.08)]">
       {/* Imagem do serviço */}
       <div className="relative max-h-[110px] min-h-[110px] max-w-[110px] min-w-[110px] overflow-hidden rounded-xl">
         <Image
@@ -410,17 +410,17 @@ const ServiceItem = ({ service, barbershopId, barbers }: ServiceItemProps) => {
 
       {/* Direita: nome, descrição, preço e botão */}
       <div className="flex-1 space-y-2 pr-2">
-        <h3 className="animate-in fade-in slide-in-from-left-2 text-base font-bold tracking-wide dark:text-[#C3F32C] delay-100 text-[#254F50]">
+        <h3 className="animate-in fade-in slide-in-from-left-2 text-base font-bold tracking-wide text-foreground delay-100 dark:text-primary">
           {service.name}
         </h3>
-        <p className="animate-in fade-in line-clamp-2 text-xs leading-relaxed dark:text-zinc-400 delay-150 text-[#254F50]">
+        <p className="animate-in fade-in line-clamp-2 text-xs leading-relaxed text-muted-foreground delay-150">
           {service.description}
         </p>
 
         <div className="flex items-center justify-between pt-1">
-          <p className="animate-in fade-in text-lg font-bold text-black dark:text-white delay-200">
+          <p className="animate-in fade-in text-lg font-bold text-foreground delay-200">
             R${" "}
-            <span className="animate-pulse text-black dark:text-[#C3F32C] [animation-duration:3s]">
+            <span className="animate-pulse text-foreground dark:text-primary [animation-duration:3s]">
               {service.price.toFixed(2)}
             </span>
           </p>
@@ -435,9 +435,9 @@ const ServiceItem = ({ service, barbershopId, barbers }: ServiceItemProps) => {
               </Button>
             </DrawerTrigger>
 
-            <DrawerContent className="bg-[#111111] text-white">
+            <DrawerContent className="border-border bg-popover text-popover-foreground">
               <DrawerHeader>
-                <DrawerTitle className="animate-in fade-in slide-in-from-top-2 text-white">
+                <DrawerTitle className="animate-in fade-in slide-in-from-top-2 text-foreground">
                   Agende seu horário
                 </DrawerTitle>
               </DrawerHeader>
@@ -447,10 +447,10 @@ const ServiceItem = ({ service, barbershopId, barbers }: ServiceItemProps) => {
                 <div className="animate-in fade-in zoom-in-95 flex flex-col items-center gap-4 p-10 text-center duration-500">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#C3F32C] text-4xl">
                     {/* ✅ */}
-                    <BadgeCheck className="bg-[#C3F32C] w-8 h-8" />
+                    <BadgeCheck className="h-8 w-8 text-[#254F50]" />
                   </div>
-                  <p className="text-lg font-bold text-white">Agendamento confirmado!</p>
-                  <p className="text-sm text-white/50">
+                  <p className="text-lg font-bold text-foreground">Agendamento confirmado!</p>
+                  <p className="text-sm text-muted-foreground">
                     {selectDay?.toLocaleDateString("pt-BR", {
                       day: "2-digit",
                       month: "long",
@@ -465,19 +465,19 @@ const ServiceItem = ({ service, barbershopId, barbers }: ServiceItemProps) => {
                     <>
                       <div className="animate-in fade-in zoom-in-95 flex justify-center p-4 duration-300">
                         <Calendar
-                          className="w-fit rounded-xl bg-[#111111] p-3"
+                          className="w-fit rounded-xl bg-popover p-3 text-popover-foreground"
                           mode="single"
                           locale={ptBR}
                           selected={selectDay}
                           onSelect={handleDateSelect}
                           classNames={{
                             cell: "h-9 w-9 text-center text-sm p-0 relative cursor-pointer",
-                            caption_label: "text-[#C3F32C] font-bold",
-                            head_cell: "text-[#C3F32C] font-semibold",
-                            day: "text-white hover:bg-[#C3F32C] hover:text-[#254F50] rounded-md cursor-pointer",
-                            day_selected: "!bg-[#C3F32C] !text-[#254F50] hover:!bg-[#C3F32C] hover:!text-[#254F50] cursor-pointer",
-                            day_today: "!bg-[#254F50] !text-[#C3F32C] rounded-md",
-                            nav_button: "text-[#C3F32C] hover:bg-[#254F50] rounded-md",
+                            caption_label: "text-primary font-bold",
+                            head_cell: "text-muted-foreground font-semibold",
+                            day: "text-foreground hover:bg-primary hover:text-[#254F50] rounded-md cursor-pointer",
+                            day_selected: "!bg-primary !text-[#254F50] hover:!bg-primary hover:!text-[#254F50] cursor-pointer",
+                            day_today: "!bg-accent !text-accent-foreground rounded-md",
+                            nav_button: "text-primary hover:bg-accent rounded-md",
                           }}
                         />
                       </div>
@@ -508,10 +508,10 @@ const ServiceItem = ({ service, barbershopId, barbers }: ServiceItemProps) => {
                   {/* Etapa 2: Confirmação de data + escolha de barbeiro */}
                   {selectDay && selectedTime && (
                     <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]">
-                      <div className="mx-5 mb-4 flex items-center justify-between rounded-xl bg-white/5 px-4 py-3 ring-1 ring-white/10 transition-all duration-300 hover:ring-[#C3F32C]/20">
+                      <div className="mx-5 mb-4 flex items-center justify-between rounded-xl bg-muted/50 px-4 py-3 ring-1 ring-border transition-all duration-300 hover:ring-primary/30">
                         <div>
-                          <p className="text-xs text-white/50">Data e horário</p>
-                          <p className="text-sm font-semibold text-white">
+                          <p className="text-xs text-muted-foreground">Data e horário</p>
+                          <p className="text-sm font-semibold text-foreground">
                             {selectDay.toLocaleDateString("pt-BR", {
                               day: "2-digit",
                               month: "long",
@@ -527,13 +527,13 @@ const ServiceItem = ({ service, barbershopId, barbers }: ServiceItemProps) => {
                         </button>
                       </div>
 
-                      <p className="pb-2 pl-10 text-sm font-semibold text-white/60">
+                      <p className="pb-2 pl-10 text-sm font-semibold text-foreground/80">
                         Escolha o barbeiro
                       </p>
 
                       {/* ✅ Barbeiros reais do banco */}
                       {barbers.length === 0 ? (
-                        <p className="px-10 py-4 text-sm text-white/40">
+                        <p className="px-10 py-4 text-sm text-muted-foreground">
                           Nenhum barbeiro disponível no momento.
                         </p>
                       ) : (
@@ -558,19 +558,19 @@ const ServiceItem = ({ service, barbershopId, barbers }: ServiceItemProps) => {
                                 className={`animate-in fade-in slide-in-from-bottom-3 flex min-w-[120px] cursor-pointer flex-col items-center gap-2 rounded-xl border-2 p-4 transition-all duration-200 hover:scale-105 active:scale-95 ${
                                   isSelected
                                     ? "scale-105 border-[#C3F32C] bg-[#C3F32C]/10 shadow-[0_0_16px_rgba(195,243,44,0.3)]"
-                                    : "border-white/10 bg-white/5 hover:border-white/30"
+                                    : "border-border bg-muted/40 hover:border-primary/40"
                                 }`}
                               >
                                 <div
                                   className={`flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold transition-all duration-300 ${
                                     isSelected
                                       ? "bg-[#C3F32C] text-[#254F50] shadow-[0_0_10px_rgba(195,243,44,0.5)]"
-                                      : "bg-white/10 text-white"
+                                      : "bg-muted text-foreground"
                                   }`}
                                 >
                                   {initials}
                                 </div>
-                                <span className="text-center text-xs leading-tight font-semibold text-white">
+                                <span className="text-center text-xs leading-tight font-semibold text-foreground">
                                   {barber.user.name ?? "Barbeiro"}
                                 </span>
                               </button>
