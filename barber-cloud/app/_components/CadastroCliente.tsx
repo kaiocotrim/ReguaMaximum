@@ -148,12 +148,9 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
   const salvarPerfil = async () => {
     try {
       if (!avatarFile) return
-      const extension = avatarFile.name.split(".").pop() ?? "jpg"
-      const avatarUrl = await uploadImagem(
-        avatarFile,
-        "logos",
-        `avatars/cliente-${Date.now()}.${extension}`,
-      )
+      const avatarUrl = await uploadImagem(avatarFile, {
+        purpose: "account-avatar",
+      })
       const response = await fetch("/api/client/profile", {
         method: "POST",
         headers: {

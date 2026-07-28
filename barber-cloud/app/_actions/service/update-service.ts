@@ -4,6 +4,7 @@ import { db } from "@/app/_lib/prisma";
 import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { assertAllowedImageUrl } from "@/app/_lib/image-url";
 
 export async function updateService(
   id: string,
@@ -16,8 +17,10 @@ export async function updateService(
   const description = formData.get("description") as string;
   const price = Number(formData.get("price"));
   const duration = Number(formData.get("duration"));
-  const imageUrl = String(formData.get("imageUrl") ?? "").trim()
-  if (!imageUrl.startsWith("https://")) throw new Error("Imagem inválida.")
+  const imageUrl = assertAllowedImageUrl(
+    formData.get("imageUrl"),
+    "Imagem inválida.",
+  )
 
 
   const result = await db.barbeshopService.updateMany({

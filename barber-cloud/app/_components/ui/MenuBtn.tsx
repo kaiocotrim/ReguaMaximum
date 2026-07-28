@@ -448,7 +448,7 @@ const MENU_ITEMS = [
     label: "Minha Barbearia",
     description: "Gerencie sua barbearia",
     requiresAuth: true,
-    href: "/dashboard",
+    href: "/minha-barbearia",
     onlyBarber: true,
   },
   {
@@ -516,13 +516,118 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
     window.location.reload()
   }
 
+  const visibleItems = MENU_ITEMS.filter(
+    (item) => !item.onlyBarber || role === "BARBER",
+  ).filter((item) => !item.onlyClient || role === "CLIENT")
+
   return (
+    <>
+    {!className && (
+      <div className="group relative hidden lg:block">
+        <Button
+          size="icon"
+          variant="secondary"
+          aria-label="Abrir menu"
+          className="cursor-pointer"
+        >
+          <Menu className="h-5 w-5" />
+        </Button>
+
+        <div className="invisible absolute top-full right-0 z-50 w-80 translate-y-1 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+          <div className="max-h-[72vh] overflow-y-auto rounded-2xl border border-white/10 bg-popover/80 p-3 shadow-[0_24px_70px_rgba(0,0,0,0.22)] backdrop-blur-2xl backdrop-saturate-150">
+            {data?.user ? (
+              <div className="mb-3 flex items-center gap-3 rounded-xl border border-border/70 bg-card/70 p-3">
+                <Avatar className="h-10 w-10 rounded-xl">
+                  <AvatarImage
+                    src={data.user.image ?? ""}
+                    alt="avatar"
+                    className="rounded-xl object-cover"
+                  />
+                  <AvatarFallback className="rounded-xl bg-[#C3F32C] text-sm font-bold text-black">
+                    {data.user.name
+                      ?.split(" ")
+                      .slice(0, 2)
+                      .map((part: string) => part.charAt(0).toUpperCase())
+                      .join("") || "U"}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-foreground">
+                    {data.user.name}
+                  </p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {data.user.email}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <Button
+                onClick={() => router.push("/login")}
+                className="mb-3 w-full cursor-pointer rounded-xl bg-[#C3F32C] font-bold text-[#254F50] hover:bg-[#d4f542]"
+              >
+                <LogInIcon className="mr-2 h-4 w-4" />
+                Entrar
+              </Button>
+            )}
+
+            <nav className="flex flex-col gap-1">
+              {visibleItems.map(
+                ({ icon: Icon, label, description, href, requiresAuth }) => {
+                  const locked = requiresAuth && !isLoggedIn
+
+                  return (
+                    <Button
+                      key={label}
+                      variant="ghost"
+                      disabled={locked}
+                      onClick={() => !locked && href && router.push(href)}
+                      className="group/item h-auto w-full cursor-pointer justify-start gap-3 rounded-xl px-3 py-2.5 text-left hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#C3F32C]/10">
+                        <Icon className="h-4 w-4 text-[#93b91c] dark:text-[#C3F32C]" />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-semibold text-foreground">
+                          {label}
+                        </span>
+                        <span className="block truncate text-[11px] font-normal text-muted-foreground">
+                          {description}
+                        </span>
+                      </span>
+                      {locked ? (
+                        <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                      ) : (
+                        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground transition-transform group-hover/item:translate-x-0.5" />
+                      )}
+                    </Button>
+                  )
+                },
+              )}
+            </nav>
+
+            {data?.user && (
+              <div className="mt-3 border-t border-border/70 pt-3">
+                <Button
+                  variant="ghost"
+                  onClick={handleLogoutClick}
+                  className="w-full cursor-pointer justify-start rounded-xl text-red-500 hover:bg-red-500/10 hover:text-red-500"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sair da conta
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    )}
+
     <Sheet>
       <SheetTrigger asChild>
         <Button
           size="icon"
           variant="secondary"
-          className={className ?? "cursor-pointer"}
+          className={className ?? "cursor-pointer lg:hidden"}
         >
           <Menu className="h-5 w-5" />
         </Button>
@@ -637,8 +742,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
           )}
 
           <div className="flex flex-col gap-0.5">
-            {MENU_ITEMS.filter((item) => !item.onlyBarber || role === "BARBER")
-              .filter((item) => !item.onlyClient || role === "CLIENT")
+            {visibleItems
               .map(({ icon: Icon, label, description, href, requiresAuth }) => {
                 const locked = requiresAuth && !isLoggedIn
 
@@ -732,6 +836,7 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
         )}
       </SheetContent>
     </Sheet>
+    </>
   )
 }
 

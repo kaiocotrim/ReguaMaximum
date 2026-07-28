@@ -76,11 +76,11 @@ export function ServiceForm({ service }: ServiceFormProps) {
         let finalImageUrl = imageUrl.trim()
 
         if (imageMode === "upload" && imageFile) {
-          const extension = imageFile.name.split(".").pop() ?? "jpg"
           finalImageUrl = await uploadImagem(
             imageFile,
-            "capas",
-            `servicos/servico-${Date.now()}.${extension}`,
+            service
+              ? { purpose: "service-image", serviceId: service.id }
+              : { purpose: "service-image" },
           )
         }
 

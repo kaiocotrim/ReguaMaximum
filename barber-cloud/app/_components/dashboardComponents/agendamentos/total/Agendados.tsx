@@ -19,11 +19,14 @@ export default async function Agendados({
 
   const appointments = await db.booking.findMany({
     where: bookingWhere(session.user.id, filters),
-    include: {
-      user: true,
-      barber: true,
-      service: true,
-      barbershop: true,
+    select: {
+      id: true,
+      date: true,
+      status: true,
+      user: { select: { name: true, telefone: true } },
+      barber: { select: { nome: true } },
+      service: { select: { name: true, price: true } },
+      barbershop: { select: { name: true } },
     },
     orderBy: bookingOrderBy(filters.sort),
   })

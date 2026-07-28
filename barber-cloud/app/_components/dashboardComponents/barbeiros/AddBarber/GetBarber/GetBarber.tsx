@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -15,6 +15,7 @@ import InviteBarber from "../InviteBarber"
 import { Button } from "@/app/_components/ui/button"
 import { Loader2, Plus, UserPlus } from "lucide-react"
 import { inviteBarber } from "@/app/_actions/inviteBarber"
+import { AnimatePresence, motion } from "framer-motion"
 
 interface ResultadoBusca {
   id: string
@@ -27,21 +28,31 @@ interface ResultadoBusca {
 
 interface GetBarberProps {
   barbershopId: string
+  barbershopName: string
 }
 
-export default function GetBarber({ barbershopId }: GetBarberProps) {
+const createWelcomeMessage = (barberName: string, barbershopName: string) =>
+  `Olá, ${barberName}! 👋\n\nGostaríamos de convidar você para fazer parte da equipe da ${barbershopName} na Régua Máxima. Será um prazer ter você com a gente!\n\nAcesse sua conta para visualizar e responder ao convite.`
+
+export default function GetBarber({
+  barbershopId,
+  barbershopName,
+}: GetBarberProps) {
   const [barberSelecionado, setBarberSelecionado] =
     useState<ResultadoBusca | null>(null)
   const [open, setOpen] = useState(false)
   const [enviando, setEnviando] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
+  const [mensagem, setMensagem] = useState("")
 
-  useEffect(() => {
-    if (open) {
+  const handleOpenChange = (nextOpen: boolean) => {
+    setOpen(nextOpen)
+    if (nextOpen) {
       setErro(null)
       setBarberSelecionado(null)
+      setMensagem("")
     }
-  }, [open])
+  }
 
   const handleConvidar = async () => {
     if (!barberSelecionado || !barbershopId) return
@@ -50,7 +61,7 @@ export default function GetBarber({ barbershopId }: GetBarberProps) {
     setErro(null)
 
     try {
-      await inviteBarber(barberSelecionado.userId, barbershopId)
+      await inviteBarber(barberSelecionado.userId, barbershopId, mensagem)
       setBarberSelecionado(null)
       setOpen(false)
     } catch (err) {
@@ -61,8 +72,15 @@ export default function GetBarber({ barbershopId }: GetBarberProps) {
     }
   }
 
+  const handleSelectBarber = (barber: ResultadoBusca | null) => {
+    setBarberSelecionado(barber)
+    setMensagem(
+      barber ? createWelcomeMessage(barber.nome, barbershopName) : "",
+    )
+  }
+
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
+    <AlertDialog open={open} onOpenChange={handleOpenChange}>
       <AlertDialogTrigger asChild>
         <Button
           size="icon"
@@ -80,9 +98,9 @@ export default function GetBarber({ barbershopId }: GetBarberProps) {
         manual total do espaçamento.
       */}
       <AlertDialogContent
-        className="!grid-rows-none !gap-0 !space-y-0 w-full max-w-md overflow-hidden dark:border dark:border-zinc-800 dark:bg-[#0d0d0d] p-0 data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95"
+        className="max-h-[90vh] !w-[calc(100%_-_2rem)] !max-w-lg !grid-rows-none !gap-0 !space-y-0 overflow-hidden rounded-3xl border-border bg-card p-0 shadow-2xl dark:border-zinc-800 dark:bg-[#0d0d0d] data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95"
       >
-        <div className="flex flex-col border-b dark:border-zinc-800 px-6 py-4">
+        <div className="flex shrink-0 flex-col border-b border-border px-6 py-5 dark:border-zinc-800">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#C3F32C]/10">
               <UserPlus className="h-4 w-4 dark:text-[#C3F32C] text-blac"/>
@@ -99,16 +117,21 @@ export default function GetBarber({ barbershopId }: GetBarberProps) {
           </AlertDialogDescription>
         </div>
 
-        <div className="flex flex-col px-6 py-4">
-          <InviteBarber
-            onSelect={setBarberSelecionado}
-            barbershopId={barbershopId}
-          />
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-5">
+          <InviteBarber onSelect={handleSelectBarber} />
 
+          <AnimatePresence initial={false}>
           {barberSelecionado && (
-            <div className="mt-3 flex items-center justify-between rounded-lg border border-[#C3F32C]/30 bg-[#C3F32C]/5 px-3 py-2">
+            <motion.div
+              key={`selected-${barberSelecionado.id}`}
+              initial={{ opacity: 0, y: 8, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -6, scale: 0.98 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="mt-3 flex items-center justify-between rounded-lg border border-[#C3F32C]/30 bg-[#C3F32C]/5 px-3 py-2"
+            >
               <div>
-                <p className="text-sm font-medium text-gray-100">
+                <p className="text-sm font-medium text-foreground">
                   {barberSelecionado.nome}
                 </p>
                 <p className="text-xs text-zinc-500">
@@ -116,23 +139,72 @@ export default function GetBarber({ barbershopId }: GetBarberProps) {
                 </p>
               </div>
               <button
-                onClick={() => setBarberSelecionado(null)}
+                onClick={() => handleSelectBarber(null)}
                 className="text-xs text-zinc-500 hover:text-zinc-300"
               >
                 remover
               </button>
-            </div>
+            </motion.div>
           )}
+          </AnimatePresence>
 
-          {erro && <p className="mt-3 text-xs text-red-400">{erro}</p>}
+          <AnimatePresence initial={false}>
+          {barberSelecionado && (
+            <motion.div
+              key={`message-${barberSelecionado.id}`}
+              initial={{ opacity: 0, height: 0, y: 10 }}
+              animate={{ opacity: 1, height: "auto", y: 0 }}
+              exit={{ opacity: 0, height: 0, y: -6 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="mt-4 overflow-hidden"
+            >
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <label
+                  htmlFor="invite-message"
+                  className="text-sm font-medium text-foreground"
+                >
+                  Mensagem de boas-vindas
+                </label>
+                <span className="text-xs text-muted-foreground">
+                  {mensagem.length}/500
+                </span>
+              </div>
+              <textarea
+                id="invite-message"
+                value={mensagem}
+                onChange={(event) => setMensagem(event.target.value)}
+                maxLength={500}
+                rows={7}
+                className="w-full resize-none rounded-xl border border-border bg-background px-3 py-2.5 text-sm leading-relaxed text-foreground outline-none transition placeholder:text-muted-foreground focus:border-[#C3F32C] focus:ring-2 focus:ring-[#C3F32C]/20"
+                placeholder="Escreva uma mensagem para acompanhar o convite..."
+              />
+              <p className="mt-1.5 text-xs text-muted-foreground">
+                Esta mensagem aparecerá junto ao convite do barbeiro.
+              </p>
+            </motion.div>
+          )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {erro && (
+              <motion.p
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 8 }}
+                className="mt-3 text-xs text-red-400"
+              >
+                {erro}
+              </motion.p>
+            )}
+          </AnimatePresence>
         </div>
 
-        <div className="flex items-center justify-end gap-2 border-t dark:border-zinc-800 px-6 py-4">
+        <div className="flex shrink-0 items-center justify-end gap-2 border-t border-border bg-card px-6 py-4 dark:border-zinc-800 dark:bg-[#0d0d0d]">
           <AlertDialogCancel className="mt-0 dark:border-zinc-700 bg-transparent dark:text-zinc-300 hover:bg-zinc-800 hover:text-white">
             Cancelar
           </AlertDialogCancel>
           <Button
-            disabled={!barberSelecionado || enviando}
+            disabled={!barberSelecionado || !mensagem.trim() || enviando}
             onClick={handleConvidar}
             className="bg-[#C3F32C] font-medium text-black hover:bg-[#b3e025] disabled:cursor-not-allowed disabled:opacity-50"
           >

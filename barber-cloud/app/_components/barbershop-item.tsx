@@ -1,5 +1,4 @@
 import Image from "next/image"
-import { Barbershop } from "@/app/generated/prisma/client"
 import { Card, CardContent } from "./ui/card"
 import { Button } from "./ui/button"
 import { Star, ChevronRight } from "lucide-react"
@@ -7,7 +6,11 @@ import { Badge } from "./ui/badge"
 import Link from "next/link"
 
 interface BarbershopItemProps {
-  barbershop: Barbershop & {
+  barbershop: {
+    id: string
+    name: string
+    address: string
+    imageUrl: string
     reviews: { rating: number }[]
   }
 }

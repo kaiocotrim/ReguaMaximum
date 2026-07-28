@@ -15,11 +15,6 @@ import {
   getAvailableBarberIdsForDate,
   getAvailableTimesForBarber,
 } from "@/app/_lib/create-booking"
-import {
-  BarbeshopService,
-  Barber,
-  User,
-} from "@/app/generated/prisma/client"
 import { BadgeCheck } from "lucide-react"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
@@ -28,16 +23,23 @@ import { ptBR } from "date-fns/locale"
 import { Button } from "./ui/button"
 import { Calendar } from "./ui/calendar"
 
-type BarberWithUser = Barber & {
-  user: User
+type BarberOption = {
+  id: string
+  user: {
+    name: string | null
+  }
 }
 
 interface ServiceItemProps {
-  service: Omit<BarbeshopService, "price"> & {
+  service: {
+    id: string
+    name: string
+    description: string
+    imageUrl: string
     price: number
   }
   barbershopId: string
-  barbers: BarberWithUser[]
+  barbers: BarberOption[]
 }
 
 const ServiceItem = ({ service, barbershopId, barbers }: ServiceItemProps) => {
@@ -183,7 +185,6 @@ const ServiceItem = ({ service, barbershopId, barbers }: ServiceItemProps) => {
         serviceId: service.id,
         barberId: selectedBarber,
         date: bookingDate,
-        dayStart: selectDay,
       })
 
       if (result.success) {
@@ -208,10 +209,10 @@ const ServiceItem = ({ service, barbershopId, barbers }: ServiceItemProps) => {
     "Barbeiro"
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 mb-3 flex items-center gap-4 rounded-2xl border border-border bg-card p-3 backdrop-blur-sm transition-all duration-500 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_0_20px_rgba(195,243,44,0.08)]">
+    <div className="animate-in fade-in slide-in-from-bottom-4 mb-3 flex items-center gap-4 rounded-2xl border border-border/60 bg-card p-3 shadow-sm backdrop-blur-sm transition-all duration-500 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_14px_30px_rgba(37,79,80,0.10)] lg:mb-0 lg:min-h-[140px]">
       <div className="relative max-h-[110px] min-h-[110px] max-w-[110px] min-w-[110px] overflow-hidden rounded-xl">
         <Image
-          src={service.imageUrl}
+          src={service.imageUrl || "/maquina.png"}
           alt={service.name}
           fill
           sizes="110px"

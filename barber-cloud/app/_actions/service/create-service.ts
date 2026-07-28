@@ -4,6 +4,7 @@ import { db } from "@/app/_lib/prisma"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { revalidatePath } from "next/cache"
+import { assertAllowedImageUrl } from "@/app/_lib/image-url"
 
 export async function createService(formData: FormData) {
   const session = await getServerSession(authOptions)
@@ -22,10 +23,10 @@ export async function createService(formData: FormData) {
     throw new Error("Barbearia não encontrada.")
   }
 
-  const imageUrl = String(formData.get("imageUrl") ?? "").trim()
-  if (!imageUrl.startsWith("https://")) {
-    throw new Error("Imagem inválida.")
-  }
+  const imageUrl = assertAllowedImageUrl(
+    formData.get("imageUrl"),
+    "Imagem inválida.",
+  )
 
   await db.barbeshopService.create({
     data: {

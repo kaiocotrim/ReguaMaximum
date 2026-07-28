@@ -78,7 +78,10 @@ export function LoginForm({
         return
       }
 
-      alert("Verifique seu e-mail")
+      alert(
+        data.message ??
+          "Se existir uma conta com esse e-mail, enviaremos as instruções.",
+      )
     } catch (error) {
       console.error("ERRO:", error)
       alert("Erro ao enviar e-mail")
@@ -93,6 +96,16 @@ export function LoginForm({
       return
     }
 
+    if (registerPassword.length < 8) {
+      alert("A senha deve ter pelo menos 8 caracteres")
+      return
+    }
+
+    if (new TextEncoder().encode(registerPassword).length > 72) {
+      alert("A senha deve ter no máximo 72 bytes")
+      return
+    }
+
     const response = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -103,20 +116,25 @@ export function LoginForm({
       }),
     })
 
-    if (response.ok) {
-      setRegisteredName(name)
-      setMode("success")
+    const data = await response.json()
 
-      await signIn("credentials", {
-        email: registerEmail,
-        password: registerPassword,
-        redirect: false,
-      })
-
-      setTimeout(() => {
-        window.location.href = "/perfil"
-      }, 3000)
+    if (!response.ok) {
+      alert(data.error ?? "Não foi possível criar a conta")
+      return
     }
+
+    setRegisteredName(name)
+    setMode("success")
+
+    await signIn("credentials", {
+      email: registerEmail,
+      password: registerPassword,
+      redirect: false,
+    })
+
+    setTimeout(() => {
+      window.location.href = "/perfil"
+    }, 3000)
   }
 
   return (
@@ -362,6 +380,7 @@ export function LoginForm({
                       type="password"
                       placeholder="Crie uma senha"
                       required
+                      minLength={8}
                       autoComplete="new-password"
                       className={inputClassName}
                     />
@@ -385,6 +404,7 @@ export function LoginForm({
                       type="password"
                       placeholder="Repita a senha"
                       required
+                      minLength={8}
                       autoComplete="new-password"
                       className={inputClassName}
                     />

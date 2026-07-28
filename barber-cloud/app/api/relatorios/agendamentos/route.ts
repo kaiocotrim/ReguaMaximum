@@ -68,11 +68,21 @@ export async function GET(request: Request) {
 
   const bookings = await db.booking.findMany({
     where: bookingWhere(session.user.id, filters),
-    include: {
-      user: true,
-      barber: { include: { user: true } },
-      service: true,
-      barbershop: true,
+    select: {
+      id: true,
+      date: true,
+      status: true,
+      createdAt: true,
+      cancelledAt: true,
+      user: { select: { name: true, telefone: true } },
+      barber: {
+        select: {
+          nome: true,
+          user: { select: { name: true } },
+        },
+      },
+      service: { select: { name: true, price: true } },
+      barbershop: { select: { name: true } },
     },
     orderBy: bookingOrderBy(filters.sort),
   })
@@ -221,7 +231,7 @@ export async function GET(request: Request) {
   }
   sheet.columns.forEach((column) => {
     let contentWidth = String(column.header ?? "").length
-    column.eachCell({ includeEmpty: false }, (cell) => {
+    column.eachCell?.({ includeEmpty: false }, (cell) => {
       const value = cell.value
       const length =
         value instanceof Date

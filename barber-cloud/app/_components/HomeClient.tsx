@@ -11,11 +11,6 @@ import BarbershopItem from "./barbershop-item"
 import SearchBar from "./SearchBar"
 import { MapPin } from "lucide-react"
 import { motion } from "framer-motion"
-import {
-  Barbershop,
-  Booking,
-  BarbeshopService,
-} from "@/app/generated/prisma/client"
 import { useSession } from "next-auth/react"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
@@ -32,6 +27,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/app/_components/ui/carousel"
+import { BackgroundEffects } from "./BackgroundEffects"
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -50,19 +46,30 @@ const fadeIn = {
   }),
 }
 
-type BookingWithRelations = Booking & {
-  service: Omit<BarbeshopService, "price"> & { price: number }
-  barbershop: Barbershop
+type BookingCard = {
+  id: string
+  date: string
+  service: {
+    name: string
+  }
+  barbershop: {
+    name: string
+    imageUrl: string
+  }
 }
 
-type BarbershopWithReviews = Barbershop & {
+type BarbershopCard = {
+  id: string
+  name: string
+  address: string
+  imageUrl: string
   reviews: { rating: number }[]
 }
 
 interface HomeClientProps {
-  barbershops: BarbershopWithReviews[]
-  popularBarbershops: BarbershopWithReviews[]
-  confirmedBookings: BookingWithRelations[]
+  barbershops: BarbershopCard[]
+  popularBarbershops: BarbershopCard[]
+  confirmedBookings: BookingCard[]
   pendingReviews: PendingReview[]
   loading?: boolean
 }
@@ -106,10 +113,11 @@ export default function HomeClient({
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative min-h-screen overflow-x-clip bg-background">
+      <BackgroundEffects />
       <Header />
 
-      <main className="mx-auto w-full max-w-7xl space-y-6 px-4 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+      <main className="relative z-10 mx-auto w-full max-w-7xl space-y-6 px-4 py-5 sm:px-6 sm:py-6 lg:max-w-6xl lg:px-6 lg:pt-14 lg:pb-8">
         {/* Saudação */}
         <motion.div
           className="space-y-1 lg:space-y-2"
@@ -198,7 +206,7 @@ export default function HomeClient({
 
         {/* Banner Dinâmico */}
         <motion.div
-          className="relative h-[150px] w-full overflow-hidden rounded-2xl border border-border/50 shadow-sm sm:h-[230px] lg:h-[320px] lg:rounded-3xl"
+          className="relative h-[150px] w-full overflow-hidden rounded-2xl border border-border/50 shadow-sm sm:h-[230px] lg:aspect-[1983/793] lg:h-auto lg:rounded-3xl"
           variants={fadeUp}
           initial="hidden"
           animate="show"
@@ -216,7 +224,21 @@ export default function HomeClient({
               alt="Banner Maximum"
               fill
               priority
-              className="object-cover transition-all duration-500"
+              className="object-cover transition-all duration-500 lg:hidden"
+            />
+          )}
+          {mounted && (
+            <Image
+              src={
+                resolvedTheme === "dark"
+                  ? "/tamNovoescuro.png"
+                  : "/tamNovoclaro.png"
+              }
+              alt="Banner Maximum"
+              fill
+              priority
+              sizes="(min-width: 1024px) 1216px, 100vw"
+              className="hidden object-cover transition-all duration-500 lg:block"
             />
           )}
         </motion.div>

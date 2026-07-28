@@ -23,31 +23,68 @@
 
 // next.config.ts (ou next.config.js)
 
-//
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next"
+
+const configuredSupabaseHostname = (() => {
+  for (const configuredUrl of [
+    process.env.SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+  ]) {
+    if (!configuredUrl) continue
+
+    try {
+      const url = new URL(configuredUrl)
+      if (
+        url.protocol === "https:" &&
+        !url.username &&
+        !url.password &&
+        !url.port
+      ) {
+        return url.hostname
+      }
+    } catch {
+      continue
+    }
+  }
+
+  return null
+})()
+
+const imageHostnames = new Set([
+  "hbqxheedmamrmqiasflv.supabase.co",
+  "utfs.io",
+  "images.unsplash.com",
+  "www.barbeariamedina.com.br",
+  "d2zdpiztbgorvt.cloudfront.net",
+  "avatars.githubusercontent.com",
+  "yt3.googleusercontent.com",
+  "lh3.googleusercontent.com",
+  "encrypted-tbn0.gstatic.com",
+  "platform-lookaside.fbsbx.com",
+])
+
+if (configuredSupabaseHostname) {
+  imageHostnames.add(configuredSupabaseHostname)
+}
+
+const nextConfig: NextConfig = {
   allowedDevOrigins: ["172.16.1.109"],
+
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "6mb",
+    },
+  },
 
   images: {
     remotePatterns: [
-      // Serviços podem usar uma URL de imagem informada pelo proprietário.
-      // Restringimos a HTTPS, mas aceitamos qualquer hostname.
-      {
-        protocol: "https",
-        hostname: "**",
-      },
-      {
-        protocol: "https",
-        hostname: "hbqxheedmamrmqiasflv.supabase.co",
-      },
-
-      { protocol: "https", hostname: "utfs.io" },
-      { protocol: "https", hostname: "images.unsplash.com" },
-      { protocol: "https", hostname: "www.barbeariamedina.com.br" },
-      { protocol: "https", hostname: "d2zdpiztbgorvt.cloudfront.net" },
-      { protocol: "https", hostname: "avatars.githubusercontent.com" },
+      ...Array.from(imageHostnames, (hostname) => ({
+        protocol: "https" as const,
+        hostname,
+      })),
+      { protocol: "https", hostname: "**.fbcdn.net" },
     ],
   },
 }
 
-module.exports = nextConfig
+export default nextConfig

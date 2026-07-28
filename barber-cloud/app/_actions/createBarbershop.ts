@@ -5,6 +5,7 @@
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { db } from "@/app/_lib/prisma"
+import { assertAllowedImageUrl } from "@/app/_lib/image-url"
 import { redirect } from "next/navigation"
 
 type CreateBarbershopInput = {
@@ -91,7 +92,12 @@ export async function createBarbershop(dados: CreateBarbershopInput) {
 
   if (!barber) throw new Error("Perfil de barbeiro não encontrado.")
 
- const barbershop = await db.barbershop.create({
+ const logoUrl = assertAllowedImageUrl(dados.logo_url, "Logo inválido.")
+ const coverUrl = dados.capa_url
+   ? assertAllowedImageUrl(dados.capa_url, "Imagem de capa inválida.")
+   : null
+
+ await db.barbershop.create({
   data: {
     name: dados.nome,
     phones: [dados.telefone],
@@ -101,8 +107,8 @@ export async function createBarbershop(dados: CreateBarbershopInput) {
     longitude: dados.longitude,
     description: dados.descricao || "",
     tags: dados.tags,
-    imageUrl: dados.logo_url,
-    capaUrl: dados.capa_url,
+    imageUrl: logoUrl,
+    capaUrl: coverUrl,
     instagram: dados.instagram || null,
     horarioAbertura: dados.horario_abertura,
     horarioFechamento: dados.horario_fechamento,

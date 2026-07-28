@@ -39,27 +39,28 @@ export function BarberPortfolioManager({
 
   const save = (formData: FormData) => {
     startTransition(async () => {
-      let image: string | undefined
-      if (avatarFile) {
-        const extension = avatarFile.name.split(".").pop() ?? "jpg"
-        image = await uploadImagem(
-          avatarFile,
-          "logos",
-          `avatars/barbeiro-${barber.id}-${Date.now()}.${extension}`,
-        )
-      }
-      const result = await updateBarberPortfolio({
-        name: String(formData.get("name") ?? ""),
-        bio: String(formData.get("bio") ?? ""),
-        city: String(formData.get("city") ?? ""),
-        specialties: String(formData.get("specialties") ?? "").split(","),
-        image,
-      })
-      if (result.success) {
-        toast.success("Portfólio atualizado.")
-        router.refresh()
-      } else {
-        toast.error(result.error)
+      try {
+        let image: string | undefined
+        if (avatarFile) {
+          image = await uploadImagem(avatarFile, {
+            purpose: "account-avatar",
+          })
+        }
+        const result = await updateBarberPortfolio({
+          name: String(formData.get("name") ?? ""),
+          bio: String(formData.get("bio") ?? ""),
+          city: String(formData.get("city") ?? ""),
+          specialties: String(formData.get("specialties") ?? "").split(","),
+          image,
+        })
+        if (result.success) {
+          toast.success("Portfólio atualizado.")
+          router.refresh()
+        } else {
+          toast.error(result.error)
+        }
+      } catch {
+        toast.error("Não foi possível atualizar o portfólio.")
       }
     })
   }
@@ -77,12 +78,10 @@ export function BarberPortfolioManager({
 
     setIsUploading(true)
     try {
-      const extension = file.name.split(".").pop() ?? "jpg"
-      const url = await uploadImagem(
-        file,
-        "capas",
-        `portfolio/${barber.id}-${Date.now()}.${extension}`,
-      )
+      const url = await uploadImagem(file, {
+        purpose: "barber-portfolio",
+        barberId: barber.id,
+      })
       const result = await addBarberPortfolioPhoto(url)
       if (result.success) {
         toast.success("Trabalho adicionado ao portfólio.")
@@ -139,8 +138,14 @@ export function BarberPortfolioManager({
               onChange={(event) => {
                 const selected = event.target.files?.[0]
                 if (!selected) return
+                if (!["image/jpeg", "image/png", "image/webp"].includes(selected.type)) {
+                  toast.error("Use uma imagem JPG, PNG ou WEBP.")
+                  event.target.value = ""
+                  return
+                }
                 if (selected.size > 5 * 1024 * 1024) {
                   toast.error("A imagem deve ter no máximo 5 MB.")
+                  event.target.value = ""
                   return
                 }
                 setAvatarFile(selected)

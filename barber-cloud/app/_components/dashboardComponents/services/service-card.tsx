@@ -72,7 +72,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
     >
       <div className="relative h-32 w-full bg-zinc-900">
         <Image
-          src={service.imageUrl || "/placeholder-service.png"}
+          src={service.imageUrl || "/maquina.png"}
           alt={service.name}
           fill
           sizes="(max-width: 768px) 100vw, 300px"

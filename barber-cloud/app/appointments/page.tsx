@@ -16,14 +16,32 @@ const AppointmentsPage = async () => {
 
   const appointments = await db.booking.findMany({
     where: {
-      userId: (session.user as any).id,
+      userId: session.user.id,
     },
-    include: {
-      barbershop: true,
-      service: true,
+    select: {
+      id: true,
+      date: true,
+      barbershop: {
+        select: {
+          name: true,
+          imageUrl: true,
+          address: true,
+        },
+      },
+      service: {
+        select: {
+          name: true,
+          price: true,
+        },
+      },
       barber: {
-        include: {
-          user: true,
+        select: {
+          user: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
         },
       },
     },
@@ -83,7 +101,11 @@ const AppointmentsPage = async () => {
                 appointment={{
                   id: appointment.id,
                   date: appointment.date,
-                  barbershop: appointment.barbershop,
+                  barbershop: {
+                    name: appointment.barbershop.name,
+                    imageUrl: appointment.barbershop.imageUrl,
+                    address: appointment.barbershop.address,
+                  },
                   service: {
                     name: appointment.service?.name ?? "Serviço",
                     price: Number(appointment.service?.price ?? 0),

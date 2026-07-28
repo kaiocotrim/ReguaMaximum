@@ -21,12 +21,9 @@ export function UserProfileSettings({
       try {
         let image: string | undefined
         if (file) {
-          const extension = file.name.split(".").pop() ?? "jpg"
-          image = await uploadImagem(
-            file,
-            "logos",
-            `avatars/${initial.userId}-${Date.now()}.${extension}`,
-          )
+          image = await uploadImagem(file, {
+            purpose: "account-avatar",
+          })
         }
         const result = await updateUserProfile({
           name: String(formData.get("name")),

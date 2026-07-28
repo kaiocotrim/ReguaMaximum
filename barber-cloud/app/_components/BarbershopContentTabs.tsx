@@ -23,8 +23,8 @@ export function BarbershopContentTabs({
   const [tab, setTab] = useState<"services" | "reviews">("services")
 
   return (
-    <section id="servicos" className="scroll-mt-6 px-6 pt-8">
-      <div className="mb-5 grid grid-cols-2 rounded-xl border border-border bg-muted/40 p-1">
+    <section id="servicos" className="scroll-mt-6 px-6 pt-8 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:px-0 lg:pt-0">
+      <div className="mb-5 grid grid-cols-2 rounded-2xl border border-border/60 bg-card p-1.5 shadow-sm lg:mb-6">
         <button
           type="button"
           onClick={() => setTab("services")}
@@ -55,7 +55,7 @@ export function BarbershopContentTabs({
         services
       ) : (
         <div className="space-y-4">
-          <div className="flex items-center justify-between rounded-2xl border border-border bg-card p-4">
+          <div className="flex items-center justify-between rounded-2xl border border-border/60 bg-card p-5 shadow-sm">
             <div>
               <p className="text-xs font-medium text-muted-foreground">
                 Média geral
@@ -87,11 +87,11 @@ export function BarbershopContentTabs({
               </p>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
               {reviews.map((review) => (
                 <article
                   key={review.id}
-                  className="rounded-2xl border border-border bg-card p-4"
+                  className="rounded-2xl border border-border/60 bg-card p-5 shadow-sm"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div>

@@ -1,16 +1,29 @@
 "use server"
 
 import { db } from "@/app/_lib/prisma"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { revalidatePath } from "next/cache"
+import { getServerSession } from "next-auth"
 
 export async function deleteService(id: string) {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) {
+    throw new Error("Não autorizado.")
+  }
+
   if (!id) {
     throw new Error("ID do serviço não informado.")
   }
 
-  const service = await db.barbeshopService.findUnique({
-    where: { id },
-    select: { barbershopId: true },
+  const service = await db.barbeshopService.findFirst({
+    where: {
+      id,
+      barbershop: { ownerId: session.user.id },
+    },
+    select: {
+      id: true,
+      barbershopId: true,
+    },
   })
 
   if (!service) {
@@ -43,9 +56,16 @@ export async function deleteService(id: string) {
   }
 
   try {
-    await db.barbeshopService.delete({
-      where: { id },
+    const deleted = await db.barbeshopService.deleteMany({
+      where: {
+        id: service.id,
+        barbershop: { ownerId: session.user.id },
+      },
     })
+
+    if (deleted.count === 0) {
+      throw new Error("Serviço não encontrado.")
+    }
   } catch (error: unknown) {
     const isForeignKeyError =
       typeof error === "object" &&

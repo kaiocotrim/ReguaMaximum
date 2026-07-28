@@ -78,9 +78,11 @@ const InboxPage = async () => {
 
   const convites = await db.barbershopInvite.findMany({
     where: { inviteeId: session.user.id },
-    include: {
-      barbershop: true,
-      inviter: true,
+    select: {
+      id: true,
+      message: true,
+      barbershop: { select: { name: true } },
+      inviter: { select: { name: true } },
     },
     orderBy: { expiresAt: "asc" },
   })

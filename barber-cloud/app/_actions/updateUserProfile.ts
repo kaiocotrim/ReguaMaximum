@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { db } from "@/app/_lib/prisma"
+import { normalizeAllowedImageUrl } from "@/app/_lib/image-url"
 
 export async function updateUserProfile(input: {
   name: string
@@ -23,7 +24,10 @@ export async function updateUserProfile(input: {
   if (phone.length < 10) {
     return { success: false as const, error: "Informe um telefone válido." }
   }
-  if (input.image && !input.image.startsWith("https://")) {
+  const image = input.image
+    ? normalizeAllowedImageUrl(input.image)
+    : undefined
+  if (input.image && !image) {
     return { success: false as const, error: "Imagem inválida." }
   }
 
@@ -33,21 +37,21 @@ export async function updateUserProfile(input: {
       data: {
         name,
         telefone: phone,
-        ...(input.image ? { image: input.image } : {}),
+        ...(image ? { image } : {}),
       },
     })
     await tx.client.updateMany({
       where: { userId: session.user.id },
       data: {
         nome: name,
-        ...(input.image ? { avatar: input.image } : {}),
+        ...(image ? { avatar: image } : {}),
       },
     })
     await tx.barber.updateMany({
       where: { userId: session.user.id },
       data: {
         nome: name,
-        ...(input.image ? { avatar: input.image } : {}),
+        ...(image ? { avatar: image } : {}),
       },
     })
   })

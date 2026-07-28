@@ -41,12 +41,10 @@ export function BarbershopGalleryManager({
 
     setIsUploading(true)
     try {
-      const extension = file.name.split(".").pop() ?? "jpg"
-      const url = await uploadImagem(
-        file,
-        "capas",
-        `galeria/${barbershopId}-${Date.now()}.${extension}`,
-      )
+      const url = await uploadImagem(file, {
+        purpose: "barbershop-gallery",
+        barbershopId,
+      })
       const result = await addBarbershopPhoto(url)
       if (!result.success) {
         toast.error(result.error)

@@ -2,6 +2,8 @@
 "use server"
 
 import { db } from "@/app/_lib/prisma"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { getServerSession } from "next-auth"
 
 interface ResultadoBusca {
   id: string
@@ -16,35 +18,57 @@ export async function searchUsers(
   query: string,
   barbershopId: string,
 ): Promise<ResultadoBusca[]> {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) {
+    throw new Error("Não autorizado.")
+  }
+
   if (!query || query.trim().length < 3) return []
 
-  // Busca usuários pelo e-mail, excluindo quem já é barbeiro dessa barbearia
-  const usuarios = await db.user.findMany({
+  const barbershop = await db.barbershop.findFirst({
     where: {
-      email: {
-        contains: query.trim(),
-        mode: "insensitive",
-      },
-      barber: {
-        none: {
-          barbershopId,
+      id: barbershopId,
+      ownerId: session.user.id,
+    },
+    select: { id: true },
+  })
+
+  if (!barbershop) {
+    throw new Error("Barbearia não encontrada.")
+  }
+
+  const barbeiros = await db.barber.findMany({
+    where: {
+      OR: [
+        { barbershopId: null },
+        { barbershopId: { not: barbershop.id } },
+      ],
+      user: {
+        email: {
+          contains: query.trim(),
+          mode: "insensitive",
         },
       },
     },
     take: 5,
     select: {
       id: true,
-      name: true,
-      email: true,
+      userId: true,
+      nome: true,
+      user: {
+        select: {
+          email: true,
+        },
+      },
     },
   })
 
-  return usuarios.map((usuario) => ({
-    id: usuario.id,
-    userId: usuario.id,
-    nome: usuario.name ?? "Sem nome",
+  return barbeiros.map((barbeiro) => ({
+    id: barbeiro.id,
+    userId: barbeiro.userId,
+    nome: barbeiro.nome ?? "Sem nome",
     user: {
-      email: usuario.email ?? "",
+      email: barbeiro.user.email ?? "",
     },
   }))
 }

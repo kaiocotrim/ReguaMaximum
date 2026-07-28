@@ -4,7 +4,7 @@ import { cn } from "@/app/_lib/utils"
 import { Button } from "@/app/_components/ui/button"
 import { Field, FieldGroup, FieldLabel } from "@/app/_components/ui/field"
 import { Input } from "@/app/_components/ui/input"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { useSearchParams } from "next/navigation"
@@ -19,15 +19,31 @@ export default function ResetPasswordForm({ className }: { className?: string })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isRedirecting, setIsRedirecting] = useState(false)
   const searchParams = useSearchParams()
-  const token = searchParams.get("token")
+  const [token] = useState(() => searchParams.get("token"))
+
+  useEffect(() => {
+    if (token) {
+      window.history.replaceState({}, "", "/reset-password")
+    }
+  }, [token])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
  
     
-    if (password.length < 6) {
-      setError("A senha deve ter pelo menos 6 caracteres")
+    if (!token) {
+      setError("Este link de recuperação é inválido ou está incompleto")
+      return
+    }
+
+    if (password.length < 8) {
+      setError("A senha deve ter pelo menos 8 caracteres")
+      return
+    }
+
+    if (new TextEncoder().encode(password).length > 72) {
+      setError("A senha deve ter no máximo 72 bytes")
       return
     }
 
@@ -47,11 +63,17 @@ export default function ResetPasswordForm({ className }: { className?: string })
 
       const data = await response.json()
 
-      if (!response.ok) throw new Error(data.error)
+      if (!response.ok) {
+        throw new Error(data.error || "Não foi possível redefinir a senha")
+      }
 
       setMode("success")
     } catch (err) {
-      setError("Ocorreu um erro ao redefinir a senha. Tente novamente.")
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Ocorreu um erro ao redefinir a senha. Tente novamente.",
+      )
     } finally {
       setIsSubmitting(false)
     }
@@ -99,11 +121,11 @@ export default function ResetPasswordForm({ className }: { className?: string })
               <FieldGroup className="space-y-3">
                 <Field className="space-y-2">
                   <FieldLabel htmlFor="new-password" className="text-sm font-bold text-white">Nova Senha</FieldLabel>
-                  <Input id="new-password" type="password" placeholder="Sua nova senha" required autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} className="h-12 rounded-md border border-zinc-600 bg-[#121212] px-4 text-sm text-white placeholder:text-zinc-500 focus-visible:border-white focus-visible:ring-0 focus-visible:ring-offset-0" />
+                  <Input id="new-password" type="password" placeholder="Sua nova senha" required minLength={8} autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} className="h-12 rounded-md border border-zinc-600 bg-[#121212] px-4 text-sm text-white placeholder:text-zinc-500 focus-visible:border-white focus-visible:ring-0 focus-visible:ring-offset-0" />
                 </Field>
                 <Field className="space-y-2">
                   <FieldLabel htmlFor="confirm-password" className="text-sm font-bold text-white">Confirmar Senha</FieldLabel>
-                  <Input id="confirm-password" type="password" placeholder="Repita a nova senha" required autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="h-12 rounded-md border border-zinc-600 bg-[#121212] px-4 text-sm text-white placeholder:text-zinc-500 focus-visible:border-white focus-visible:ring-0 focus-visible:ring-offset-0" />
+                  <Input id="confirm-password" type="password" placeholder="Repita a nova senha" required minLength={8} autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="h-12 rounded-md border border-zinc-600 bg-[#121212] px-4 text-sm text-white placeholder:text-zinc-500 focus-visible:border-white focus-visible:ring-0 focus-visible:ring-offset-0" />
                 </Field>
               </FieldGroup>
               <motion.div layout transition={{ duration: 0.25 }}>

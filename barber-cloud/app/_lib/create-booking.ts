@@ -10,7 +10,6 @@ type BookingInput = {
   serviceId: string
   barberId: string
   date: Date
-  dayStart: Date
 }
 
 type DayAvailabilityInput = Pick<BookingInput, "barbershopId" | "serviceId"> & {
@@ -69,6 +68,7 @@ function startOfSelectedDay(date: Date) {
   if (Number.isNaN(dayStart.getTime())) {
     throw new Error("Data inválida.")
   }
+  dayStart.setHours(0, 0, 0, 0)
   return dayStart
 }
 
@@ -134,7 +134,8 @@ async function getDayAvailability(
   data: DayAvailabilityInput,
 ) {
   const dayStart = startOfSelectedDay(data.date)
-  const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60_000)
+  const dayEnd = new Date(dayStart)
+  dayEnd.setDate(dayEnd.getDate() + 1)
 
   const [service, barbershop, barbers, longestService] = await Promise.all([
     tx.barbeshopService.findFirst({
@@ -327,7 +328,7 @@ export async function createBooking(data: BookingInput) {
               throw new Error("Barbeiro não pertence a esta barbearia.")
             }
 
-            const dayStart = startOfSelectedDay(data.dayStart)
+            const dayStart = startOfSelectedDay(requestedDate)
             const requestedMinutes =
               (requestedDate.getTime() - dayStart.getTime()) / 60_000
             const requestedTime =
@@ -335,7 +336,7 @@ export async function createBooking(data: BookingInput) {
                 ? `${String(Math.floor(requestedMinutes / 60)).padStart(2, "0")}:${String(requestedMinutes % 60).padStart(2, "0")}`
                 : ""
             const { timesByBarber } = await getDayAvailability(
-              tx as typeof db,
+              tx as unknown as typeof db,
               {
                 barbershopId: data.barbershopId,
                 serviceId: data.serviceId,
@@ -353,7 +354,7 @@ export async function createBooking(data: BookingInput) {
             }
 
             const unavailableBarberIds = await unavailableBarbers(
-              tx as typeof db,
+              tx as unknown as typeof db,
               {
                 barbershopId: data.barbershopId,
                 serviceId: data.serviceId,
@@ -374,11 +375,17 @@ export async function createBooking(data: BookingInput) {
                 service: { connect: { id: data.serviceId } },
                 barber: { connect: { id: data.barberId } },
               },
-              include: {
-                user: true,
-                barbershop: true,
-                service: true,
-                barber: { include: { user: true } },
+              select: {
+                id: true,
+                date: true,
+                user: { select: { email: true, name: true } },
+                barbershop: { select: { name: true } },
+                service: { select: { name: true } },
+                barber: {
+                  select: {
+                    user: { select: { name: true } },
+                  },
+                },
               },
             })
 

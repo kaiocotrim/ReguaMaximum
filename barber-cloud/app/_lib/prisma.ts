@@ -28,17 +28,34 @@
 
 // if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db
 
+import "server-only"
 
 import { PrismaClient } from "../generated/prisma/client"
 import { PrismaNeon } from "@prisma/adapter-neon"
-
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
 
 const adapter = new PrismaNeon({ 
   connectionString: process.env.DATABASE_URL! 
 })
 
+const createPrismaClient = () =>
+  new PrismaClient({
+    adapter,
+    omit: {
+      user: {
+        password: true,
+        resetPasswordToken: true,
+        resetPasswordExpiry: true,
+      },
+    },
+  })
+
+type AppPrismaClient = ReturnType<typeof createPrismaClient>
+
+const globalForPrisma = globalThis as unknown as {
+  prisma: AppPrismaClient | undefined
+}
+
 export const db =
-  globalForPrisma.prisma || new PrismaClient({ adapter })
+  globalForPrisma.prisma || createPrismaClient()
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db

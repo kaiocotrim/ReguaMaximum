@@ -12,24 +12,24 @@ export async function DELETE(
   }
 
   const { id } = await params
-  const booking = await db.booking.findFirst({
+  const cancelled = await db.booking.updateMany({
     where: {
       id,
+      status: "EM_ANDAMENTO",
       OR: [
         { userId: session.user.id },
         { barbershop: { ownerId: session.user.id } },
       ],
     },
-  })
-
-  if (!booking) {
-    return Response.json({ message: "Agendamento não encontrado." }, { status: 404 })
-  }
-
-  await db.booking.update({
-    where: { id },
     data: { status: "CANCELADO", cancelledAt: new Date() },
   })
+
+  if (cancelled.count === 0) {
+    return Response.json(
+      { message: "Agendamento não encontrado ou não está em andamento." },
+      { status: 404 },
+    )
+  }
 
   return Response.json({ message: "Agendamento cancelado e salvo no histórico." })
 }

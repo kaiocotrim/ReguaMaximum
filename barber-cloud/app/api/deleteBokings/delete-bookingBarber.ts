@@ -21,16 +21,21 @@ export async function cancelBooking(id: string) {
     return { success: false as const, error: "Não autorizado." }
   }
 
-  const booking = await findOwnedBooking(id, session.user.id)
-
-  if (!booking) {
-    return { success: false as const, error: "Agendamento não encontrado." }
-  }
-
-  await db.booking.update({
-    where: { id },
+  const cancelled = await db.booking.updateMany({
+    where: {
+      id,
+      status: "EM_ANDAMENTO",
+      barbershop: { ownerId: session.user.id },
+    },
     data: { status: "CANCELADO", cancelledAt: new Date() },
   })
+
+  if (cancelled.count === 0) {
+    return {
+      success: false as const,
+      error: "Agendamento não encontrado ou não está em andamento.",
+    }
+  }
 
   revalidatePath("/dashboard")
   revalidatePath("/dashboard/agendamentos")

@@ -219,7 +219,6 @@ import {
   Building2,
   Check,
   FileText,
-  Loader2,
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { uploadImagem } from "@/app/_lib/uploadImagem"
@@ -296,16 +295,30 @@ const BarbieCreation = () => {
   ) => {
     const file = e.target.files?.[0]
     if (!file) return
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setErro("Use uma imagem JPG, PNG ou WEBP.")
+      e.target.value = ""
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setErro("A imagem deve ter no máximo 5 MB.")
+      e.target.value = ""
+      return
+    }
 
-    tipo === "logo"
-      ? setLogoFile(file)
-      : setCapaFile(file)
+    if (tipo === "logo") {
+      setLogoFile(file)
+    } else {
+      setCapaFile(file)
+    }
 
     const reader = new FileReader()
     reader.onload = (ev) => {
-      tipo === "logo"
-        ? setLogoPreview(ev.target?.result as string)
-        : setCapaPreview(ev.target?.result as string)
+      if (tipo === "logo") {
+        setLogoPreview(ev.target?.result as string)
+      } else {
+        setCapaPreview(ev.target?.result as string)
+      }
     }
     reader.readAsDataURL(file)
   }
@@ -348,11 +361,13 @@ const BarbieCreation = () => {
       setSalvando(true)
 
       // logoFile sempre existe aqui, pois é validado no step 3
-      const logoUrl = await uploadImagem(logoFile as File, "logos", `logo-${Date.now()}.png`)
+      const logoUrl = await uploadImagem(logoFile as File, {
+        purpose: "barbershop-logo",
+      })
 
       // capaFile é opcional, então só faz upload se existir
       const capaUrl = capaFile
-        ? await uploadImagem(capaFile, "capas", `capa-${Date.now()}.png`)
+        ? await uploadImagem(capaFile, { purpose: "barbershop-cover" })
         : null
 
       const dadosBarbearia = {
@@ -658,7 +673,7 @@ const BarbieCreation = () => {
                       <input
                         ref={logoRef}
                         type="file"
-                        accept="image/*"
+                        accept="image/jpeg,image/png,image/webp"
                         className="hidden"
                         onChange={(e) => handleUpload(e, "logo")}
                       />
@@ -682,7 +697,7 @@ const BarbieCreation = () => {
                       <input
                         ref={capaRef}
                         type="file"
-                        accept="image/*"
+                        accept="image/jpeg,image/png,image/webp"
                         className="hidden"
                         onChange={(e) => handleUpload(e, "capa")}
                       />

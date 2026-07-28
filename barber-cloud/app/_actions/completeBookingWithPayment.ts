@@ -17,7 +17,6 @@ const methods: PaymentMethod[] = [
 export async function completeBookingWithPayment(input: {
   bookingId: string
   method: PaymentMethod
-  amount: number
 }) {
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) {
@@ -26,49 +25,82 @@ export async function completeBookingWithPayment(input: {
   if (!methods.includes(input.method)) {
     return { success: false as const, error: "Forma de pagamento inválida." }
   }
-  if (
-    !Number.isFinite(input.amount) ||
-    input.amount < 0
-  ) {
-    return { success: false as const, error: "Valores de pagamento inválidos." }
-  }
+  try {
+    let completed = false
 
-  const booking = await db.booking.findFirst({
-    where: {
-      id: input.bookingId,
-      status: { not: "CANCELADO" },
-      OR: [
-        { barbershop: { ownerId: session.user.id } },
-        { barber: { userId: session.user.id } },
-      ],
-    },
-    select: { id: true },
-  })
-  if (!booking) {
-    return { success: false as const, error: "Agendamento não encontrado." }
-  }
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        completed = await db.$transaction(
+          async (tx) => {
+            const booking = await tx.booking.findUnique({
+              where: { id: input.bookingId },
+              select: {
+                id: true,
+                barbershopId: true,
+                service: { select: { price: true } },
+              },
+            })
 
-  await db.$transaction([
-    db.payment.upsert({
-      where: { bookingId: booking.id },
-      create: {
-        bookingId: booking.id,
-        method: input.method,
-        amount: input.amount,
-        receivedById: session.user.id,
-      },
-      update: {
-        method: input.method,
-        amount: input.amount,
-        receivedById: session.user.id,
-        paidAt: new Date(),
-      },
-    }),
-    db.booking.update({
-      where: { id: booking.id },
-      data: { status: "CONCLUIDO", attendance: "COMPARECEU" },
-    }),
-  ])
+            if (!booking) return false
+
+            const updated = await tx.booking.updateMany({
+              where: {
+                id: booking.id,
+                barbershopId: booking.barbershopId,
+                status: "EM_ANDAMENTO",
+                payment: null,
+                OR: [
+                  { barbershop: { ownerId: session.user.id } },
+                  {
+                    barber: {
+                      userId: session.user.id,
+                      barbershopId: booking.barbershopId,
+                    },
+                  },
+                ],
+              },
+              data: {
+                status: "CONCLUIDO",
+                attendance: "COMPARECEU",
+              },
+            })
+
+            if (updated.count !== 1) return false
+
+            await tx.payment.create({
+              data: {
+                bookingId: booking.id,
+                method: input.method,
+                amount: booking.service.price,
+                receivedById: session.user.id,
+              },
+            })
+
+            return true
+          },
+          { isolationLevel: "Serializable" },
+        )
+        break
+      } catch (error) {
+        const code = (error as { code?: string }).code
+        if (code === "P2034" && attempt === 0) continue
+        throw error
+      }
+    }
+
+    if (!completed) {
+      return {
+        success: false as const,
+        error: "Agendamento não encontrado, sem acesso ou já finalizado.",
+      }
+    }
+  } catch (error) {
+    console.error("Erro ao finalizar agendamento com pagamento:", error)
+    return {
+      success: false as const,
+      error: "Não foi possível finalizar o atendimento.",
+    }
+  }
 
   revalidatePath("/dashboard")
   revalidatePath("/dashboard/agendamentos")

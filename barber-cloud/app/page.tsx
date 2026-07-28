@@ -225,29 +225,42 @@ import HomeClient from "./_components/HomeClient"
 import { authOptions } from "./api/auth/[...nextauth]/route"
 import { getServerSession } from "next-auth"
 
+const barbershopCardSelect = {
+  id: true,
+  name: true,
+  address: true,
+  imageUrl: true,
+  reviews: { select: { rating: true } },
+} as const
+
 export default async function Home() {
   const session = await getServerSession(authOptions)
 
   const barbershops = await db.barbershop.findMany({
-    include: { reviews: { select: { rating: true } } },
+    select: barbershopCardSelect,
   })
 
   const popularBarbershops = await db.barbershop.findMany({
     orderBy: { name: "desc" },
-    include: { reviews: { select: { rating: true } } },
+    select: barbershopCardSelect,
   })
 
-  const confirmedBookings = session?.user
+  const confirmedBookings = session?.user?.id
     ? await db.booking.findMany({
         where: {
-          user: { email: session.user.email! },
+          userId: session.user.id,
           date: { gte: new Date() },
         },
-        include: {
-          service: true,
-          barbershop: true,
-          barber: true,
-          user: true,
+        select: {
+          id: true,
+          date: true,
+          service: { select: { name: true } },
+          barbershop: {
+            select: {
+              name: true,
+              imageUrl: true,
+            },
+          },
         },
         orderBy: { date: "asc" },
       })
@@ -275,20 +288,19 @@ export default async function Home() {
       })
     : []
 
-  // ✅ serializa Decimal corretamente
-  const serializedBookings = confirmedBookings.map((booking) => ({
-    ...booking,
-    service: {
-      ...booking.service,
-      price: Number(booking.service.price),
-    },
-  }))
-
   return (
     <HomeClient
       barbershops={barbershops}
       popularBarbershops={popularBarbershops}
-      confirmedBookings={serializedBookings}
+      confirmedBookings={confirmedBookings.map((booking) => ({
+        id: booking.id,
+        date: booking.date.toISOString(),
+        service: { name: booking.service.name },
+        barbershop: {
+          name: booking.barbershop.name,
+          imageUrl: booking.barbershop.imageUrl,
+        },
+      }))}
       pendingReviews={pendingReviews.map((booking) => ({
         id: booking.id,
         date: booking.date.toISOString(),

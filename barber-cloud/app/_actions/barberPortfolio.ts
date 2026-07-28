@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { db } from "@/app/_lib/prisma"
+import { normalizeAllowedImageUrl } from "@/app/_lib/image-url"
 
 async function ownBarber(userId: string) {
   return db.barber.findUnique({
@@ -38,7 +39,10 @@ export async function updateBarberPortfolio(input: {
   if (bio.length > 1000) {
     return { success: false as const, error: "A biografia aceita até 1.000 caracteres." }
   }
-  if (input.image && !input.image.startsWith("https://")) {
+  const image = input.image
+    ? normalizeAllowedImageUrl(input.image)
+    : undefined
+  if (input.image && !image) {
     return { success: false as const, error: "Imagem inválida." }
   }
 
@@ -50,13 +54,13 @@ export async function updateBarberPortfolio(input: {
         bio: bio || null,
         cidade: city || null,
         especialidades: specialties,
-        ...(input.image ? { avatar: input.image } : {}),
+        ...(image ? { avatar: image } : {}),
       },
     })
-    if (input.image) {
+    if (image) {
       await tx.user.update({
         where: { id: session.user.id },
-        data: { image: input.image },
+        data: { image },
       })
     }
     return updated
@@ -76,10 +80,8 @@ export async function addBarberPortfolioPhoto(imageUrl: string) {
     return { success: false as const, error: "Não autorizado." }
   }
 
-  try {
-    const url = new URL(imageUrl)
-    if (url.protocol !== "https:") throw new Error()
-  } catch {
+  const normalizedImageUrl = normalizeAllowedImageUrl(imageUrl)
+  if (!normalizedImageUrl) {
     return { success: false as const, error: "URL da imagem inválida." }
   }
 
@@ -94,7 +96,7 @@ export async function addBarberPortfolioPhoto(imageUrl: string) {
   await db.barberPortfolioPhoto.create({
     data: {
       barberId: barber.id,
-      imageUrl,
+      imageUrl: normalizedImageUrl,
       position: barber._count.portfolioPhotos,
     },
   })

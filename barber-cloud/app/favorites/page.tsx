@@ -10,7 +10,7 @@ import { redirect } from "next/navigation"
 const FavoritesPage = async () => {
   const session = await getServerSession(authOptions)
 
-  if (!session) {
+  if (!session?.user?.id) {
     redirect("/login")
   }
 
@@ -29,34 +29,34 @@ const FavoritesPage = async () => {
 
 
   return (
-    <div>
+    <div className="min-h-screen bg-[#f5f7f3] dark:bg-zinc-950">
       <Header />
 
-      <div className="m-5">
-        <div className="border-border/40 bg-card rounded-xl border px-7 py-6">
+      <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
+        <div className="overflow-hidden rounded-2xl border border-border/50 bg-card px-6 py-6 shadow-sm sm:px-8 lg:rounded-3xl lg:px-12 lg:py-10 lg:shadow-[0_18px_50px_rgba(37,79,80,0.10)]">
           {/* Badge */}
 
           {/* Texto + imagem */}
-          <div className="flex min-h-[150px] items-center justify-between gap-6">
-            <div className="flex-1">
-              <div className="mb-4 flex items-center gap-1.5 text-[11px] font-medium tracking-widest text-[#C3F32C] uppercase">
+          <div className="flex min-h-[150px] items-center justify-between gap-6 lg:min-h-[220px]">
+            <div className="max-w-xl flex-1">
+              <div className="mb-4 flex items-center gap-1.5 text-[11px] font-bold tracking-[0.18em] text-[#71910d] uppercase dark:text-[#C3F32C] lg:text-xs">
                 <Heart className="h-3 w-3 fill-[#C3F32C] text-[#C3F32C]" />
-                <span className="text-[#C3F32C]">favoritos</span>
+                <span>favoritos</span>
               </div>
-              <h1 className="mb-1 text-[18px] leading-snug font-medium">
+              <h1 className="mb-2 text-xl leading-snug font-bold sm:text-2xl lg:text-4xl">
                 Barbearias que você curte
               </h1>
-              <p className="text-muted-foreground text-[13px]">
+              <p className="text-sm text-muted-foreground lg:text-base">
                 Seus estabelecimentos salvos em um só lugar.
               </p>
             </div>
 
-            <div className="flex w-[150px] shrink-0 items-center justify-center">
+            <div className="flex w-[125px] shrink-0 items-center justify-center sm:w-[170px] lg:w-[260px]">
               <Image
                 src="/favoritoOK1.png"
                 alt="Favoritos"
-                width={150}
-                height={150}
+                width={260}
+                height={260}
                 className="object-contain"
                 priority
               />
@@ -64,17 +64,15 @@ const FavoritesPage = async () => {
           </div>
 
           {/* Rodapé */}
-          <div className="border-border/30 mt-4 flex items-center justify-between border-t pt-4">
-            <span className="text-muted-foreground text-[13px]">
-              <strong className="text-foreground font-medium">
+          <div className="mt-4 flex items-center justify-between border-t border-border/40 pt-4 lg:mt-6 lg:pt-5">
+            <span className="text-sm text-muted-foreground">
+              <strong className="font-bold text-foreground">
                 {favorites.length}
               </strong>{" "}
               {favorites.length === 1 ? "barbearia salva" : "barbearias salvas"}
             </span>
           </div>
         </div>
-      </div>
-
       {/* {favorites.length === 0 ? (
         <p className="text-muted-foreground px-5 text-sm">
           Você ainda não salvou nenhuma barbearia.
@@ -91,7 +89,7 @@ const FavoritesPage = async () => {
       )} */}
 
       {favorites.length === 0 ? (
-        <div className="flex flex-col items-center justify-center px-5 py-10 text-center">
+        <div className="mt-8 flex min-h-[360px] flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card px-5 py-10 text-center shadow-sm lg:mt-10">
           <Image
             src="/favoritoNot.png"
             alt="Nenhuma barbearia favorita"
@@ -107,7 +105,7 @@ const FavoritesPage = async () => {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-5 p-5">
+        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:mt-10 lg:grid-cols-4 lg:gap-6">
           {favorites.map((favorite) => (
             <BarbershopItem
               key={favorite.barbershop.id}
@@ -116,6 +114,7 @@ const FavoritesPage = async () => {
           ))}
         </div>
       )}
+      </main>
     </div>
   )
 }

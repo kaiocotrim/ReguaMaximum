@@ -13,6 +13,7 @@ import {
 } from "lucide-react"
 import Header from "@/app/_components/header"
 import { db } from "@/app/_lib/prisma"
+import { normalizeAllowedImageUrl } from "@/app/_lib/image-url"
 
 export default async function PublicBarberProfile({
   params,
@@ -44,7 +45,9 @@ export default async function PublicBarberProfile({
   if (!barber) notFound()
 
   const name = barber.nome ?? barber.user.name ?? "Barbeiro"
-  const avatar = barber.avatar ?? barber.user.image
+  const avatar =
+    normalizeAllowedImageUrl(barber.avatar) ??
+    normalizeAllowedImageUrl(barber.user.image)
   const reviewCount = barber.reviews.length
   const average =
     reviewCount > 0

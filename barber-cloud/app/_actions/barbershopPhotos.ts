@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { db } from "@/app/_lib/prisma"
+import { normalizeAllowedImageUrl } from "@/app/_lib/image-url"
 
 async function ownedBarbershop(userId: string) {
   return db.barbershop.findFirst({
@@ -18,10 +19,8 @@ export async function addBarbershopPhoto(imageUrl: string) {
     return { success: false as const, error: "Não autorizado." }
   }
 
-  try {
-    const url = new URL(imageUrl)
-    if (url.protocol !== "https:") throw new Error()
-  } catch {
+  const normalizedImageUrl = normalizeAllowedImageUrl(imageUrl)
+  if (!normalizedImageUrl) {
     return { success: false as const, error: "URL da imagem inválida." }
   }
 
@@ -36,7 +35,7 @@ export async function addBarbershopPhoto(imageUrl: string) {
   await db.barbershopPhoto.create({
     data: {
       barbershopId: barbershop.id,
-      imageUrl,
+      imageUrl: normalizedImageUrl,
       position: barbershop._count.photos,
     },
   })

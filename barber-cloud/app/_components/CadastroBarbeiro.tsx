@@ -183,12 +183,9 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
   const salvarPerfil = async () => {
     try {
       if (!avatarFile) return
-      const extension = avatarFile.name.split(".").pop() ?? "jpg"
-      const avatarUrl = await uploadImagem(
-        avatarFile,
-        "logos",
-        `avatars/barbeiro-${Date.now()}.${extension}`,
-      )
+      const avatarUrl = await uploadImagem(avatarFile, {
+        purpose: "account-avatar",
+      })
       const response = await fetch("/api/barber/profile", {
         method: "POST",
         headers: {

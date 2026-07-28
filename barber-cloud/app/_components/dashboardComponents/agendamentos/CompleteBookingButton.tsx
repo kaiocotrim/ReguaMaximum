@@ -33,14 +33,12 @@ export function CompleteBookingButton({
   const router = useRouter()
 
   const submit = (formData: FormData) => {
-    const amount = Number(String(formData.get("amount")).replace(",", "."))
     const method = String(formData.get("method")) as PaymentMethod
 
     startTransition(async () => {
       const result = await completeBookingWithPayment({
         bookingId,
         method,
-        amount,
       })
       if (result.success) {
         toast.success("Atendimento finalizado e pagamento registrado.")
@@ -87,18 +85,15 @@ export function CompleteBookingButton({
               <option value="OUTRO">Outro</option>
             </select>
           </label>
-          <label className="grid gap-1.5 text-sm">
-            <span className="font-medium">Valor recebido</span>
-            <input
-              name="amount"
-              type="number"
-              min="0"
-              step="0.01"
-              required
-              defaultValue={servicePrice.toFixed(2)}
-              className="h-10 rounded-lg border border-border bg-background px-3"
-            />
-          </label>
+          <div className="flex items-center justify-between rounded-lg border border-border bg-background px-3 py-2.5 text-sm">
+            <span className="font-medium">Valor do serviço</span>
+            <span className="font-semibold">
+              {servicePrice.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })}
+            </span>
+          </div>
           <div className="rounded-lg bg-muted/50 p-3 text-xs text-muted-foreground">
             O atendimento será marcado como concluído, o comparecimento será
             confirmado e a avaliação será liberada para o cliente.
