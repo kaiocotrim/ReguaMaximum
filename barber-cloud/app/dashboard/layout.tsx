@@ -9,6 +9,8 @@ import {
   SidebarTrigger,
 } from "@/app/_components/ui/sidebar";
 import { AppSidebar } from "@/app/_components/dashboardComponents/AppSidebar";
+import { PlanLicenseStatus } from "@/app/generated/prisma/client";
+import { isLicenseAdminAccount } from "@/app/_lib/license-admin";
 
 export default async function DashboardLayout({
   children,
@@ -35,17 +37,40 @@ export default async function DashboardLayout({
         cidade: true,
         corMarca: true,
         instagram: true,
+        licenses: {
+          select: {
+            status: true,
+            expiresAt: true,
+          },
+          orderBy: { createdAt: "desc" },
+        },
       },
     }),
     db.user.findUnique({
       where: { id: session.user.id },
-      select: { name: true, email: true, image: true },
+      select: {
+        name: true,
+        email: true,
+        image: true,
+        isLicenseAdmin: true,
+      },
     }),
   ]);
 
   // Caso o usuário ainda não tenha criado uma barbearia
   if (!barbershop) {
-    redirect("/criar-barbearia");
+    redirect("/minha-barbearia");
+  }
+
+  const hasLicenseHistory = barbershop.licenses.length > 0
+  const hasActiveLicense = barbershop.licenses.some(
+    (license) =>
+      license.status === PlanLicenseStatus.ACTIVE &&
+      Boolean(license.expiresAt && license.expiresAt > new Date()),
+  )
+
+  if (hasLicenseHistory && !hasActiveLicense) {
+    redirect("/minha-barbearia")
   }
 
   return (
@@ -59,6 +84,11 @@ export default async function DashboardLayout({
             image: currentUser?.image ?? session.user.image,
           }}
           barbershop={barbershop}
+          isLicenseAdmin={
+            currentUser
+              ? isLicenseAdminAccount(currentUser)
+              : false
+          }
         />
 
         <main className="flex-1 p-6">

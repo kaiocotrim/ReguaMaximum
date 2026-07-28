@@ -35,7 +35,7 @@ export default async function PerfilBarber({
     },
   })
 
-  if (!barbershop) redirect("/criar-barbearia")
+  if (!barbershop) redirect("/minha-barbearia")
 
   const reviewCount = barbershop.reviews.length
   const average =

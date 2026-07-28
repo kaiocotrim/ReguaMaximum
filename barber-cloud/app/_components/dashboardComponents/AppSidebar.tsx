@@ -25,6 +25,7 @@ import {
   Settings,
   MoreVertical,
   LogOut,
+  KeyRound,
 } from "lucide-react"
 import Image from "next/image"
 
@@ -44,6 +45,7 @@ type AppSidebarProps = {
     corMarca: string | null
     instagram: string | null
   }
+  isLicenseAdmin?: boolean
 }
 
 const mainItems = [
@@ -131,6 +133,7 @@ function SectionLabel({
 export function AppSidebar({
   user,
   barbershop,
+  isLicenseAdmin = false,
 }: AppSidebarProps) {
   const pathname = usePathname()
 
@@ -218,6 +221,16 @@ export function AppSidebar({
                   isActive={pathname === item.url}
                 />
               ))}
+              {isLicenseAdmin && (
+                <NavItem
+                  item={{
+                    title: "Licenças",
+                    url: "/admin/licencas",
+                    icon: KeyRound,
+                  }}
+                  isActive={pathname === "/admin/licencas"}
+                />
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

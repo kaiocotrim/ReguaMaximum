@@ -45,6 +45,19 @@ enum CashMovementType {
   SAIDA
 }
 
+enum SubscriptionPlan {
+  BASIC
+  PRO
+  PREMIUM
+}
+
+enum PlanLicenseStatus {
+  AVAILABLE
+  CLAIMED
+  ACTIVE
+  REVOKED
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -76,6 +89,11 @@ model User {
   // Convites enviados (como dono de barbearia) e recebidos (como barbeiro convidado)
   invitesSent     BarbershopInvite[] @relation("InviteSender")
   invitesReceived BarbershopInvite[] @relation("InviteReceiver")
+
+  isLicenseAdmin Boolean @default(false)
+
+  licensesCreated PlanLicense[] @relation("PlanLicenseCreator")
+  licensesClaimed PlanLicense[] @relation("PlanLicenseClaimer")
 
   @@map("users")
 }
@@ -121,6 +139,7 @@ model Barbershop {
   phones            String[]
   description       String
   imageUrl          String
+  acceptsBookings   Boolean  @default(true)
   cidade            String?
   capaUrl           String?
   tags              String[]
@@ -146,6 +165,7 @@ model Barbershop {
   reviews       BarbershopReview[]
   photos        BarbershopPhoto[]
   cashMovements CashMovement[]
+  licenses      PlanLicense[]
 }
 
 model BarbeshopService {
@@ -330,6 +350,41 @@ model BarbershopInvite {
   updatedAt DateTime @updatedAt
 
   @@map("barbershop_invites")
+}
+
+model PlanLicense {
+  id           String            @id @default(uuid())
+  codeHash     String            @unique
+  codePreview  String
+  plan         SubscriptionPlan
+  durationDays Int
+  status       PlanLicenseStatus @default(AVAILABLE)
+
+  customerName  String?
+  customerPhone String?
+  notes         String?
+
+  createdById String?
+  createdBy   User?   @relation("PlanLicenseCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  claimedById String?
+  claimedBy   User?   @relation("PlanLicenseClaimer", fields: [claimedById], references: [id], onDelete: SetNull)
+
+  barbershopId String?
+  barbershop   Barbershop? @relation(fields: [barbershopId], references: [id], onDelete: SetNull)
+
+  claimedAt   DateTime?
+  activatedAt DateTime?
+  expiresAt   DateTime?
+  revokedAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([claimedById, status])
+  @@index([barbershopId, status, expiresAt])
+  @@map("plan_licenses")
 }
 
 model Account {

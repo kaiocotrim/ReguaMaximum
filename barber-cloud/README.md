@@ -18,6 +18,26 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+## Administração de licenças
+
+Em desenvolvimento, o gerador pode ser acessado publicamente em
+`/gerador-licencas`.
+
+Em produção, defina os e-mails autorizados, separados por vírgula:
+
+```env
+LICENSE_ADMIN_EMAILS=administrador@exemplo.com
+```
+
+Também é possível liberar um usuário diretamente no banco alterando
+`users.isLicenseAdmin` para `true`.
+
+Para manter o gerador público temporariamente em outro ambiente:
+
+```env
+LICENSE_PUBLIC_GENERATOR=true
+```
+
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More
@@ -38,4 +58,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
     
     // "build": "next build",
 
-altere qualquer coisa 
+altere qualquer coisa

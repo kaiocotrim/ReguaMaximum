@@ -39,6 +39,14 @@ type BookingWithDuration = {
 const DEFAULT_OPENING_TIME = "08:00"
 const DEFAULT_CLOSING_TIME = "19:00"
 const SLOT_INTERVAL_MINUTES = 30
+const BOOKING_DISABLED_MESSAGE =
+  "Esta barbearia está temporariamente fechada para novos agendamentos."
+
+function availabilityErrorMessage(error: unknown) {
+  return error instanceof Error && error.message === BOOKING_DISABLED_MESSAGE
+    ? error.message
+    : "Não foi possível consultar os horários agora."
+}
 
 function overlaps(
   requestedStart: Date,
@@ -144,7 +152,11 @@ async function getDayAvailability(
     }),
     tx.barbershop.findUnique({
       where: { id: data.barbershopId },
-      select: { horarioAbertura: true, horarioFechamento: true },
+      select: {
+        horarioAbertura: true,
+        horarioFechamento: true,
+        acceptsBookings: true,
+      },
     }),
     tx.barber.findMany({
       where: { barbershopId: data.barbershopId },
@@ -158,6 +170,10 @@ async function getDayAvailability(
 
   if (!service || !barbershop) {
     throw new Error("Serviço ou barbearia não encontrado.")
+  }
+
+  if (!barbershop.acceptsBookings) {
+    throw new Error(BOOKING_DISABLED_MESSAGE)
   }
 
   const searchStart = new Date(
@@ -264,7 +280,7 @@ export async function getAvailableBarberIdsForDate(
     return {
       success: false as const,
       barberIds: [] as string[],
-      error: "Não foi possível consultar os barbeiros agora.",
+      error: availabilityErrorMessage(error),
     }
   }
 }
@@ -291,7 +307,7 @@ export async function getAvailableTimesForBarber(
     return {
       success: false as const,
       times: [] as string[],
-      error: "Não foi possível consultar os horários agora.",
+      error: availabilityErrorMessage(error),
     }
   }
 }

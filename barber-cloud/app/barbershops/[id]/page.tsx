@@ -20,8 +20,11 @@ import {
   Smartphone,
   CircleUser,
   ChevronRight,
-  User
+  User,
+  ExternalLink,
+  CalendarX2,
 } from "lucide-react"
+import { FaInstagram } from "react-icons/fa"
 import Link from "next/link"
 import { Card } from "@/app/_components/ui/card"
 import ServiceItem from "@/app/_components/service-item"
@@ -39,6 +42,23 @@ interface BarbershopPageProps {
   }
 }
 
+const getInstagramProfile = (instagram: string | null) => {
+  if (!instagram) return null
+
+  const handle = instagram
+    .trim()
+    .replace(/^(?:https?:\/\/)?(?:www\.)?instagram\.com\//i, "")
+    .replace(/^@/, "")
+    .split(/[/?#]/)[0]
+
+  if (!/^[a-zA-Z0-9._]{1,30}$/.test(handle)) return null
+
+  return {
+    handle,
+    url: `https://www.instagram.com/${handle}/`,
+  }
+}
+
 const BarbershopPage = async ({ params }: BarbershopPageProps) => {
   const { id } = await params
 
@@ -49,9 +69,11 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
       name: true,
       address: true,
       phones: true,
+      instagram: true,
       description: true,
       imageUrl: true,
       capaUrl: true,
+      acceptsBookings: true,
       services: {
         select: {
           id: true,
@@ -99,6 +121,11 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
           0,
         ) / barbershopReviewCount
       : 0
+
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    barbershop.address,
+  )}`
+  const instagramProfile = getInstagramProfile(barbershop.instagram)
 
   const session = await getServerSession(authOptions)
 
@@ -199,12 +226,20 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
             <span className="shine-text">{barbershop.name}</span>
           </h1>
 
-          <div className="mb-1.5 flex items-center gap-1.5 lg:justify-center">
-            <MapIcon className="h-4 w-4 shrink-0 text-[#254F50]" />
-            <p className="truncate text-sm text-[#254F50] dark:text-zinc-300">
+          <a
+            href={mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Abrir o endereço da ${barbershop.name} no Google Maps`}
+            title="Abrir no Google Maps"
+            className="group mb-1.5 flex max-w-full items-center gap-1.5 text-[#254F50] transition-colors hover:text-[#173b3c] dark:text-zinc-300 dark:hover:text-[#C3F32C] lg:justify-center"
+          >
+            <MapIcon className="h-4 w-4 shrink-0" />
+            <span className="truncate text-sm underline-offset-4 group-hover:underline">
               {barbershop.address}
-            </p>
-          </div>
+            </span>
+            <ExternalLink className="h-3.5 w-3.5 shrink-0 opacity-45 transition-opacity group-hover:opacity-100" />
+          </a>
 
           <div className="flex items-center gap-1.5 lg:justify-center">
             <StarIcon className="h-4 w-4 shrink-0 fill-[#254F50] text-[#254F50] " />
@@ -405,27 +440,45 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
           createdAt: review.createdAt.toISOString(),
         }))}
         services={
-          <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 lg:gap-5">
-          {barbershop.services.length > 0 ? (
-            barbershop.services.map((service) => (
-              <ServiceItem
-                key={service.id}
-                service={{
-                  ...service,
-                  price: Number(service.price),
-                }}
-                barbershopId={barbershop.id}
-                barbers={barbershop.barbers.map((barber) => ({
-                  id: barber.id,
-                  user: { name: barber.user.name },
-                }))}
-              />
-            ))
-          ) : (
-            <div className="rounded-2xl border border-dashed border-border bg-card px-6 py-12 text-center text-sm text-muted-foreground lg:col-span-2">
-              Nenhum serviço cadastrado nesta barbearia.
+          <div className="space-y-4">
+            {!barbershop.acceptsBookings && (
+              <div className="flex items-start gap-3 rounded-2xl border border-amber-500/25 bg-amber-500/10 p-4 text-amber-900 dark:text-amber-100">
+                <CalendarX2 className="mt-0.5 h-5 w-5 shrink-0" />
+                <div>
+                  <p className="text-sm font-semibold">
+                    Agendamentos temporariamente pausados
+                  </p>
+                  <p className="mt-1 text-xs leading-relaxed opacity-80">
+                    Esta barbearia não está recebendo novas marcações no
+                    momento.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 lg:gap-5">
+            {barbershop.services.length > 0 ? (
+              barbershop.services.map((service) => (
+                <ServiceItem
+                  key={service.id}
+                  service={{
+                    ...service,
+                    price: Number(service.price),
+                  }}
+                  barbershopId={barbershop.id}
+                  acceptsBookings={barbershop.acceptsBookings}
+                  barbers={barbershop.barbers.map((barber) => ({
+                    id: barber.id,
+                    user: { name: barber.user.name },
+                  }))}
+                />
+              ))
+            ) : (
+              <div className="rounded-2xl border border-dashed border-border bg-card px-6 py-12 text-center text-sm text-muted-foreground lg:col-span-2">
+                Nenhum serviço cadastrado nesta barbearia.
+              </div>
+            )}
             </div>
-          )}
           </div>
         }
       />
@@ -453,6 +506,31 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
           ) : (
             <p className="text-sm text-muted-foreground">
               Nenhum telefone informado.
+            </p>
+          )}
+
+          {instagramProfile ? (
+            <a
+              href={instagramProfile.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Abrir o Instagram da ${barbershop.name}`}
+              className="group flex items-center justify-between gap-3 rounded-xl border bg-background p-4 transition-colors hover:border-[#C3F32C]/70 hover:bg-[#C3F32C]/10 dark:border-white/10 dark:bg-black/10 dark:hover:border-[#C3F32C]/50 dark:hover:bg-[#C3F32C]/5"
+            >
+              <div className="flex min-w-0 items-center gap-2.5">
+                <FaInstagram className="h-4 w-4 shrink-0 text-[#8b5cf6] dark:text-[#C3F32C]" />
+                <div className="min-w-0">
+                  <p className="text-xs text-muted-foreground">Instagram</p>
+                  <p className="truncate text-sm font-medium text-[#254F50] dark:text-zinc-200">
+                    @{instagramProfile.handle}
+                  </p>
+                </div>
+              </div>
+              <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-[#254F50] dark:group-hover:text-[#C3F32C]" />
+            </a>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Nenhum Instagram informado.
             </p>
           )}
         </div>

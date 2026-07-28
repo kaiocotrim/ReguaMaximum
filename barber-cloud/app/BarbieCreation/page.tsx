@@ -412,7 +412,7 @@ const BarbieCreation = () => {
   // ─── Classes ────────────────────────────────────────────────────────────────
 
   const inputClass =
-    "flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2.5 focus-within:border-[#C3F32C] transition-colors"
+    "flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 shadow-sm transition-colors focus-within:border-[#8fb514] focus-within:ring-2 focus-within:ring-[#C3F32C]/20 dark:border-zinc-800 dark:bg-zinc-900 dark:focus-within:border-[#C3F32C]"
 
   // ─── Render ─────────────────────────────────────────────────────────────────
 
@@ -427,7 +427,7 @@ const BarbieCreation = () => {
   }, [session, status, router])
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center bg-[#121212] p-6">
+    <div className="flex min-h-svh w-full items-center justify-center bg-[#f5f7f3] p-6 text-foreground transition-colors dark:bg-[#121212]">
       <div className="w-full max-w-md space-y-6">
 
         {/* ── Header ── */}
@@ -436,8 +436,8 @@ const BarbieCreation = () => {
             <Scissors className="h-7 w-7 text-[#0a0a0a]" />
           </div>
           <div>
-            <h1 className="text-xl font-semibold text-[#C3F32C]">Perfil da barbearia</h1>
-            <p className="mt-1 text-sm text-zinc-500">Preencha as informações da sua barbearia.</p>
+            <h1 className="text-xl font-semibold text-[#557500] dark:text-[#C3F32C]">Perfil da barbearia</h1>
+            <p className="mt-1 text-sm text-muted-foreground">Preencha as informações da sua barbearia.</p>
           </div>
         </div>
 
@@ -451,15 +451,19 @@ const BarbieCreation = () => {
                     i < step
                       ? "border-[#C3F32C] bg-[#C3F32C] text-[#0a0a0a]"
                       : i === step
-                      ? "border-[#C3F32C] bg-transparent text-[#C3F32C]"
-                      : "border-zinc-700 bg-transparent text-zinc-600"
+                      ? "border-[#71910d] bg-transparent text-[#557500] dark:border-[#C3F32C] dark:text-[#C3F32C]"
+                      : "border-border bg-transparent text-muted-foreground/50 dark:border-zinc-700 dark:text-zinc-600"
                   }`}
                 >
                   {i < step ? <Check className="h-3.5 w-3.5" /> : i + 1}
                 </div>
                 <span
                   className={`text-[10px] transition-colors duration-300 ${
-                    i === step ? "text-[#C3F32C]" : i < step ? "text-zinc-400" : "text-zinc-700"
+                    i === step
+                      ? "text-[#557500] dark:text-[#C3F32C]"
+                      : i < step
+                        ? "text-muted-foreground"
+                        : "text-muted-foreground/45 dark:text-zinc-700"
                   }`}
                 >
                   {s.label}
@@ -468,7 +472,7 @@ const BarbieCreation = () => {
               {i < STEPS.length - 1 && (
                 <div
                   className={`mb-4 h-px flex-1 mx-2 transition-colors duration-500 ${
-                    i < step ? "bg-[#C3F32C]/40" : "bg-zinc-800"
+                    i < step ? "bg-[#9fc821]/55 dark:bg-[#C3F32C]/40" : "bg-border dark:bg-zinc-800"
                   }`}
                 />
               )}
@@ -493,58 +497,58 @@ const BarbieCreation = () => {
               {/* STEP 0 — Identidade */}
               {step === 0 && (
                 <div className="space-y-4">
-                  <p className="text-[11px] uppercase tracking-widest text-zinc-600">
+                  <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
                     Identidade{" "}
-                    <span className="ml-1 rounded bg-[#C3F32C]/10 px-2 py-0.5 text-[10px] text-[#C3F32C]">
+                    <span className="ml-1 rounded bg-[#C3F32C]/20 px-2 py-0.5 text-[10px] text-[#557500] dark:bg-[#C3F32C]/10 dark:text-[#C3F32C]">
                       obrigatório
                     </span>
                   </p>
 
                   <div className="space-y-1">
-                    <label className="text-xs text-zinc-500">
+                    <label className="text-xs text-muted-foreground">
                       Nome da barbearia <span className="text-[#C3F32C]">*</span>
                     </label>
                     <div className={inputClass}>
-                      <Building2 className="h-4 w-4 shrink-0 text-zinc-600" />
+                      <Building2 className="h-4 w-4 shrink-0 text-muted-foreground" />
                       <input
                         type="text"
                         placeholder="Ex: Barbearia do João"
                         value={nomeBarbearia}
                         onChange={(e) => { setNomeBarbearia(e.target.value); setErro("") }}
-                        className="w-full bg-transparent text-sm text-white placeholder-zinc-600 outline-none"
+                        className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/55"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="text-xs text-zinc-500">
+                      <label className="text-xs text-muted-foreground">
                         Telefone <span className="text-[#C3F32C]">*</span>
                       </label>
                       <div className={inputClass}>
-                        <Phone className="h-4 w-4 shrink-0 text-zinc-600" />
+                        <Phone className="h-4 w-4 shrink-0 text-muted-foreground" />
                         <input
                           type="tel"
                           placeholder="(11) 99999-9999"
                           value={telefone}
                           maxLength={15}
                           onChange={(e) => { setTelefone(formatarTelefone(e.target.value)); setErro("") }}
-                          className="w-full bg-transparent text-sm text-white placeholder-zinc-600 outline-none"
+                          className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/55"
                         />
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs text-zinc-500">
+                      <label className="text-xs text-muted-foreground">
                         Cidade <span className="text-[#C3F32C]">*</span>
                       </label>
                       <div className={inputClass}>
-                        <MapPin className="h-4 w-4 shrink-0 text-zinc-600" />
+                        <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
                         <input
                           type="text"
                           placeholder="São Paulo"
                           value={cidade}
                           onChange={(e) => { setCidade(e.target.value); setErro("") }}
-                          className="w-full bg-transparent text-sm text-white placeholder-zinc-600 outline-none"
+                          className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/55"
                         />
                       </div>
                     </div>
@@ -555,24 +559,24 @@ const BarbieCreation = () => {
               {/* STEP 1 — Endereço */}
               {step === 1 && (
                 <div className="space-y-4">
-                  <p className="text-[11px] uppercase tracking-widest text-zinc-600">
+                  <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
                     Endereço{" "}
-                    <span className="ml-1 rounded bg-[#C3F32C]/10 px-2 py-0.5 text-[10px] text-[#C3F32C]">
+                    <span className="ml-1 rounded bg-[#C3F32C]/20 px-2 py-0.5 text-[10px] text-[#557500] dark:bg-[#C3F32C]/10 dark:text-[#C3F32C]">
                       obrigatório
                     </span>
                   </p>
                   <div className="space-y-1">
-                    <label className="text-xs text-zinc-500">
+                    <label className="text-xs text-muted-foreground">
                       Endereço completo <span className="text-[#C3F32C]">*</span>
                     </label>
                     <div className={inputClass}>
-                      <MapPin className="h-4 w-4 shrink-0 text-zinc-600" />
+                      <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
                       <input
                         type="text"
                         placeholder="Digite o endereço completo"
                         value={endereco}
                         onChange={(e) => { setEndereco(e.target.value); setErro("") }}
-                        className="w-full bg-transparent text-sm text-white placeholder-zinc-600 outline-none"
+                        className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/55"
                       />
                     </div>
                   </div>
@@ -582,32 +586,32 @@ const BarbieCreation = () => {
               {/* STEP 2 — Descrição */}
               {step === 2 && (
                 <div className="space-y-4">
-                  <p className="text-[11px] uppercase tracking-widest text-zinc-600">
+                  <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
                     Descrição{" "}
-                    <span className="ml-1 rounded bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-500">
+                    <span className="ml-1 rounded bg-muted px-2 py-0.5 text-[10px] text-muted-foreground dark:bg-zinc-800 dark:text-zinc-500">
                       opcional
                     </span>
                   </p>
 
                   {/* Textarea */}
                   <div className="space-y-1">
-                    <label className="flex items-center gap-1.5 text-xs text-zinc-500">
+                    <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <FileText className="h-3.5 w-3.5" />
                       Conte um pouco sobre sua barbearia
                     </label>
-                    <div className="rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2.5 focus-within:border-[#C3F32C] transition-colors">
+                    <div className="rounded-xl border border-border bg-card px-3 py-2.5 shadow-sm transition-colors focus-within:border-[#8fb514] focus-within:ring-2 focus-within:ring-[#C3F32C]/20 dark:border-zinc-800 dark:bg-zinc-900 dark:focus-within:border-[#C3F32C]">
                       <textarea
                         rows={5}
                         maxLength={300}
                         placeholder="Ex: Especializada em cortes clássicos e modernos, atendemos há mais de 10 anos com um ambiente aconchegante e profissionais experientes..."
                         value={descricao}
                         onChange={(e) => setDescricao(e.target.value)}
-                        className="w-full resize-none bg-transparent text-sm text-white placeholder-zinc-600 outline-none leading-relaxed"
+                        className="w-full resize-none bg-transparent text-sm leading-relaxed text-foreground outline-none placeholder:text-muted-foreground/55"
                       />
                     </div>
                     <p
                       className={`text-right text-[11px] transition-colors ${
-                        descricao.length > 250 ? "text-orange-400" : "text-zinc-600"
+                        descricao.length > 250 ? "text-orange-500 dark:text-orange-400" : "text-muted-foreground"
                       }`}
                     >
                       {descricao.length} / 300
@@ -616,9 +620,9 @@ const BarbieCreation = () => {
 
                   {/* Tags de diferenciais */}
                   <div className="space-y-2">
-                    <p className="text-[11px] text-zinc-600">
+                    <p className="text-[11px] text-muted-foreground">
                       Destaque os diferenciais{" "}
-                      <span className="text-zinc-700">(opcional)</span>
+                      <span className="text-muted-foreground/65">(opcional)</span>
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {TAGS_OPCOES.map((tag) => {
@@ -629,8 +633,8 @@ const BarbieCreation = () => {
                             onClick={() => toggleTag(tag)}
                             className={`rounded-full border px-3 py-1.5 text-[11px] transition-all duration-200 ${
                               ativa
-                                ? "border-[#C3F32C] bg-[#C3F32C]/10 text-[#C3F32C]"
-                                : "border-zinc-800 bg-zinc-900 text-zinc-500 hover:border-[#C3F32C]/40 hover:text-zinc-300"
+                                ? "border-[#9fc821] bg-[#C3F32C]/20 text-[#557500] dark:border-[#C3F32C] dark:bg-[#C3F32C]/10 dark:text-[#C3F32C]"
+                                : "border-border bg-card text-muted-foreground hover:border-[#9fc821]/60 hover:text-foreground dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-500 dark:hover:border-[#C3F32C]/40 dark:hover:text-zinc-300"
                             }`}
                           >
                             {tag}
@@ -645,28 +649,28 @@ const BarbieCreation = () => {
               {/* STEP 3 — Visual */}
               {step === 3 && (
                 <div className="space-y-4">
-                  <p className="text-[11px] uppercase tracking-widest text-zinc-600">
+                  <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
                     Visual{" "}
-                    <span className="ml-1 rounded bg-[#C3F32C]/10 px-2 py-0.5 text-[10px] text-[#C3F32C]">
+                    <span className="ml-1 rounded bg-[#C3F32C]/20 px-2 py-0.5 text-[10px] text-[#557500] dark:bg-[#C3F32C]/10 dark:text-[#C3F32C]">
                       obrigatório
                     </span>
                   </p>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="text-xs text-zinc-500">
+                      <label className="text-xs text-muted-foreground">
                         Logo <span className="text-[#C3F32C]">*</span>
                       </label>
                       <button
                         onClick={() => logoRef.current?.click()}
-                        className="flex w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-zinc-800 bg-zinc-900 py-6 transition-colors hover:border-[#C3F32C]/50"
+                        className="flex w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-border bg-card py-6 shadow-sm transition-colors hover:border-[#9fc821] dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-[#C3F32C]/50"
                       >
                         {logoPreview ? (
                           <img src={logoPreview} alt="Logo" className="h-14 w-14 rounded-lg object-cover" />
                         ) : (
                           <>
-                            <Upload className="h-5 w-5 text-zinc-600" />
-                            <span className="text-xs text-zinc-600">Enviar logo</span>
-                            <span className="text-[10px] text-zinc-700">PNG ou JPG</span>
+                            <Upload className="h-5 w-5 text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground">Enviar logo</span>
+                            <span className="text-[10px] text-muted-foreground/60">PNG ou JPG</span>
                           </>
                         )}
                       </button>
@@ -679,18 +683,18 @@ const BarbieCreation = () => {
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs text-zinc-500">Foto de capa</label>
+                      <label className="text-xs text-muted-foreground">Foto de capa</label>
                       <button
                         onClick={() => capaRef.current?.click()}
-                        className="flex w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-zinc-800 bg-zinc-900 py-6 transition-colors hover:border-[#C3F32C]/50"
+                        className="flex w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-border bg-card py-6 shadow-sm transition-colors hover:border-[#9fc821] dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-[#C3F32C]/50"
                       >
                         {capaPreview ? (
                           <img src={capaPreview} alt="Capa" className="h-14 w-14 rounded-lg object-cover" />
                         ) : (
                           <>
-                            <Upload className="h-5 w-5 text-zinc-600" />
-                            <span className="text-xs text-zinc-600">Enviar banner</span>
-                            <span className="text-[10px] text-zinc-700">PNG ou JPG</span>
+                            <Upload className="h-5 w-5 text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground">Enviar banner</span>
+                            <span className="text-[10px] text-muted-foreground/60">PNG ou JPG</span>
                           </>
                         )}
                       </button>
@@ -709,32 +713,32 @@ const BarbieCreation = () => {
               {/* STEP 4 — Redes */}
               {step === 4 && (
                 <div className="space-y-4">
-                  <p className="text-[11px] uppercase tracking-widest text-zinc-600">
+                  <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
                     Redes e horário{" "}
-                    <span className="ml-1 rounded bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-500">
+                    <span className="ml-1 rounded bg-muted px-2 py-0.5 text-[10px] text-muted-foreground dark:bg-zinc-800 dark:text-zinc-500">
                       opcional
                     </span>
                   </p>
 
                   <div className="space-y-1">
-                    <label className="text-xs text-zinc-500">Instagram</label>
-                    <div className="flex items-center overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 focus-within:border-[#C3F32C] transition-colors">
-                      <div className="flex items-center gap-1.5 border-r border-zinc-800 px-3 py-2.5">
-                        <AtSign className="h-4 w-4 text-zinc-600" />
-                        <span className="text-sm text-zinc-600">@</span>
+                    <label className="text-xs text-muted-foreground">Instagram</label>
+                    <div className="flex items-center overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-colors focus-within:border-[#8fb514] focus-within:ring-2 focus-within:ring-[#C3F32C]/20 dark:border-zinc-800 dark:bg-zinc-900 dark:focus-within:border-[#C3F32C]">
+                      <div className="flex items-center gap-1.5 border-r border-border px-3 py-2.5 dark:border-zinc-800">
+                        <AtSign className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">@</span>
                       </div>
                       <input
                         type="text"
                         placeholder="suabarbearia"
                         value={instagram}
                         onChange={(e) => setInstagram(e.target.value)}
-                        className="flex-1 bg-transparent px-3 py-2.5 text-sm text-white placeholder-zinc-600 outline-none"
+                        className="flex-1 bg-transparent px-3 py-2.5 text-sm text-foreground outline-none placeholder:text-muted-foreground/55"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1">
-                    <label className="flex items-center gap-1.5 text-xs text-zinc-500">
+                    <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <Clock className="h-3.5 w-3.5" /> Horário de funcionamento
                     </label>
                     <div className="grid grid-cols-2 gap-3">
@@ -743,35 +747,35 @@ const BarbieCreation = () => {
                           type="time"
                           value={horarioAbertura}
                           onChange={(e) => setHorarioAbertura(e.target.value)}
-                          className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2.5 text-sm text-zinc-300 outline-none focus:border-[#C3F32C] transition-colors"
+                          className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm text-foreground shadow-sm outline-none transition-colors focus:border-[#8fb514] focus:ring-2 focus:ring-[#C3F32C]/20 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:focus:border-[#C3F32C]"
                         />
-                        <p className="text-center text-[10px] text-zinc-700">Abertura</p>
+                        <p className="text-center text-[10px] text-muted-foreground/65">Abertura</p>
                       </div>
                       <div className="space-y-0.5">
                         <input
                           type="time"
                           value={horarioFechamento}
                           onChange={(e) => setHorarioFechamento(e.target.value)}
-                          className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2.5 text-sm text-zinc-300 outline-none focus:border-[#C3F32C] transition-colors"
+                          className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm text-foreground shadow-sm outline-none transition-colors focus:border-[#8fb514] focus:ring-2 focus:ring-[#C3F32C]/20 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:focus:border-[#C3F32C]"
                         />
-                        <p className="text-center text-[10px] text-zinc-700">Fechamento</p>
+                        <p className="text-center text-[10px] text-muted-foreground/65">Fechamento</p>
                       </div>
                     </div>
                   </div>
 
                   <div className="space-y-1">
-                    <label className="flex items-center gap-1.5 text-xs text-zinc-500">
+                    <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <Palette className="h-3.5 w-3.5" /> Cor da marca
                     </label>
-                    <div className="flex items-center gap-3 rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2.5">
+                    <div className="flex items-center gap-3 rounded-xl border border-border bg-card px-3 py-2.5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
                       <input
                         type="color"
                         value={corMarca}
                         onChange={(e) => setCorMarca(e.target.value)}
                         className="h-7 w-7 cursor-pointer rounded-lg border-0 bg-transparent p-0"
                       />
-                      <span className="text-sm text-zinc-400">{corMarca.toUpperCase()}</span>
-                      <span className="ml-auto text-xs text-zinc-600">Cor principal da marca</span>
+                      <span className="text-sm text-foreground/80">{corMarca.toUpperCase()}</span>
+                      <span className="ml-auto text-xs text-muted-foreground">Cor principal da marca</span>
                     </div>
                   </div>
                 </div>
@@ -806,7 +810,7 @@ const BarbieCreation = () => {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
                 onClick={voltar}
-                className="flex cursor-pointer items-center gap-1.5 bg-transparent text-sm text-white opacity-50 transition-opacity hover:opacity-100"
+                className="flex cursor-pointer items-center gap-1.5 bg-transparent text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
                 <ChevronLeft className="h-4 w-4" />
                 Voltar

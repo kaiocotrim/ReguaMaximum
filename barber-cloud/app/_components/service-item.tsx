@@ -40,9 +40,15 @@ interface ServiceItemProps {
   }
   barbershopId: string
   barbers: BarberOption[]
+  acceptsBookings?: boolean
 }
 
-const ServiceItem = ({ service, barbershopId, barbers }: ServiceItemProps) => {
+const ServiceItem = ({
+  service,
+  barbershopId,
+  barbers,
+  acceptsBookings = true,
+}: ServiceItemProps) => {
   const { data: session } = useSession()
 
   const [selectDay, setSelectedDay] = useState<Date>()
@@ -245,9 +251,10 @@ const ServiceItem = ({ service, barbershopId, barbers }: ServiceItemProps) => {
             <DrawerTrigger asChild>
               <Button
                 size="sm"
-                className="relative ml-auto cursor-pointer justify-center overflow-hidden rounded-lg bg-[#C3F32C] px-5 text-xs font-bold text-black transition-all duration-200 before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:transition-transform before:duration-500 hover:scale-105 hover:bg-[#d4ff3a] hover:shadow-[0_0_16px_rgba(195,243,44,0.6)] hover:before:translate-x-full active:scale-95"
+                disabled={!acceptsBookings}
+                className="relative ml-auto cursor-pointer justify-center overflow-hidden rounded-lg bg-[#C3F32C] px-5 text-xs font-bold text-black transition-all duration-200 before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:transition-transform before:duration-500 hover:scale-105 hover:bg-[#d4ff3a] hover:shadow-[0_0_16px_rgba(195,243,44,0.6)] hover:before:translate-x-full active:scale-95 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100 disabled:hover:scale-100 disabled:hover:shadow-none"
               >
-                Agendar
+                {acceptsBookings ? "Agendar" : "Pausado"}
               </Button>
             </DrawerTrigger>
 

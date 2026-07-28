@@ -7,12 +7,13 @@ import { redirect } from "next/navigation"
 import { StatsBarber } from "@/app/_components/dashboardComponents/barbeiros/StatsBarber"
 import { StatsClientes } from "@/app/_components/dashboardComponents/StatsClientes/page"
 import Relatorios from "@/app/_components/dashboardComponents/relatorios/page"
+import { DashboardIntro } from "@/app/_components/dashboardComponents/DashboardIntro"
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions)
 
   if (!session?.user?.id) {
-    redirect("/planos")
+    redirect("/login")
   }
 
   const barbershop = await db.barbershop.findFirst({
@@ -23,11 +24,13 @@ export default async function DashboardPage() {
 
   if (!barbershop) {
     console.log("Nenhuma barbearia encontrada para este usuário.")
-    redirect("/planos") // Depois troque para "/criar-barbearia"
+    redirect("/minha-barbearia")
   }
 
   return (
     <div className="leading-normal">
+      <DashboardIntro />
+
       <h1 className="mb-2 text-2xl font-semibold">Dashboard</h1>
       <p className="text-muted-foreground mb-6">
         Bem-vindo ao painel da {barbershop.name}.
