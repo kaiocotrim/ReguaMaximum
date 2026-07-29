@@ -266,7 +266,7 @@ const ServiceItem = ({
               </Button>
             </DialogTrigger>
 
-            <DialogContent className="fixed !right-0 bottom-0 !left-0 top-auto max-h-[88vh] !w-auto min-w-0 !max-w-none !translate-x-0 translate-y-0 gap-0 overflow-x-hidden overflow-y-auto rounded-t-3xl rounded-b-none border-border bg-popover p-0 text-popover-foreground lg:top-1/2 lg:!right-auto lg:bottom-auto lg:!left-1/2 lg:max-h-[90vh] lg:!w-[min(1080px,calc(100vw-3rem))] lg:!-translate-x-1/2 lg:-translate-y-1/2 lg:overflow-hidden lg:rounded-3xl">
+            <DialogContent className="fixed !right-0 bottom-0 !left-0 top-auto max-h-[88vh] !w-auto min-w-0 !max-w-none !translate-x-0 translate-y-0 gap-0 overflow-x-hidden overflow-y-auto overscroll-contain rounded-t-3xl rounded-b-none border-border bg-popover p-0 text-popover-foreground lg:top-1/2 lg:!right-auto lg:bottom-auto lg:!left-1/2 lg:max-h-[90vh] lg:!w-[min(1080px,calc(100vw-3rem))] lg:!-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl">
               <div className="mx-auto mt-3 h-1 w-16 rounded-full bg-muted lg:hidden" />
               <DialogHeader className="border-b border-border/70 px-5 py-4 text-left lg:px-8 lg:py-6">
                 <DialogTitle className="animate-in fade-in slide-in-from-top-2 text-lg font-bold text-foreground lg:text-2xl">

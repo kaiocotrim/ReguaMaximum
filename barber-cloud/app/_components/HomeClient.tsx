@@ -156,7 +156,7 @@ export default function HomeClient({
 
          {/* Busca rápida */}
         <motion.div
-          className="mt-6 flex gap-3 overflow-x-auto pb-1 lg:flex-wrap lg:overflow-visible [&::-webkit-scrollbar]:hidden"
+          className="mt-6 flex gap-3 overflow-x-auto pb-1 lg:flex-wrap lg:justify-center lg:overflow-visible [&::-webkit-scrollbar]:hidden"
           variants={fadeUp}
           initial="hidden"
           animate="show"
@@ -176,6 +176,16 @@ export default function HomeClient({
               href: "/map",
             },
             { src: "/acabamentoIcon.png", label: "Luzes", service: "Luzes" },
+            {
+              src: "/acabamentoIcon.png",
+              label: "Sobrancelha",
+              service: "Sobrancelha",
+            },
+            {
+              src: "/cabeloIcon.png",
+              label: "Corte infantil",
+              service: "Infantil",
+            },
           ].map(({ src, label, service, href }) => (
             <motion.div
               key={label}
