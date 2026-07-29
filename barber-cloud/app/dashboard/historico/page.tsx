@@ -10,6 +10,7 @@ const actionLabels: Record<string, string> = {
   BARBER_SETTINGS_UPDATED: "Configurações do funcionário atualizadas",
   BOOKING_CANCELLED: "Agendamento cancelado",
   BOOKING_RESCHEDULED: "Agendamento reagendado",
+  BARBERSHOP_IMAGES_UPDATED: "Fotos principais atualizadas",
 }
 
 export default async function AuditHistoryPage() {

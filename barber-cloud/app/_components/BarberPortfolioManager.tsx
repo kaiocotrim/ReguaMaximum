@@ -3,7 +3,7 @@
 import { useRef, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { ImagePlus, Loader2, Save, Trash2 } from "lucide-react"
+import { ImagePlus, Link2, Loader2, Save, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 import { uploadImagem } from "@/app/_lib/uploadImagem"
 import {
@@ -34,13 +34,14 @@ export function BarberPortfolioManager({
   const [isUploading, setIsUploading] = useState(false)
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState(barber.avatar)
+  const [avatarUrl, setAvatarUrl] = useState(barber.avatar ?? "")
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
 
   const save = (formData: FormData) => {
     startTransition(async () => {
       try {
-        let image: string | undefined
+        let image = avatarUrl.trim() || undefined
         if (avatarFile) {
           image = await uploadImagem(avatarFile, {
             purpose: "account-avatar",
@@ -54,6 +55,11 @@ export function BarberPortfolioManager({
           image,
         })
         if (result.success) {
+          if (image) {
+            setAvatarUrl(image)
+            setAvatarPreview(image)
+            setAvatarFile(null)
+          }
           toast.success("Portfólio atualizado.")
           router.refresh()
         } else {
@@ -157,6 +163,35 @@ export function BarberPortfolioManager({
             Clique para trocar sua foto profissional.
           </p>
         </div>
+        <label className="grid gap-1.5 text-sm">
+          <span className="flex items-center gap-2 font-medium">
+            <Link2 className="h-4 w-4" />
+            Foto por URL
+          </span>
+          <input
+            type="url"
+            value={avatarUrl}
+            placeholder="https://exemplo.com/minha-foto.jpg"
+            className="h-10 rounded-lg border border-border bg-background px-3"
+            onChange={(event) => {
+              const nextUrl = event.target.value
+              setAvatarUrl(nextUrl)
+              setAvatarFile(null)
+
+              try {
+                const parsedUrl = new URL(nextUrl)
+                if (parsedUrl.protocol === "https:") {
+                  setAvatarPreview(nextUrl)
+                }
+              } catch {
+                if (!nextUrl) setAvatarPreview(barber.avatar)
+              }
+            }}
+          />
+          <span className="text-xs text-muted-foreground">
+            Use um link HTTPS direto para uma imagem.
+          </span>
+        </label>
         <label className="grid gap-1.5 text-sm">
           <span className="font-medium">Nome profissional</span>
           <input name="name" required defaultValue={barber.name} className="h-10 rounded-lg border border-border bg-background px-3" />

@@ -92,32 +92,32 @@ const FavoriteButton = ({
       </div>
 
       <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
-        <AlertDialogContent className="max-w-[360px] border border-[#2a2a28] bg-[#111110] p-0">
+        <AlertDialogContent className="w-[calc(100%-2rem)] max-w-[390px] gap-0 overflow-hidden rounded-2xl border border-border/80 bg-card p-0 text-card-foreground shadow-2xl ring-0 dark:border-white/10">
+          <div className="h-1 w-full bg-[#C3F32C]" />
 
-          <div className="h-[3px] w-full bg-[#C3F32C]" />
-
-          <div className="p-8 pb-6">
-            <AlertDialogHeader>
-              <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-full border border-[#C3F32C]/30 bg-[#C3F32C]/10">
-                <LockIcon className="h-4 w-4 text-[#C3F32C]" />
+          <div className="p-6 sm:p-7">
+            <AlertDialogHeader className="place-items-start gap-0 text-left">
+              <div className="mb-5 flex size-11 items-center justify-center rounded-xl border border-[#9abd20]/25 bg-[#C3F32C]/15 dark:border-[#C3F32C]/25 dark:bg-[#C3F32C]/10">
+                <LockIcon className="size-5 text-[#739000] dark:text-[#C3F32C]" />
               </div>
 
-              <AlertDialogTitle className="text-[17px] text-[#f0efe8]">
+              <AlertDialogTitle className="text-lg font-semibold tracking-tight text-foreground">
                 Faça login para favoritar
               </AlertDialogTitle>
 
-              <AlertDialogDescription className="text-sm text-[#888780]">
-                Você precisa estar logado para favoritar uma barbearia.
+              <AlertDialogDescription className="mt-2 max-w-[32ch] text-left text-sm leading-5 text-muted-foreground">
+                Entre na sua conta para salvar esta barbearia nos seus
+                favoritos.
               </AlertDialogDescription>
             </AlertDialogHeader>
 
-            <AlertDialogFooter className="mt-8 flex gap-2.5">
-              <AlertDialogCancel className="cursor-pointer hover:bg-[#d4f542]">
+            <AlertDialogFooter className="mt-6 !-mx-0 !-mb-0 !flex-row !justify-end gap-2 border-0 bg-transparent p-0">
+              <AlertDialogCancel className="h-10 cursor-pointer rounded-xl border-border bg-background px-4 text-foreground hover:bg-muted">
                 Cancelar
               </AlertDialogCancel>
 
               <AlertDialogAction
-                className="bg-[#C3F32C] text-[#111110] cursor-pointer hover:bg-[#d4f542]"
+                className="h-10 cursor-pointer rounded-xl bg-[#C3F32C] px-5 font-semibold text-[#172000] shadow-sm shadow-[#C3F32C]/20 hover:bg-[#b4e21f]"
                 onClick={() => {
                   setShowAlert(false)
                   router.push("/login")
@@ -127,7 +127,6 @@ const FavoriteButton = ({
               </AlertDialogAction>
             </AlertDialogFooter>
           </div>
-
         </AlertDialogContent>
       </AlertDialog>
     </>
