@@ -23,22 +23,28 @@ import {
   DialogContent,
   DialogTrigger,
 } from "@/app/_components/ui/dialog"
+import { BookingClientActions } from "@/app/_components/BookingClientActions"
 
 interface AgendBarberProps {
   appointment: {
     id: string
     date: Date
+    status: "EM_ANDAMENTO" | "CONCLUIDO" | "CANCELADO"
     barbershop: {
+      id: string
       name: string
       imageUrl: string
       address: string
     }
     service: {
+      id: string
       name: string
       price: number
       duration?: number | null
     }
     barber: {
+      id: string
+      isFavorited: boolean
       user: {
         name: string | null
         image: string | null
@@ -75,6 +81,7 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
   const router = useRouter()
 
   const isPast = new Date(date) < new Date()
+  const isActive = appointment.status === "EM_ANDAMENTO"
   const dateObj = new Date(date)
   const monthCapitalized = format(dateObj, "MMM", { locale: ptBR })
   const day = format(dateObj, "dd")
@@ -373,8 +380,22 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
                   </span>
                 </motion.div>
 
+                <BookingClientActions
+                  barberId={appointment.barber.id}
+                  barbershopId={appointment.barbershop.id}
+                  serviceId={appointment.service.id}
+                  barbershopName={appointment.barbershop.name}
+                  serviceName={appointment.service.name}
+                  address={appointment.barbershop.address}
+                  date={new Date(appointment.date).toISOString()}
+                  duration={appointment.service.duration ?? 30}
+                  initiallyFavorited={appointment.barber.isFavorited}
+                  isPast={isPast || !isActive}
+                  bookingId={appointment.id}
+                />
+
                 {/* ── AlertDialog de cancelamento ── */}
-                {!isPast && (
+                {!isPast && isActive && (
                   <motion.div {...fadeUp(0.5)} className="w-full">
                     <AlertDialog>
                       <AlertDialogTrigger asChild>

@@ -37,6 +37,7 @@ export async function completeBookingWithPayment(input: {
               select: {
                 id: true,
                 barbershopId: true,
+                agreedPrice: true,
                 service: { select: { price: true } },
               },
             })
@@ -71,7 +72,7 @@ export async function completeBookingWithPayment(input: {
               data: {
                 bookingId: booking.id,
                 method: input.method,
-                amount: booking.service.price,
+                amount: booking.agreedPrice ?? booking.service.price,
                 receivedById: session.user.id,
               },
             })

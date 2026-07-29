@@ -21,6 +21,7 @@ import { useEffect, useState } from "react"
 import { ptBR } from "date-fns/locale"
 import { Button } from "./ui/button"
 import { Calendar } from "./ui/calendar"
+import { useSearchParams } from "next/navigation"
 
 type BarberOption = {
   id: string
@@ -28,6 +29,11 @@ type BarberOption = {
   user: {
     name: string | null
   }
+  serviceConfig: {
+    enabled: boolean
+    customPrice: number | null
+    customDuration: number | null
+  } | null
 }
 
 function dateKey(date: Date) {
@@ -45,6 +51,7 @@ interface ServiceItemProps {
     description: string
     imageUrl: string
     price: number
+    duration: number
   }
   barbershopId: string
   barbers: BarberOption[]
@@ -58,11 +65,20 @@ const ServiceItem = ({
   acceptsBookings = true,
 }: ServiceItemProps) => {
   const { data: session } = useSession()
+  const searchParams = useSearchParams()
+  const rescheduleBookingId =
+    searchParams.get("service") === service.id
+      ? searchParams.get("reschedule") ?? undefined
+      : undefined
+  const [bookingDialogOpen, setBookingDialogOpen] = useState(
+    searchParams.get("service") === service.id,
+  )
 
   const [selectDay, setSelectedDay] = useState<Date>()
   const [selectedBarber, setSelectedBarber] = useState<string | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [availableBarberIds, setAvailableBarberIds] = useState<string[]>([])
+  const [firstTimes, setFirstTimes] = useState<Record<string, string>>({})
   const [availableTimes, setAvailableTimes] = useState<string[]>([])
   const [isCheckingBarbers, setIsCheckingBarbers] = useState(false)
   const [isCheckingTimes, setIsCheckingTimes] = useState(false)
@@ -75,6 +91,7 @@ const ServiceItem = ({
     setSelectedBarber(null)
     setSelectedTime(null)
     setAvailableBarberIds([])
+    setFirstTimes({})
     setAvailableTimes([])
     setIsCheckingBarbers(false)
     setIsCheckingTimes(false)
@@ -87,6 +104,7 @@ const ServiceItem = ({
     setSelectedBarber(null)
     setSelectedTime(null)
     setAvailableBarberIds([])
+    setFirstTimes({})
     setAvailableTimes([])
     setBookingError("")
     setIsCheckingBarbers(Boolean(date))
@@ -112,6 +130,7 @@ const ServiceItem = ({
       .then((result) => {
         if (cancelled) return
         setAvailableBarberIds(result.barberIds)
+        setFirstTimes(result.firstTimes)
         if (!result.success) setBookingError(result.error)
       })
       .finally(() => {
@@ -168,6 +187,7 @@ const ServiceItem = ({
     ])
 
     setAvailableBarberIds(barberResult.barberIds)
+    setFirstTimes(barberResult.firstTimes)
     setAvailableTimes(timeResult.times)
     setSelectedTime((current) =>
       current && timeResult.times.includes(current) ? current : null,
@@ -196,6 +216,7 @@ const ServiceItem = ({
         barberId: selectedBarber,
         date: dateKey(selectDay),
         time: selectedTime,
+        rescheduleBookingId,
       })
 
       if (result.success) {
@@ -252,7 +273,9 @@ const ServiceItem = ({
           </p>
 
           <Dialog
+            open={bookingDialogOpen}
             onOpenChange={(open) => {
+              setBookingDialogOpen(open)
               if (!open) resetSelection()
             }}
           >
@@ -266,7 +289,7 @@ const ServiceItem = ({
               </Button>
             </DialogTrigger>
 
-            <DialogContent className="fixed !right-0 bottom-0 !left-0 top-auto max-h-[88vh] !w-auto min-w-0 !max-w-none !translate-x-0 translate-y-0 gap-0 overflow-x-hidden overflow-y-auto rounded-t-3xl rounded-b-none border-border bg-popover p-0 text-popover-foreground lg:top-1/2 lg:!right-auto lg:bottom-auto lg:!left-1/2 lg:max-h-[90vh] lg:!w-[min(1080px,calc(100vw-3rem))] lg:!-translate-x-1/2 lg:-translate-y-1/2 lg:overflow-hidden lg:rounded-3xl">
+            <DialogContent className="fixed !right-0 bottom-0 !left-0 top-auto max-h-[88vh] !w-auto min-w-0 !max-w-none !translate-x-0 translate-y-0 gap-0 overflow-x-hidden overflow-y-auto overscroll-contain rounded-t-3xl rounded-b-none border-border bg-popover p-0 text-popover-foreground lg:top-1/2 lg:!right-auto lg:bottom-auto lg:!left-1/2 lg:max-h-[90vh] lg:!w-[min(1080px,calc(100vw-3rem))] lg:!-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl">
               <div className="mx-auto mt-3 h-1 w-16 rounded-full bg-muted lg:hidden" />
               <DialogHeader className="border-b border-border/70 px-5 py-4 text-left lg:px-8 lg:py-6">
                 <DialogTitle className="animate-in fade-in slide-in-from-top-2 text-lg font-bold text-foreground lg:text-2xl">
@@ -428,6 +451,25 @@ const ServiceItem = ({
                                 <span className="text-center text-xs leading-tight font-semibold text-foreground">
                                   {barber.user.name ?? "Barbeiro"}
                                 </span>
+                                <span className="text-center text-[10px] leading-4 text-muted-foreground">
+                                  {(
+                                    barber.serviceConfig?.customPrice ??
+                                    service.price
+                                  ).toLocaleString("pt-BR", {
+                                    style: "currency",
+                                    currency: "BRL",
+                                  })}
+                                  {" · "}
+                                  {barber.serviceConfig?.customDuration ??
+                                    service.duration ??
+                                    30}{" "}
+                                  min
+                                </span>
+                                {firstTimes[barber.id] && (
+                                  <span className="rounded-full bg-[#C3F32C]/20 px-2 py-1 text-[10px] font-semibold text-[#557500] dark:text-[#C3F32C]">
+                                    Primeiro: {firstTimes[barber.id]}
+                                  </span>
+                                )}
                               </button>
                             )
                           })}

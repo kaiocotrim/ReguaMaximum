@@ -81,6 +81,7 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
           description: true,
           imageUrl: true,
           price: true,
+          duration: true,
         },
       },
       photos: {
@@ -98,10 +99,19 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
         orderBy: { createdAt: "desc" },
       },
       barbers: {
+        where: { isActive: true },
         select: {
           id: true,
           nome: true,
           avatar: true,
+          serviceConfigs: {
+            select: {
+              serviceId: true,
+              enabled: true,
+              customPrice: true,
+              customDuration: true,
+            },
+          },
           user: { select: { name: true, image: true } },
           reviews: {
             select: { rating: true },
@@ -475,6 +485,31 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
                     user: {
                       name: barber.nome ?? barber.user.name,
                     },
+                    serviceConfig: barber.serviceConfigs.find(
+                      (config) => config.serviceId === service.id,
+                    )
+                      ? {
+                          enabled:
+                            barber.serviceConfigs.find(
+                              (config) => config.serviceId === service.id,
+                            )!.enabled,
+                          customPrice:
+                            barber.serviceConfigs.find(
+                              (config) => config.serviceId === service.id,
+                            )!.customPrice === null
+                              ? null
+                              : Number(
+                                  barber.serviceConfigs.find(
+                                    (config) =>
+                                      config.serviceId === service.id,
+                                  )!.customPrice,
+                                ),
+                          customDuration:
+                            barber.serviceConfigs.find(
+                              (config) => config.serviceId === service.id,
+                            )!.customDuration,
+                        }
+                      : null,
                   }))}
                 />
               ))

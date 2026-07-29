@@ -166,6 +166,7 @@ import { Badge } from "@/app/_components/ui/badge"
 
 import GetBarber from "@/app/_components/dashboardComponents/barbeiros/AddBarber/GetBarber/GetBarber"
 import { BarberMembershipButton } from "@/app/_components/BarberMembershipButton"
+import { BarberSettingsDialog } from "@/app/_components/dashboardComponents/barbeiros/BarberSettingsDialog"
 
 const getIniciais = (nome: string) =>
   nome
@@ -187,6 +188,9 @@ const AddBarber = async () => {
 
   const barbershop = await db.barbershop.findFirst({
     where: { ownerId: session.user.id },
+    include: {
+      services: { orderBy: { name: "asc" } },
+    },
   })
 
   if (!barbershop) {
@@ -200,6 +204,8 @@ const AddBarber = async () => {
   const barbeirosRaw = await db.barber.findMany({
     where: { barbershopId: barbershop.id },
     include: {
+      workSchedules: { orderBy: { weekday: "asc" } },
+      serviceConfigs: true,
       bookings: {
         where: {
           barbershopId: barbershop.id,
@@ -276,6 +282,16 @@ const AddBarber = async () => {
                       </AvatarFallback>
                     </Avatar>
                     <span>{barbeiro.nome}</span>
+                    <Badge variant="outline">{barbeiro.jobTitle}</Badge>
+                    <Badge
+                      className={
+                        barbeiro.isActive
+                          ? "bg-emerald-500/10 text-emerald-600"
+                          : "bg-zinc-500/10 text-zinc-500"
+                      }
+                    >
+                      {barbeiro.isActive ? "Ativo" : "Inativo"}
+                    </Badge>
                     {barbeiro.id === melhorId && barbeiro.valorMensal > 0 && (
                       <Badge className="bg-[#C3F32C]/10 text-[#C3F32C] hover:bg-[#C3F32C]/10">
                         Destaque
@@ -288,11 +304,39 @@ const AddBarber = async () => {
                   {formatarMoeda(barbeiro.valorMensal)}
                 </TableCell>
                 <TableCell className="text-right">
-                  <BarberMembershipButton
-                    mode="remove"
-                    barberId={barbeiro.id}
-                    barberName={barbeiro.nome ?? "Barbeiro"}
-                  />
+                  <div className="flex justify-end gap-2">
+                    <BarberSettingsDialog
+                      barberId={barbeiro.id}
+                      barberName={barbeiro.nome ?? "Barbeiro"}
+                      initialJobTitle={barbeiro.jobTitle}
+                      initialIsActive={barbeiro.isActive}
+                      initialSchedules={barbeiro.workSchedules}
+                      availableServices={barbershop.services.map((service) => ({
+                        id: service.id,
+                        name: service.name,
+                        price: Number(service.price),
+                        duration: service.duration,
+                      }))}
+                      initialServiceConfigs={barbeiro.serviceConfigs.map(
+                        (config) => ({
+                          serviceId: config.serviceId,
+                          enabled: config.enabled,
+                          customPrice:
+                            config.customPrice === null
+                              ? null
+                              : Number(config.customPrice),
+                          customDuration: config.customDuration,
+                        }),
+                      )}
+                      defaultStartTime={barbershop.horarioAbertura ?? "08:00"}
+                      defaultEndTime={barbershop.horarioFechamento ?? "19:00"}
+                    />
+                    <BarberMembershipButton
+                      mode="remove"
+                      barberId={barbeiro.id}
+                      barberName={barbeiro.nome ?? "Barbeiro"}
+                    />
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

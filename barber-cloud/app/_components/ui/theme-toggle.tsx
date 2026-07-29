@@ -1,20 +1,35 @@
 "use client"
 
 import { useTheme } from "next-themes"
-import { useEffect, useState } from "react"
+import { useSyncExternalStore } from "react"
+
+const emptySubscribe = () => () => {}
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false)
 
-  useEffect(() => setMounted(true), [])
   if (!mounted) return null
 
   const isDark = theme === "dark"
 
+  const toggleTheme = () => {
+    const root = document.documentElement
+
+    root.classList.add("theme-transition")
+    setTheme(isDark ? "light" : "dark")
+
+    window.setTimeout(() => {
+      root.classList.remove("theme-transition")
+    }, 450)
+  }
+
   return (
     <button
-      onClick={() => setTheme(isDark ? "light" : "dark")}
+      type="button"
+      onClick={toggleTheme}
+      aria-label={`Ativar tema ${isDark ? "claro" : "escuro"}`}
+      aria-pressed={isDark}
       className="cursor-pointer relative inline-flex items-center h-6 w-11 rounded-full transition-colors shrink-0 bg-[#C3F32C]"
     >
       <span

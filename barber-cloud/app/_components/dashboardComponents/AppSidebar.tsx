@@ -27,6 +27,7 @@ import {
   LogOut,
   KeyRound,
   CircleHelp,
+  History,
 } from "lucide-react"
 import Image from "next/image"
 
@@ -64,6 +65,7 @@ const financeiroItems = [
 const configItems = [
   { title: "Perfil da Barbearia", url: "/dashboard/perfil", icon: Store },
   { title: "Configurações", url: "/dashboard/configuracoes", icon: Settings },
+  { title: "Histórico", url: "/dashboard/historico", icon: History },
   { title: "Ajuda", url: "/ajuda", icon: CircleHelp },
   { title: "Sair", url: "/", icon: LogOut },
 ]

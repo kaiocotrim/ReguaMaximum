@@ -21,8 +21,12 @@ const AppointmentsPage = async () => {
     select: {
       id: true,
       date: true,
+      status: true,
+      durationMinutes: true,
+      agreedPrice: true,
       barbershop: {
         select: {
+          id: true,
           name: true,
           imageUrl: true,
           address: true,
@@ -30,12 +34,19 @@ const AppointmentsPage = async () => {
       },
       service: {
         select: {
+          id: true,
           name: true,
           price: true,
+          duration: true,
         },
       },
       barber: {
         select: {
+          id: true,
+          favoritedBy: {
+            where: { userId: session.user.id },
+            select: { id: true },
+          },
           user: {
             select: {
               name: true,
@@ -101,16 +112,26 @@ const AppointmentsPage = async () => {
                 appointment={{
                   id: appointment.id,
                   date: appointment.date,
+                  status: appointment.status,
                   barbershop: {
+                    id: appointment.barbershop.id,
                     name: appointment.barbershop.name,
                     imageUrl: appointment.barbershop.imageUrl,
                     address: appointment.barbershop.address,
                   },
                   service: {
+                    id: appointment.service.id,
                     name: appointment.service?.name ?? "Serviço",
-                    price: Number(appointment.service?.price ?? 0),
+                    price: Number(
+                      appointment.agreedPrice ?? appointment.service.price,
+                    ),
+                    duration:
+                      appointment.durationMinutes ??
+                      appointment.service.duration,
                   },
                   barber: {
+                    id: appointment.barber.id,
+                    isFavorited: appointment.barber.favoritedBy.length > 0,
                     user: {
                       name: appointment.barber?.user?.name ?? null,
                       image: appointment.barber?.user?.image ?? null,
