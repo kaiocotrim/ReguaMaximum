@@ -222,48 +222,94 @@
 
 import { db } from "./_lib/prisma"
 import HomeClient from "./_components/HomeClient"
-import { authOptions } from "./_providers/auth"
+import { authOptions } from "./api/auth/[...nextauth]/route"
 import { getServerSession } from "next-auth"
+
+const barbershopCardSelect = {
+  id: true,
+  name: true,
+  address: true,
+  imageUrl: true,
+  reviews: { select: { rating: true } },
+} as const
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
 
-  const barbershops = await db.barbershop.findMany()
+  const barbershops = await db.barbershop.findMany({
+    select: barbershopCardSelect,
+  })
 
   const popularBarbershops = await db.barbershop.findMany({
     orderBy: { name: "desc" },
+    select: barbershopCardSelect,
   })
 
-  const confirmedBookings = session?.user
+  const confirmedBookings = session?.user?.id
     ? await db.booking.findMany({
         where: {
-          user: { email: session.user.email! },
+          userId: session.user.id,
           date: { gte: new Date() },
         },
-        include: {
-          service: true,
-          barbershop: true,
-          barber: true,
-          user: true,
+        select: {
+          id: true,
+          date: true,
+          service: { select: { name: true } },
+          barbershop: {
+            select: {
+              name: true,
+              imageUrl: true,
+            },
+          },
         },
         orderBy: { date: "asc" },
       })
     : []
 
-  // ✅ serializa Decimal corretamente
-  const serializedBookings = confirmedBookings.map((booking) => ({
-    ...booking,
-    service: {
-      ...booking.service,
-      price: Number(booking.service.price),
-    },
-  }))
+  const pendingReviews = session?.user?.id
+    ? await db.booking.findMany({
+        where: {
+          userId: session.user.id,
+          status: "CONCLUIDO",
+          OR: [{ review: null }, { barbershopReview: null }],
+        },
+        select: {
+          id: true,
+          date: true,
+          review: { select: { id: true } },
+          barbershopReview: { select: { id: true } },
+          service: { select: { name: true } },
+          barbershop: { select: { name: true } },
+          barber: {
+            select: { nome: true, user: { select: { name: true } } },
+          },
+        },
+        orderBy: { date: "desc" },
+      })
+    : []
 
   return (
     <HomeClient
       barbershops={barbershops}
       popularBarbershops={popularBarbershops}
-      confirmedBookings={serializedBookings}
+      confirmedBookings={confirmedBookings.map((booking) => ({
+        id: booking.id,
+        date: booking.date.toISOString(),
+        service: { name: booking.service.name },
+        barbershop: {
+          name: booking.barbershop.name,
+          imageUrl: booking.barbershop.imageUrl,
+        },
+      }))}
+      pendingReviews={pendingReviews.map((booking) => ({
+        id: booking.id,
+        date: booking.date.toISOString(),
+        service: booking.service.name,
+        barbershop: booking.barbershop.name,
+        barber: booking.barber.nome ?? booking.barber.user.name ?? "Barbeiro",
+        barberReviewed: Boolean(booking.review),
+        barbershopReviewed: Boolean(booking.barbershopReview),
+      }))}
     />
   )
 }

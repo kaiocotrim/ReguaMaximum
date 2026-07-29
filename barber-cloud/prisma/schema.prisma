@@ -23,6 +23,39 @@ enum InviteStatus {
 enum BookingStatus {
   EM_ANDAMENTO
   CONCLUIDO
+  CANCELADO
+}
+
+enum BookingAttendance {
+  PENDENTE
+  COMPARECEU
+  FALTOU
+}
+
+enum PaymentMethod {
+  DINHEIRO
+  PIX
+  CARTAO_CREDITO
+  CARTAO_DEBITO
+  OUTRO
+}
+
+enum CashMovementType {
+  ENTRADA
+  SAIDA
+}
+
+enum SubscriptionPlan {
+  BASIC
+  PRO
+  PREMIUM
+}
+
+enum PlanLicenseStatus {
+  AVAILABLE
+  CLAIMED
+  ACTIVE
+  REVOKED
 }
 
 model User {
@@ -44,16 +77,23 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  accounts  Account[]
-  sessions  Session[]
-  barber    Barber?
-  client    Client?
-  bookings  Booking[]
-  favorites FavoriteBarbershop[]
+  accounts          Account[]
+  sessions          Session[]
+  barber            Barber?
+  client            Client?
+  bookings          Booking[]
+  reviews           Review[]
+  barbershopReviews BarbershopReview[]
+  favorites         FavoriteBarbershop[]
 
   // Convites enviados (como dono de barbearia) e recebidos (como barbeiro convidado)
   invitesSent     BarbershopInvite[] @relation("InviteSender")
   invitesReceived BarbershopInvite[] @relation("InviteReceiver")
+
+  isLicenseAdmin Boolean @default(false)
+
+  licensesCreated PlanLicense[] @relation("PlanLicenseCreator")
+  licensesClaimed PlanLicense[] @relation("PlanLicenseClaimer")
 
   @@map("users")
 }
@@ -86,8 +126,10 @@ model Barber {
   barbershopId String?
   barbershop   Barbershop? @relation(fields: [barbershopId], references: [id])
 
-  createdAt DateTime  @default(now())
-  bookings  Booking[]
+  createdAt       DateTime               @default(now())
+  bookings        Booking[]
+  reviews         Review[]
+  portfolioPhotos BarberPortfolioPhoto[]
 }
 
 model Barbershop {
@@ -97,6 +139,7 @@ model Barbershop {
   phones            String[]
   description       String
   imageUrl          String
+  acceptsBookings   Boolean  @default(true)
   cidade            String?
   capaUrl           String?
   tags              String[]
@@ -114,11 +157,15 @@ model Barbershop {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  barbers     Barber[]
-  services    BarbeshopService[]
-  bookings    Booking[]
-  favoritedBy FavoriteBarbershop[]
-  invites     BarbershopInvite[]
+  barbers       Barber[]
+  services      BarbeshopService[]
+  bookings      Booking[]
+  favoritedBy   FavoriteBarbershop[]
+  invites       BarbershopInvite[]
+  reviews       BarbershopReview[]
+  photos        BarbershopPhoto[]
+  cashMovements CashMovement[]
+  licenses      PlanLicense[]
 }
 
 model BarbeshopService {
@@ -127,7 +174,7 @@ model BarbeshopService {
   description String
   imageUrl    String
   price       Decimal @db.Decimal(10, 2)
-  duration    Int 
+  duration    Int
 
   barbershopId String
   barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
@@ -152,10 +199,117 @@ model Booking {
 
   date DateTime
 
-  status BookingStatus @default(EM_ANDAMENTO)
+  status      BookingStatus     @default(EM_ANDAMENTO)
+  cancelledAt DateTime?
+  attendance  BookingAttendance @default(PENDENTE)
+  notes       String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  review           Review?
+  barbershopReview BarbershopReview?
+  payment          Payment?
+}
+
+model Payment {
+  id String @id @default(uuid())
+
+  bookingId String  @unique
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  amount Decimal       @db.Decimal(10, 2)
+  method PaymentMethod
+
+  receivedById String
+  paidAt       DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([paidAt])
+}
+
+model CashMovement {
+  id String @id @default(uuid())
+
+  barbershopId String
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+
+  type        CashMovementType
+  amount      Decimal          @db.Decimal(10, 2)
+  description String
+  method      PaymentMethod?
+  occurredAt  DateTime         @default(now())
+  createdById String
+  createdAt   DateTime         @default(now())
+
+  @@index([barbershopId, occurredAt])
+}
+
+model Review {
+  id String @id @default(uuid())
+
+  bookingId String  @unique
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  barberId String
+  barber   Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
+
+  rating  Int
+  comment String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BarbershopReview {
+  id String @id @default(uuid())
+
+  bookingId String  @unique
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  barbershopId String
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+
+  rating  Int
+  comment String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BarbershopPhoto {
+  id String @id @default(uuid())
+
+  barbershopId String
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+
+  imageUrl String
+  position Int    @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([barbershopId, position])
+}
+
+model BarberPortfolioPhoto {
+  id String @id @default(uuid())
+
+  barberId String
+  barber   Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
+
+  imageUrl String
+  position Int    @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([barberId, position])
 }
 
 model FavoriteBarbershop {
@@ -196,6 +350,41 @@ model BarbershopInvite {
   updatedAt DateTime @updatedAt
 
   @@map("barbershop_invites")
+}
+
+model PlanLicense {
+  id           String            @id @default(uuid())
+  codeHash     String            @unique
+  codePreview  String
+  plan         SubscriptionPlan
+  durationDays Int
+  status       PlanLicenseStatus @default(AVAILABLE)
+
+  customerName  String?
+  customerPhone String?
+  notes         String?
+
+  createdById String?
+  createdBy   User?   @relation("PlanLicenseCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  claimedById String?
+  claimedBy   User?   @relation("PlanLicenseClaimer", fields: [claimedById], references: [id], onDelete: SetNull)
+
+  barbershopId String?
+  barbershop   Barbershop? @relation(fields: [barbershopId], references: [id], onDelete: SetNull)
+
+  claimedAt   DateTime?
+  activatedAt DateTime?
+  expiresAt   DateTime?
+  revokedAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([claimedById, status])
+  @@index([barbershopId, status, expiresAt])
+  @@map("plan_licenses")
 }
 
 model Account {

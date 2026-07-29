@@ -4,17 +4,18 @@ import { db } from "@/app/_lib/prisma"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { revalidatePath } from "next/cache"
+import { assertAllowedImageUrl } from "@/app/_lib/image-url"
 
 export async function createService(formData: FormData) {
   const session = await getServerSession(authOptions)
 
-  if (!session?.user) {
+  if (!session?.user?.id) {
     throw new Error("Usuário não autenticado.")
   }
 
   const barbershop = await db.barbershop.findFirst({
     where: {
-      ownerId: (session.user as any).id,
+      ownerId: session.user.id,
     },
   })
 
@@ -22,13 +23,18 @@ export async function createService(formData: FormData) {
     throw new Error("Barbearia não encontrada.")
   }
 
+  const imageUrl = assertAllowedImageUrl(
+    formData.get("imageUrl"),
+    "Imagem inválida.",
+  )
+
   await db.barbeshopService.create({
     data: {
       name: formData.get("name") as string,
       description: formData.get("description") as string,
       price: Number(formData.get("price")),
       duration: Number(formData.get("duration")),
-      imageUrl: "",
+      imageUrl,
       barbershopId: barbershop.id,
     },
   })

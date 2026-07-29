@@ -1,8 +1,10 @@
+
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
-import { Toaster } from "sonner"
 import AuthProvider from "./_providers/auth"
+import { ThemeProvider } from "./_components/theme-provider"
+import { ToasterWithTheme } from "./_components/toaster-with-theme"
 import Footer from "@/app/_components/ui/footer"
 
 const geistSans = Geist({
@@ -33,12 +35,16 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="dark min-h-full custom-scrollbar overflow-y-auto">
-        <AuthProvider>{children}</AuthProvider>
-        <Toaster theme="dark" richColors position="bottom-right" />
-        {/* <Footer></Footer> */}
+      <body className="min-h-full custom-scrollbar overflow-y-auto">
+        <ThemeProvider>
+          <AuthProvider>{children}</AuthProvider>
+          <ToasterWithTheme />
+          <Footer></Footer>
+        </ThemeProvider>
       </body>
     </html>
   )
 }
+

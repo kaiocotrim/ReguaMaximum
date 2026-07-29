@@ -82,6 +82,7 @@ import {
 } from "@/app/_components/ui/avatar"
 import { acceptInvite, rejectInvite } from "@/app/_actions/inviteActions"
 import { Check, X, Loader2 } from "lucide-react"
+import { AnimatePresence, motion } from "framer-motion"
 
 interface InviteCardProps {
   invite: {
@@ -92,6 +93,7 @@ interface InviteCardProps {
     inviter: {
       name: string | null
     }
+    message: string | null
   }
 }
 
@@ -127,7 +129,14 @@ export default function InviteCard({ invite }: InviteCardProps) {
   const isLoading = loading !== null
 
   return (
-    <Card className="group relative flex items-center justify-between gap-4 border-zinc-800 bg-zinc-950/60 p-4 transition-colors hover:border-zinc-700 sm:p-5">
+    <motion.div
+      initial={{ opacity: 0, y: 14, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -10, scale: 0.98 }}
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.25, ease: "easeOut" }}
+    >
+    <Card className="group relative gap-4 border-zinc-800 bg-zinc-950/60 p-4 transition-colors hover:border-zinc-700 sm:p-5">
       <div className="flex min-w-0 items-center gap-3">
         <Avatar className="h-11 w-11 border border-zinc-800 bg-zinc-900">
           <AvatarFallback className="bg-zinc-900 text-sm font-medium text-[#C3F32C]">
@@ -145,7 +154,15 @@ export default function InviteCard({ invite }: InviteCardProps) {
         </div>
       </div>
 
-      <div className="flex shrink-0 items-center gap-2">
+      {invite.message && (
+        <div className="mt-4 rounded-xl border border-zinc-800 bg-zinc-900/70 px-4 py-3">
+          <p className="whitespace-pre-line text-sm leading-relaxed text-zinc-300">
+            {invite.message}
+          </p>
+        </div>
+      )}
+
+      <div className="mt-4 flex items-center justify-end gap-2 border-t border-zinc-800 pt-4">
         <Button
           size="icon"
           variant="secondary"
@@ -154,11 +171,21 @@ export default function InviteCard({ invite }: InviteCardProps) {
           aria-label="Recusar convite"
           className="h-9 w-9 border border-zinc-800 bg-zinc-900 text-zinc-400 transition-colors hover:border-red-900/50 hover:bg-red-950/30 hover:text-red-400 focus-visible:ring-2 focus-visible:ring-red-500/40 disabled:opacity-40"
         >
-          {loading === "reject" ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <X className="h-4 w-4" />
-          )}
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={loading === "reject" ? "reject-loading" : "reject-idle"}
+              initial={{ opacity: 0, scale: 0.7 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.7 }}
+              className="flex"
+            >
+              {loading === "reject" ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <X className="h-4 w-4" />
+              )}
+            </motion.span>
+          </AnimatePresence>
         </Button>
 
         <Button
@@ -168,13 +195,24 @@ export default function InviteCard({ invite }: InviteCardProps) {
           aria-label="Aceitar convite"
           className="h-9 w-9 bg-[#C3F32C] text-black transition-colors hover:bg-[#d4ff4d] focus-visible:ring-2 focus-visible:ring-[#C3F32C]/50 disabled:opacity-40"
         >
-          {loading === "accept" ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Check className="h-4 w-4" />
-          )}
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={loading === "accept" ? "accept-loading" : "accept-idle"}
+              initial={{ opacity: 0, scale: 0.7 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.7 }}
+              className="flex"
+            >
+              {loading === "accept" ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Check className="h-4 w-4" />
+              )}
+            </motion.span>
+          </AnimatePresence>
         </Button>
       </div>
     </Card>
+    </motion.div>
   )
 }

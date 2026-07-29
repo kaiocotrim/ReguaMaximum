@@ -14,6 +14,8 @@ import {
   MapPin,
   Phone,
 } from "lucide-react"
+import { ThemeToggle } from "@/app/_components/ui/theme-toggle"
+import { uploadImagem } from "@/app/_lib/uploadImagem"
 
 type StepId = 0 | 1 | 2 | 3
 
@@ -41,7 +43,7 @@ function ProgressHeader({ step }: { step: number }) {
           initial={{ opacity: 0, y: -4 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25 }}
-          className="text-[11px] tracking-[0.12em] text-white/20 uppercase"
+          className="text-[11px] tracking-[0.12em] text-muted-foreground uppercase"
         >
           {isSuccess ? "Concluído" : `${step + 1} / ${TOTAL_STEPS - 1}`}
         </motion.span>
@@ -56,7 +58,7 @@ function ProgressHeader({ step }: { step: number }) {
           {pct}%
         </motion.span>
       </div>
-      <div className="relative h-[1.5px] w-full rounded-full bg-white/[0.06]">
+      <div className="relative h-[1.5px] w-full rounded-full bg-muted">
         <motion.div
           className="absolute inset-y-0 left-0 rounded-full"
           animate={{ width: `${pct}%` }}
@@ -92,7 +94,7 @@ function StepShell({
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.1 }}
-        className="mb-1 text-xl font-semibold text-white"
+        className="mb-1 text-xl font-semibold text-foreground"
       >
         {title}
       </motion.h2>
@@ -100,7 +102,7 @@ function StepShell({
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.15 }}
-        className="mb-6 text-sm text-white/35"
+        className="mb-6 text-sm text-muted-foreground"
       >
         {subtitle}
       </motion.p>
@@ -120,6 +122,7 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
   const [dir, setDir] = useState<1 | -1>(1)
   const [nome, setNome] = useState(nomeInicial)
   const [avatar, setAvatar] = useState<string | null>(null)
+  const [avatarFile, setAvatarFile] = useState<File | null>(null)
   const [cidade, setCidade] = useState("")
   const [telefone, setTelefone] = useState("")
 
@@ -144,6 +147,10 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
   // };
   const salvarPerfil = async () => {
     try {
+      if (!avatarFile) return
+      const avatarUrl = await uploadImagem(avatarFile, {
+        purpose: "account-avatar",
+      })
       const response = await fetch("/api/client/profile", {
         method: "POST",
         headers: {
@@ -151,7 +158,7 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
         },
         body: JSON.stringify({
           nome,
-          avatar,
+          avatar: avatarUrl,
           cidade,
           telefone: telefone.replace(/\D/g, ""),
         }),
@@ -193,7 +200,11 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
 
   const handleAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) setAvatar(URL.createObjectURL(file))
+    if (!file) return
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) return
+    if (file.size > 5 * 1024 * 1024) return
+    setAvatarFile(file)
+    setAvatar(URL.createObjectURL(file))
   }
 
   const isSuccess = step === TOTAL_STEPS - 1
@@ -213,7 +224,7 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
         placeholder="Ex: João Silva"
         maxLength={60}
         autoFocus
-        className="h-12 border-white/10 bg-white/[0.04] text-base text-white placeholder:text-white/20 focus-visible:border-[#C3F32C] focus-visible:ring-0"
+        className="h-12 border-input bg-background text-base text-foreground placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-primary/20"
       />
     </StepShell>,
 
@@ -227,7 +238,7 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
       <div className="flex items-center gap-5">
         <label
           htmlFor="avatar-cliente-input"
-          className="group relative flex h-20 w-20 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-dashed border-white/15 bg-white/[0.03] transition-all hover:border-[#C3F32C]/40"
+          className="group relative flex h-20 w-20 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-dashed border-border bg-muted/40 transition-all hover:border-primary/60"
         >
           {avatar ? (
             <motion.img
@@ -240,7 +251,7 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
               className="h-full w-full object-cover"
             />
           ) : (
-            <User className="h-6 w-6 text-white/20" />
+            <User className="h-6 w-6 text-muted-foreground" />
           )}
           <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/0 opacity-0 transition-all group-hover:bg-black/60 group-hover:opacity-100">
             <Camera className="h-4 w-4 text-white" />
@@ -248,7 +259,7 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
           <input
             id="avatar-cliente-input"
             type="file"
-            accept="image/png,image/jpeg"
+            accept="image/png,image/jpeg,image/webp"
             className="hidden"
             onChange={handleAvatar}
           />
@@ -272,12 +283,12 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
           </AnimatePresence>
           <label
             htmlFor="avatar-cliente-input"
-            className="flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-white/50 transition-all hover:border-white/20 hover:text-white/80"
+            className="flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-muted/40 px-4 py-2 text-sm text-muted-foreground transition-all hover:border-primary/50 hover:text-foreground"
           >
             <Upload className="h-3.5 w-3.5" />
             {avatar ? "Trocar foto" : "Enviar foto"}
           </label>
-          <span className="text-xs text-white/20">PNG ou JPG · até 5 MB</span>
+          <span className="text-xs text-muted-foreground">PNG ou JPG · até 5 MB</span>
         </div>
       </div>
     </StepShell>,
@@ -294,7 +305,7 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
         onChange={(e) => setCidade(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && next()}
         placeholder="Ex: São Paulo, SP"
-        className="h-12 border-white/10 bg-white/[0.04] text-base text-white placeholder:text-white/20 focus-visible:border-[#C3F32C] focus-visible:ring-0"
+        className="h-12 border-input bg-background text-base text-foreground placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-primary/20"
       />
     </StepShell>,
 
@@ -310,7 +321,7 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
         onChange={(e) => setTelefone(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && next()}
         placeholder="Ex: (11) 99999-9999"
-        className="h-12 border-white/10 bg-white/[0.04] text-base text-white placeholder:text-white/20 focus-visible:border-[#C3F32C] focus-visible:ring-0"
+        className="h-12 border-input bg-background text-base text-foreground placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-primary/20"
       />
     </StepShell>,
 
@@ -340,7 +351,7 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25, duration: 0.3 }}
-        className="mb-2 text-xl font-semibold text-white"
+        className="mb-2 text-xl font-semibold text-foreground"
       >
         Tudo pronto!
       </motion.h2>
@@ -349,7 +360,7 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.32, duration: 0.3 }}
-        className="mb-8 max-w-[280px] text-sm leading-relaxed text-white/35"
+        className="mb-8 max-w-[280px] text-sm leading-relaxed text-muted-foreground"
       >
         Seu perfil está ativo. Agora é só encontrar a barbearia ideal e agendar
         seu corte.
@@ -359,7 +370,7 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.3 }}
-        className="mb-8 w-full rounded-xl border border-white/[0.06] p-4 text-left"
+        className="mb-8 w-full rounded-xl border border-border bg-muted/30 p-4 text-left"
       >
         {[
           { label: "Nome", value: nome },
@@ -370,10 +381,10 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
             initial={{ opacity: 0, x: -8 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.45 + i * 0.07, duration: 0.25 }}
-            className="flex items-center justify-between border-b border-white/[0.05] py-2.5 last:border-b-0"
+            className="flex items-center justify-between border-b border-border py-2.5 last:border-b-0"
           >
-            <span className="text-xs text-white/25">{label}</span>
-            <span className="text-xs text-white/60">{value}</span>
+            <span className="text-xs text-muted-foreground">{label}</span>
+            <span className="text-xs text-foreground/80">{value}</span>
           </motion.div>
         ))}
       </motion.div>
@@ -396,9 +407,13 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
   ]
 
   return (
-    <div className="flex min-h-screen flex-col items-center bg-[#0F0F0F] px-4 py-12">
+    <div className="relative flex min-h-screen flex-col items-center bg-background px-4 pb-12 pt-24 text-foreground md:pt-12">
+      <div className="absolute right-6 top-6 flex items-center gap-3 rounded-full border border-border bg-card px-3 py-2 shadow-sm">
+        <span className="text-xs font-medium text-muted-foreground">Tema</span>
+        <ThemeToggle />
+      </div>
       <ProgressHeader step={step} />
-      <div className="w-full max-w-[480px] overflow-hidden rounded-2xl border border-white/[0.06] bg-[#1A1A1A]">
+      <div className="w-full max-w-[480px] overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
         <AnimatePresence mode="wait" custom={dir}>
           <motion.div
             key={step}
@@ -418,11 +433,11 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
         </AnimatePresence>
 
         {!isSuccess && (
-          <div className="flex items-center justify-between border-t border-white/[0.05] px-8 py-4">
+          <div className="flex items-center justify-between border-t border-border px-8 py-4">
             <motion.button
               onClick={back}
               whileTap={{ scale: 0.95 }}
-              className={`flex cursor-pointer items-center gap-1.5 text-sm text-white/25 transition-colors hover:text-white/50 ${step === 0 ? "invisible" : ""}`}
+              className={`flex cursor-pointer items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground ${step === 0 ? "invisible" : ""}`}
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               Voltar

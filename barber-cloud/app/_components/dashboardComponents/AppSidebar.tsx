@@ -25,7 +25,10 @@ import {
   Settings,
   MoreVertical,
   LogOut,
+  KeyRound,
+  CircleHelp,
 } from "lucide-react"
+import Image from "next/image"
 
 type AppSidebarProps = {
   user: {
@@ -43,6 +46,7 @@ type AppSidebarProps = {
     corMarca: string | null
     instagram: string | null
   }
+  isLicenseAdmin?: boolean
 }
 
 const mainItems = [
@@ -60,6 +64,7 @@ const financeiroItems = [
 const configItems = [
   { title: "Perfil da Barbearia", url: "/dashboard/perfil", icon: Store },
   { title: "Configurações", url: "/dashboard/configuracoes", icon: Settings },
+  { title: "Ajuda", url: "/ajuda", icon: CircleHelp },
   { title: "Sair", url: "/", icon: LogOut },
 ]
 
@@ -130,20 +135,23 @@ function SectionLabel({
 export function AppSidebar({
   user,
   barbershop,
+  isLicenseAdmin = false,
 }: AppSidebarProps) {
   const pathname = usePathname()
 
   return (
-    <Sidebar className="border-r border-white/[0.04] bg-[#0e0e0e]">
+    <Sidebar className="bg-[#0e0e0e]">
 
       {/* Header */}
       <SidebarHeader className="px-5 py-6">
         <div className="flex items-center gap-3">
 
           {barbershop.imageUrl ? (
-            <img
+            <Image
               src={barbershop.imageUrl}
               alt={barbershop.name}
+              width={40}
+              height={40}
               className="h-10 w-10 rounded-lg object-cover"
             />
           ) : (
@@ -156,7 +164,7 @@ export function AppSidebar({
           )}
 
           <div className="min-w-0">
-            <p className="truncate text-[13px] font-bold text-white">
+            <p className="truncate text-[13px] font-bold text-[#244C4E] dark:text-white">
               {barbershop.name}
             </p>
 
@@ -169,7 +177,7 @@ export function AppSidebar({
       </SidebarHeader>
 
       {/* Menu */}
-      <SidebarContent className="bg-[#0e0e0e] px-3">
+      <SidebarContent className="bg-[#FAFAFA] dark:bg-[#0e0e0e] px-3">
 
         <SidebarGroup className="p-0">
           <SectionLabel label="Principal" />
@@ -215,6 +223,16 @@ export function AppSidebar({
                   isActive={pathname === item.url}
                 />
               ))}
+              {isLicenseAdmin && (
+                <NavItem
+                  item={{
+                    title: "Licenças",
+                    url: "/admin/licencas",
+                    icon: KeyRound,
+                  }}
+                  isActive={pathname === "/admin/licencas"}
+                />
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -222,7 +240,7 @@ export function AppSidebar({
       </SidebarContent>
 
       {/* Footer */}
-      <SidebarFooter className="bg-[#0e0e0e] px-4 pb-5 pt-3">
+      <SidebarFooter className="bg-[#FAFAFA] dark:bg-[#0e0e0e] px-4 pb-5 pt-3">
 
         <div className="mb-3 h-px w-full bg-white/[0.04]" />
 
@@ -234,17 +252,27 @@ export function AppSidebar({
               className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-white/[0.04]"
             >
 
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#C3F32C] font-bold text-black">
-                {user.name?.charAt(0).toUpperCase() ?? "U"}
+              <div className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#C3F32C] font-bold text-black">
+                {user.image ? (
+                  <Image
+                    src={user.image}
+                    alt={user.name ?? "Usuário"}
+                    fill
+                    sizes="36px"
+                    className="object-cover"
+                  />
+                ) : (
+                  user.name?.charAt(0).toUpperCase() ?? "U"
+                )}
               </div>
 
               <div className="min-w-0 flex-1">
 
-                <p className="truncate text-[13px] font-semibold text-white">
+                <p className="truncate text-[13px] font-semibold text-black dark:text-white">
                   {user.name}
                 </p>
 
-                <p className="truncate text-[11px] text-[#666]">
+                <p className="truncate text-[11px] text-[#555] dark:text-[#888]">
                   {user.email}
                 </p>
 

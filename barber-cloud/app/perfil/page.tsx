@@ -18,6 +18,7 @@ import { motion, AnimatePresence } from "framer-motion"
 // Componentes que serão renderizados após a escolha do perfil
 import CadastroBarbeiro from "@/app/_components/CadastroBarbeiro"
 import CadastroCliente from "@/app/_components/CadastroCliente"
+import { ThemeToggle } from "@/app/_components/ui/theme-toggle"
 
 // --- CONFIGURAÇÕES DE ANIMAÇÃO (FRAMER MOTION) ---
 
@@ -120,7 +121,11 @@ const Perfil = () => {
 
   // --- RENDERIZAÇÃO DO COMPONENTE PRINCIPAL ---
   return (
-    <div className="flex min-h-svh w-full items-center justify-center bg-[#121212] p-6 md:p-10">
+    <div className="relative flex min-h-svh w-full items-center justify-center bg-background p-6 text-foreground md:p-10">
+      <div className="absolute right-6 top-6 flex items-center gap-3 rounded-full border border-border bg-card px-3 py-2 shadow-sm">
+        <span className="text-xs font-medium text-muted-foreground">Tema</span>
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-md space-y-8">
         {/* CABEÇALHO (Logo e títulos animados) */}
         <motion.div
@@ -141,7 +146,7 @@ const Perfil = () => {
             <h1 className="text-2xl font-bold text-[#C3F32C]">
               Crie seu perfil
             </h1>
-            <p className="mt-2 text-sm text-white">
+            <p className="mt-2 text-sm text-muted-foreground">
               Vamos conhecer você para personalizar sua experiência.
             </p>
           </div>
@@ -161,7 +166,7 @@ const Perfil = () => {
                 id="nome"
                 type="text"
                 placeholder="Digite seu nome"
-                className="h-12 w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 text-white transition outline-none focus:border-white"
+                className="h-12 w-full rounded-xl border border-input bg-card px-4 text-foreground transition outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
                 value={nome}
                 onChange={(e) => {
                   setNome(e.target.value)
@@ -205,11 +210,11 @@ const Perfil = () => {
                   tipoPerfil === "cliente"
                     ? "z-10 scale-105 border-[#C3F32C] bg-[#C3F32C]/10 shadow-lg shadow-[#C3F32C]/20" // Selecionado
                     : tipoPerfil === "barbeiro"
-                      ? "scale-95 border-zinc-700 bg-transparent opacity-40 blur-[2px]" // Não selecionado (o outro está ativo)
-                      : "border-zinc-700 bg-transparent" // Estado neutro inicial
+                      ? "scale-95 border-border bg-card opacity-40 blur-[2px]" // Não selecionado (o outro está ativo)
+                      : "border-border bg-card" // Estado neutro inicial
                 }`}
               >
-                <p className="text-xs font-semibold text-white md:text-lg">
+                <p className="text-xs font-semibold text-foreground md:text-lg">
                   Você é o cliente, <span className="shine-text">{nome}?</span>
                 </p>
                 <div className="mt-3">
@@ -229,10 +234,10 @@ const Perfil = () => {
                 >
                   <Accordion type="single" collapsible defaultValue="">
                     <AccordionItem value="item-1">
-                      <AccordionTrigger className="text-xs text-zinc-400 md:text-sm">
+                      <AccordionTrigger className="text-xs text-muted-foreground md:text-sm">
                         Como funciona?
                       </AccordionTrigger>
-                      <AccordionContent className="text-left text-xs text-zinc-400 md:text-sm">
+                      <AccordionContent className="text-left text-xs text-muted-foreground md:text-sm">
                         Como cliente, você pode encontrar barbearias, agendar
                         horários e acompanhar seus cortes de forma rápida e
                         prática.
@@ -251,11 +256,11 @@ const Perfil = () => {
                   tipoPerfil === "barbeiro"
                     ? "z-10 scale-105 border-[#C3F32C] bg-[#C3F32C]/10 shadow-lg shadow-[#C3F32C]/20" // Selecionado
                     : tipoPerfil === "cliente"
-                      ? "scale-95 border-zinc-700 bg-transparent opacity-40 blur-[2px]" // Não selecionado (o outro está ativo)
-                      : "border-zinc-700 bg-transparent" // Estado neutro inicial
+                      ? "scale-95 border-border bg-card opacity-40 blur-[2px]" // Não selecionado (o outro está ativo)
+                      : "border-border bg-card" // Estado neutro inicial
                 }`}
               >
-                <p className="text-xs font-semibold text-white md:text-lg">
+                <p className="text-xs font-semibold text-foreground md:text-lg">
                   Você é o barbeiro, <span className="shine-text">{nome}?</span>
                 </p>
                 <div className="mt-3">
@@ -275,10 +280,10 @@ const Perfil = () => {
                 >
                   <Accordion type="single" collapsible defaultValue="">
                     <AccordionItem value="item-1">
-                      <AccordionTrigger className="text-xs text-zinc-400 md:text-sm">
+                      <AccordionTrigger className="text-xs text-muted-foreground md:text-sm">
                         Como funciona?
                       </AccordionTrigger>
-                      <AccordionContent className="text-left text-xs text-zinc-400 md:text-sm">
+                      <AccordionContent className="text-left text-xs text-muted-foreground md:text-sm">
                         Como barbeiro, você pode gerenciar seus agendamentos,
                         clientes e horários, além de aumentar sua visibilidade
                         na plataforma.
@@ -307,7 +312,7 @@ const Perfil = () => {
                     setmostrarPergunta(false) // Volta para a tela de nome
                     setTipoPerfil("") // Reseta a escolha anterior do usuário
                   }}
-                  className="flex cursor-pointer items-center gap-2 bg-transparent p-4 whitespace-nowrap text-white hover:bg-transparent hover:text-[#254F50]"
+                  className="flex cursor-pointer items-center gap-2 bg-transparent p-4 whitespace-nowrap text-foreground hover:bg-transparent hover:text-primary"
                 >
                   <ChevronRight className="h-4 w-4 rotate-180" />
                   Voltar
@@ -329,7 +334,7 @@ const Perfil = () => {
               >
                 <Button
                   onClick={handleProsseguir}
-                  className="flex cursor-pointer items-center gap-2 bg-transparent p-4 whitespace-nowrap text-white hover:bg-transparent hover:text-[#254F50]"
+                  className="flex cursor-pointer items-center gap-2 bg-transparent p-4 whitespace-nowrap text-foreground hover:bg-transparent hover:text-primary"
                 >
                   Prosseguir
                   <ChevronRight className="h-4 w-4" />
@@ -346,7 +351,7 @@ const Perfil = () => {
               >
                 <Button
                   onClick={handleProsseguir}
-                  className="flex cursor-pointer items-center gap-2 bg-transparent p-4 whitespace-nowrap text-white hover:bg-transparent hover:text-[#C3F32C]"
+                  className="flex cursor-pointer items-center gap-2 bg-transparent p-4 whitespace-nowrap text-foreground hover:bg-transparent hover:text-primary"
                 >
                   Prosseguir
                   <ChevronRight className="h-4 w-4" />

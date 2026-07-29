@@ -1,14 +1,15 @@
 // app/_components/dashboardComponents/agendamentos/total/AppointmentCard.tsx
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState } from "react"
 import { Card } from "@/app/_components/ui/card"
 import { Button } from "@/app/_components/ui/button"
-import { Clock, Scissors, User2, Store, CheckCircle2, Loader2 } from "lucide-react"
+import { Clock, Scissors, User2, Store, CheckCircle2 } from "lucide-react"
 import { WhatsAppButton } from "@/app/_components/dashboardComponents/agendamentos/WhatsAppButton"
 import { DeleteBookingButton } from "@/app/_components/dashboardComponents/agendamentos/DeleteBookingButton"
-import { updateBookingStatus } from "@/app/_actions/updateBookingStatus"
-import { BookingStatus } from "@/app/generated/prisma"
+import { CancelBookingButton } from "@/app/_components/dashboardComponents/agendamentos/CancelBookingButton"
+import { BookingStatus } from "@/app/generated/prisma/client"
+import { CompleteBookingButton } from "@/app/_components/dashboardComponents/agendamentos/CompleteBookingButton"
 
 interface AppointmentCardProps {
   appointment: {
@@ -17,42 +18,29 @@ interface AppointmentCardProps {
     status: BookingStatus
     user: { name: string | null; telefone: string | null }
     barber: { nome: string | null }
-    service: { name: string }
+    service: { name: string; price: number }
     barbershop: { name: string }
   }
 }
 
 export function AppointmentCard({ appointment }: AppointmentCardProps) {
   const [status, setStatus] = useState<BookingStatus>(appointment.status)
-  const [isPending, startTransition] = useTransition()
-
   const isDone = status === "CONCLUIDO"
-
-  const toggleStatus = () => {
-    const previousStatus = status
-    const newStatus: BookingStatus = isDone ? "EM_ANDAMENTO" : "CONCLUIDO"
-    setStatus(newStatus) // update otimista
-    startTransition(async () => {
-      const result = await updateBookingStatus(appointment.id, newStatus)
-      if (!result.success) {
-        setStatus(previousStatus) // rollback
-      }
-    })
-  }
+  const isCancelled = status === "CANCELADO"
 
   return (
-    <Card className="border border-zinc-800/60 rounded-2xl bg-zinc-950 p-5 transition-colors hover:border-zinc-700">
+    <Card className="border border-border rounded-2xl bg-card p-5 transition-colors hover:border-ring/40">
       {/* Header */}
       <div className="flex items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 shrink-0">
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-muted border border-border text-muted-foreground shrink-0">
             <User2 className="w-4 h-4" strokeWidth={1.75} />
           </div>
           <div className="min-w-0">
-            <h3 className="text-base font-semibold text-white truncate">
+            <h3 className="text-base font-semibold text-foreground truncate">
               {appointment.user.name ?? "Cliente"}
             </h3>
-            <p className="text-xs text-zinc-500 flex items-center gap-1 truncate">
+            <p className="text-xs text-muted-foreground flex items-center gap-1 truncate">
               <Store className="w-3 h-3 shrink-0" />
               {appointment.barbershop.name}
             </p>
@@ -61,27 +49,29 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
 
         <span
           className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${
-            isDone
+            isCancelled
+              ? "bg-red-500/10 text-red-500 border border-red-500/30"
+              : isDone
               ? "bg-[#C3F32C] text-black"
-              : "bg-zinc-900 text-zinc-400 border border-zinc-800"
+              : "bg-muted text-muted-foreground border border-border"
           }`}
         >
-          {isDone ? "Concluído" : "Em andamento"}
+          {isCancelled ? "Cancelado" : isDone ? "Concluído" : "Em andamento"}
         </span>
       </div>
 
       {/* Details */}
       <div className="space-y-2.5 mb-5">
-        <div className="flex items-center gap-2 text-sm text-zinc-300">
-          <Scissors className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+        <div className="flex items-center gap-2 text-sm text-foreground/80">
+          <Scissors className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
           <span className="truncate">{appointment.service.name}</span>
         </div>
-        <div className="flex items-center gap-2 text-sm text-zinc-300">
-          <User2 className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+        <div className="flex items-center gap-2 text-sm text-foreground/80">
+          <User2 className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
           <span className="truncate">{appointment.barber.nome ?? "Barbeiro"}</span>
         </div>
-        <div className="flex items-center gap-2 text-sm text-zinc-300">
-          <Clock className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+        <div className="flex items-center gap-2 text-sm text-foreground/80">
+          <Clock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
           <span>
             {appointment.date.toLocaleString("pt-BR", {
               day: "2-digit",
@@ -94,36 +84,48 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
       </div>
 
       {/* Status toggle button */}
-      <Button
-        onClick={toggleStatus}
-        disabled={isPending}
+      {isDone || isCancelled ? (
+        <Button
+        disabled
         variant="ghost"
-        className={`w-full mb-4 font-medium transition-colors ${
-          isDone
-            ? "bg-[#C3F32C] text-black hover:bg-[#b3e023]"
-            : "bg-zinc-900 text-zinc-300 border border-zinc-800 hover:bg-zinc-800"
+        className={`w-full mb-4 font-medium ${
+          isCancelled
+            ? "bg-red-500/10 text-red-500 border border-red-500/20"
+            : "bg-[#C3F32C] text-black"
         }`}
       >
-        {isPending ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
-        ) : isDone ? (
+        {isCancelled ? (
+          "Agendamento cancelado"
+        ) : (
           <>
             <CheckCircle2 className="w-4 h-4 mr-2" />
-            Corte concluído
+            Atendimento concluído
           </>
-        ) : (
-          "Marcar como concluído"
         )}
       </Button>
+      ) : (
+        <div className="mb-4">
+          <CompleteBookingButton
+            bookingId={appointment.id}
+            clientName={appointment.user.name ?? "Cliente"}
+            serviceName={appointment.service.name}
+            servicePrice={appointment.service.price}
+            onSuccess={() => setStatus("CONCLUIDO")}
+          />
+        </div>
+      )}
 
       {/* Actions */}
-      <div className="flex items-center justify-between pt-4 border-t border-zinc-800/60">
+      <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-border">
+        {!isCancelled && <CancelBookingButton bookingId={appointment.id} />}
         <DeleteBookingButton bookingId={appointment.id} />
         {appointment.user.telefone && (
-          <WhatsAppButton
-            telefone={appointment.user.telefone}
-            nomeCliente={appointment.user.name ?? "Cliente"}
-          />
+          <div className="ml-auto">
+            <WhatsAppButton
+              telefone={appointment.user.telefone}
+              nomeCliente={appointment.user.name ?? "Cliente"}
+            />
+          </div>
         )}
       </div>
     </Card>

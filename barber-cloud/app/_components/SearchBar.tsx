@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { type FormEvent, useState } from "react"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 import { SearchIcon } from "lucide-react"
@@ -13,26 +13,24 @@ const SearchBar = () => {
 
   const router = useRouter();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    router.push(`/barbershops?search=${search}`)
+    router.push(`/barbershops?search=${encodeURIComponent(search.trim())}`)
   }
 
     return (
-      <form className="flex items-center gap-2">
+      <form className="flex w-full items-center gap-2" onSubmit={handleSubmit}>
       <Input
-        placeholder="Pesquisar..."
-        className="h-10"
+        placeholder="Pesquise por barbearias e serviços..."
+        className="h-11 bg-background lg:h-12 lg:text-base"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
       <Button
         type="submit"
-        onClick={handleSubmit}
         size="icon"
         variant="outline"
-        className="h-10 w-10 shrink-0 bg-green-6
-        00 cursor-pointer"
+        className="h-11 w-11 shrink-0 cursor-pointer bg-[#254F50] hover:bg-[#1d4142] lg:h-12 lg:w-12"
       >
         <SearchIcon className="text-[#C3F32C]" />
       </Button>

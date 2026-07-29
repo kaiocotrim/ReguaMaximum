@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/app/_lib/prisma";
 import { NextResponse } from "next/server";
+import { normalizeAllowedImageUrl } from "@/app/_lib/image-url";
 
 export async function POST(req: Request) {
   try {
@@ -15,13 +16,17 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
+    const avatar = normalizeAllowedImageUrl(body.avatar)
+    if (!avatar) {
+      return NextResponse.json({ error: "Foto obrigatória." }, { status: 400 })
+    }
 
     const barber = await db.$transaction(async (tx) => {
       const barber = await tx.barber.create({
         data: {
           userId: session.user.id,
           nome: body.nome,
-          avatar: body.avatar,
+          avatar,
           bio: body.bio,
           cidade: body.cidade,
           especialidades: body.especialidades,
@@ -35,6 +40,7 @@ export async function POST(req: Request) {
         data: {
           role: "BARBER",
           telefone: body.telefone,
+          image: avatar,
         },
       });
 

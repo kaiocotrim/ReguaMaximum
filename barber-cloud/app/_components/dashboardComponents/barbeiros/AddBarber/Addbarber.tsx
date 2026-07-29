@@ -165,6 +165,7 @@ import {
 import { Badge } from "@/app/_components/ui/badge"
 
 import GetBarber from "@/app/_components/dashboardComponents/barbeiros/AddBarber/GetBarber/GetBarber"
+import { BarberMembershipButton } from "@/app/_components/BarberMembershipButton"
 
 const getIniciais = (nome: string) =>
   nome
@@ -225,7 +226,7 @@ const AddBarber = async () => {
   const melhorId = barbeiros[0]?.id
 
   return (
-    <Card className="mt-5 flex flex-col gap-4 rounded-2xl p-6 shadow-sm">
+    <Card className="mt-5 flex flex-col gap-4 rounded-2xl p-6 shadow-sm ">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold">Lista de barbeiros</h2>
@@ -234,7 +235,10 @@ const AddBarber = async () => {
             {barbeiros.length === 1 ? "barbeiro cadastrado" : "barbeiros cadastrados"}
           </p>
         </div>
-        <GetBarber barbershopId={barbershop.id} />
+        <GetBarber
+          barbershopId={barbershop.id}
+          barbershopName={barbershop.name}
+        />
       </div>
 
       {barbeiros.length === 0 ? (
@@ -254,6 +258,7 @@ const AddBarber = async () => {
               <TableHead className="w-[220px]">Barbeiro</TableHead>
               <TableHead>Cortes no mês</TableHead>
               <TableHead className="text-right">Valor mensal</TableHead>
+              <TableHead className="text-right">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -282,6 +287,13 @@ const AddBarber = async () => {
                 <TableCell className="text-right">
                   {formatarMoeda(barbeiro.valorMensal)}
                 </TableCell>
+                <TableCell className="text-right">
+                  <BarberMembershipButton
+                    mode="remove"
+                    barberId={barbeiro.id}
+                    barberName={barbeiro.nome ?? "Barbeiro"}
+                  />
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -291,6 +303,7 @@ const AddBarber = async () => {
               <TableCell className="text-right text-[#C3F32C]">
                 {formatarMoeda(totalMensal)}
               </TableCell>
+              <TableCell />
             </TableRow>
           </TableFooter>
         </Table>

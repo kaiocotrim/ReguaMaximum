@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { MessageCircle } from "lucide-react"
 
 export type Plan = {
   id: string
@@ -13,21 +14,17 @@ export type Plan = {
   price: string
   features: string[]
   image: string
-  rootBg: string
-  cardBg: string
-  overlayGradient: string
-  textColor: string
-  badgeBg: string
-  badgeColor: string
-  accentColor: string
-  ctaBg: string
-  ctaColor: string
-  arrowBg: string
-  arrowColor: string
-  checkBg: string
-  checkColor: string
-  backColor: string
   cardHeight?: string
+  visual: {
+    pageBg: string
+    accentText: string
+    softAccent: string
+    cta: string
+    coverOverlay: string
+    coverText: string
+    coverBadge: string
+    coverArrow: string
+  }
 }
 
 const plans: Plan[] = [
@@ -45,21 +42,19 @@ const plans: Plan[] = [
       "Notificações para clientes",
     ],
     image: "/maquina2.png",
-    rootBg: "#0d1500",
-    cardBg: "#0d1a05",
-    overlayGradient:
-      "linear-gradient(to top, rgba(10,20,2,0.97) 0%, rgba(10,20,2,0.45) 60%, transparent 100%)",
-    textColor: "#ffffff",
-    badgeBg: "rgba(163,230,53,0.15)",
-    badgeColor: "#a3e635",
-    accentColor: "#a3e635",
-    ctaBg: "#a3e635",
-    ctaColor: "#0d1a05",
-    arrowBg: "rgba(163,230,53,0.15)",
-    arrowColor: "#a3e635",
-    checkBg: "rgba(163,230,53,0.15)",
-    checkColor: "#a3e635",
-    backColor: "rgba(255,255,255,0.4)",
+    visual: {
+      pageBg: "bg-[#f3f7ec] dark:bg-[#0d1500]",
+      accentText: "text-[#567500] dark:text-[#C3F32C]",
+      softAccent:
+        "bg-[#C3F32C]/25 text-[#254F50] dark:bg-[#C3F32C]/15 dark:text-[#C3F32C]",
+      cta:
+        "bg-[#C3F32C] text-[#254F50] hover:bg-[#b8e82a] dark:text-[#111111]",
+      coverOverlay:
+        "bg-gradient-to-t from-[#0a1402]/95 via-[#0a1402]/50 to-transparent",
+      coverText: "text-white",
+      coverBadge: "bg-[#C3F32C]/15 text-[#C3F32C]",
+      coverArrow: "bg-[#C3F32C]/15 text-[#C3F32C]",
+    },
   },
   {
     id: "pro",
@@ -76,22 +71,20 @@ const plans: Plan[] = [
       "Dashboard de métricas",
     ],
     image: "/bannerPro.png",
-    rootBg: "#111111",
-    cardBg: "#0a0a0a",
-    overlayGradient:
-      "linear-gradient(to top, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.5) 55%, transparent 100%)",
-    textColor: "#ffffff",
-    badgeBg: "rgba(255,255,255,0.1)",
-    badgeColor: "#ffffff",
-    accentColor: "#ffffff",
-    ctaBg: "#ffffff",
-    ctaColor: "#111111",
-    arrowBg: "rgba(255,255,255,0.1)",
-    arrowColor: "#ffffff",
-    checkBg: "rgba(255,255,255,0.1)",
-    checkColor: "#ffffff",
-    backColor: "rgba(255,255,255,0.4)",
     cardHeight: "340px",
+    visual: {
+      pageBg: "bg-[#f1f4f2] dark:bg-[#111111]",
+      accentText: "text-[#254F50] dark:text-white",
+      softAccent:
+        "bg-[#254F50]/10 text-[#254F50] dark:bg-white/10 dark:text-white",
+      cta:
+        "bg-[#254F50] text-white hover:bg-[#1f4546] dark:bg-white dark:text-[#111111] dark:hover:bg-white/90",
+      coverOverlay:
+        "bg-gradient-to-t from-black/95 via-black/50 to-transparent",
+      coverText: "text-white",
+      coverBadge: "bg-white/10 text-white",
+      coverArrow: "bg-white/10 text-white",
+    },
   },
   {
     id: "premium",
@@ -109,23 +102,38 @@ const plans: Plan[] = [
       "Relatórios avançados",
     ],
     image: "/celular1.png",
-    rootBg: "#f0f5ea",
-    cardBg: "#ffffff",
-    overlayGradient:
-      "linear-gradient(to top, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0.55) 55%, transparent 100%)",
-    textColor: "#111111",
-    badgeBg: "rgba(88,196,17,0.12)",
-    badgeColor: "#3a8a0a",
-    accentColor: "#58C411",
-    ctaBg: "#58C411",
-    ctaColor: "#ffffff",
-    arrowBg: "rgba(88,196,17,0.12)",
-    arrowColor: "#58C411",
-    checkBg: "rgba(88,196,17,0.12)",
-    checkColor: "#3a8a0a",
-    backColor: "rgba(0,0,0,0.35)",
+    visual: {
+      pageBg: "bg-[#f0f5ea] dark:bg-[#10150d]",
+      accentText: "text-[#567500] dark:text-[#C3F32C]",
+      softAccent:
+        "bg-[#C3F32C]/25 text-[#254F50] dark:bg-[#C3F32C]/15 dark:text-[#C3F32C]",
+      cta:
+        "bg-[#C3F32C] text-[#254F50] hover:bg-[#b8e82a] dark:text-[#111111]",
+      coverOverlay:
+        "bg-gradient-to-t from-white/95 via-white/55 to-transparent dark:from-[#0d120a]/95 dark:via-[#0d120a]/55",
+      coverText: "text-[#111111] dark:text-white",
+      coverBadge:
+        "bg-[#58C411]/12 text-[#315f0c] dark:bg-[#C3F32C]/15 dark:text-[#C3F32C]",
+      coverArrow:
+        "bg-[#58C411]/12 text-[#315f0c] dark:bg-[#C3F32C]/15 dark:text-[#C3F32C]",
+    },
   },
 ]
+
+const PLAN_RELEASE_WHATSAPP = "5511932075075"
+
+const getPlanReleaseUrl = (plan: Plan) => {
+  const message = [
+    "Olá! Tenho interesse em assinar um plano da Régua Máxima.",
+    "",
+    `Plano escolhido: ${plan.name}`,
+    `Valor: ${plan.price}/mês`,
+    "",
+    "Gostaria de falar com o setor de liberação para concluir a assinatura e receber minha chave de acesso.",
+  ].join("\n")
+
+  return `https://wa.me/${PLAN_RELEASE_WHATSAPP}?text=${encodeURIComponent(message)}`
+}
 
 const Planos = () => {
   const { data: session, status } = useSession()
@@ -141,16 +149,16 @@ const Planos = () => {
 
   return (
     <motion.div
-      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 py-12"
-      animate={{ backgroundColor: selected ? selected.rootBg : "#0a0a0a" }}
-      transition={{ duration: 0.65, ease: [0.25, 0.1, 0.25, 1] }}
+      className={`relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 py-12 text-foreground transition-colors duration-700 ${
+        selected ? selected.visual.pageBg : "bg-background"
+      }`}
     >
       {/* Back to home */}
       <AnimatePresence>
         {!selected && (
           <motion.button
             onClick={() => router.push("/")}
-            className="absolute top-5 left-5 z-50 flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white/50 transition hover:text-white"
+            className="absolute top-5 left-5 z-50 flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             initial={{ opacity: 0, x: -12 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -12 }}
@@ -175,13 +183,13 @@ const Planos = () => {
           >
             {/* Header */}
             <div className="mb-6">
-              <p className="mb-2 text-xs font-medium uppercase tracking-widest text-[#C3F32C]">
+              <p className="mb-2 text-xs font-medium uppercase tracking-widest text-[#567500] dark:text-[#C3F32C]">
                 Mais Popular
               </p>
-              <h1 className="text-3xl font-semibold text-white">
+              <h1 className="text-3xl font-semibold text-foreground">
                 Escolha o plano ideal
               </h1>
-              <p className="mt-2 text-sm text-white/40">
+              <p className="mt-2 text-sm text-muted-foreground">
                 Sem fidelidade. Cancele quando quiser.
               </p>
             </div>
@@ -192,10 +200,9 @@ const Planos = () => {
                 <motion.div
                   key={plan.id}
                   onClick={() => setSelected(plan)}
-                  className="relative flex flex-1 cursor-pointer flex-col justify-end overflow-hidden rounded-2xl"
+                  className="relative flex flex-1 cursor-pointer flex-col justify-end overflow-hidden rounded-2xl border border-border/70 bg-card shadow-sm transition-[border-color,box-shadow] hover:border-[#254F50]/25 hover:shadow-[0_24px_56px_rgba(37,79,80,0.16)] dark:hover:border-white/20 dark:hover:shadow-[0_24px_56px_rgba(0,0,0,0.55)]"
                   style={{
                     minHeight: plan.cardHeight ?? "300px",
-                    outline: "1.5px solid rgba(255,255,255,0.07)",
                   }}
                   initial={{ opacity: 0, y: 28 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -207,8 +214,6 @@ const Planos = () => {
                   whileHover={{
                     y: -8,
                     scale: 1.025,
-                    boxShadow: "0 24px 56px rgba(0,0,0,0.55)",
-                    outline: "1.5px solid rgba(255,255,255,0.18)",
                   }}
                   whileTap={{ scale: 0.975 }}
                 >
@@ -221,30 +226,21 @@ const Planos = () => {
                   />
 
                   {/* Overlay */}
-                  <div
-                    className="absolute inset-0"
-                    style={{ background: plan.overlayGradient }}
-                  />
+                  <div className={`absolute inset-0 ${plan.visual.coverOverlay}`} />
 
                   {/* Arrow */}
                   <div
-                    className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full text-sm transition"
-                    style={{
-                      background: plan.arrowBg,
-                      color: plan.arrowColor,
-                    }}
+                    className={`absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full text-sm transition ${plan.visual.coverArrow}`}
                   >
                     ↗
                   </div>
 
                   {/* Content */}
-                  <div className="relative z-10 p-5" style={{ color: plan.textColor }}>
+                  <div
+                    className={`relative z-10 p-5 ${plan.visual.coverText}`}
+                  >
                     <span
-                      className="mb-2 inline-block rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider"
-                      style={{
-                        background: plan.badgeBg,
-                        color: plan.badgeColor,
-                      }}
+                      className={`mb-2 inline-block rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider ${plan.visual.coverBadge}`}
                     >
                       {plan.eyebrow}
                     </span>
@@ -278,9 +274,7 @@ const Planos = () => {
             {/* Back button */}
             <motion.button
               onClick={() => setSelected(null)}
-              className="mb-5 flex items-center gap-1.5 self-start bg-transparent border-none p-0 text-sm font-medium transition cursor-pointer"
-              style={{ color: selected.backColor, fontFamily: "inherit" }}
-              whileHover={{ color: selected.textColor }}
+              className="mb-5 flex cursor-pointer items-center gap-1.5 self-start border-none bg-transparent p-0 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
@@ -290,8 +284,7 @@ const Planos = () => {
 
             {/* Detail card */}
             <motion.div
-              className="w-full overflow-hidden rounded-2xl"
-              style={{ background: selected.cardBg }}
+              className="w-full overflow-hidden rounded-2xl border border-border/70 bg-card text-card-foreground shadow-[0_24px_70px_rgba(37,79,80,0.12)] dark:shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
               initial={{ opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.08, duration: 0.4 }}
@@ -303,17 +296,13 @@ const Planos = () => {
                   alt={selected.name}
                   className="h-full w-full object-cover"
                 />
-                <div
-                  className="absolute inset-0"
-                  style={{ background: selected.overlayGradient }}
-                />
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/55 to-transparent" />
               </div>
 
               {/* Body */}
               <div className="flex flex-col gap-0 p-7">
                 <motion.p
-                  className="mb-1 text-[10px] font-medium uppercase tracking-widest"
-                  style={{ color: selected.accentColor }}
+                  className={`mb-1 text-[10px] font-medium uppercase tracking-widest ${selected.visual.accentText}`}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.15 }}
@@ -322,8 +311,7 @@ const Planos = () => {
                 </motion.p>
 
                 <motion.h1
-                  className="text-3xl font-semibold leading-tight"
-                  style={{ color: selected.textColor }}
+                  className="text-3xl font-semibold leading-tight text-card-foreground"
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.18 }}
@@ -332,8 +320,7 @@ const Planos = () => {
                 </motion.h1>
 
                 <motion.p
-                  className="mt-2 mb-5 text-sm leading-relaxed opacity-55"
-                  style={{ color: selected.textColor }}
+                  className="mb-5 mt-2 text-sm leading-relaxed text-muted-foreground"
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.22 }}
@@ -347,16 +334,10 @@ const Planos = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.27 }}
                 >
-                  <span
-                    className="text-4xl font-semibold"
-                    style={{ color: selected.textColor }}
-                  >
+                  <span className="text-4xl font-semibold text-card-foreground">
                     {selected.price}
                   </span>
-                  <span
-                    className="text-sm opacity-40"
-                    style={{ color: selected.textColor }}
-                  >
+                  <span className="text-sm text-muted-foreground">
                     /mês
                   </span>
                 </motion.div>
@@ -376,19 +357,14 @@ const Planos = () => {
                   {selected.features.map((f) => (
                     <motion.li
                       key={f}
-                      className="flex items-center gap-3 text-sm font-medium"
-                      style={{ color: selected.textColor }}
+                      className="flex items-center gap-3 text-sm font-medium text-card-foreground"
                       variants={{
                         hidden: { opacity: 0, x: -10 },
                         visible: { opacity: 1, x: 0 },
                       }}
                     >
                       <span
-                        className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold"
-                        style={{
-                          background: selected.checkBg,
-                          color: selected.checkColor,
-                        }}
+                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold ${selected.visual.softAccent}`}
                       >
                         ✓
                       </span>
@@ -398,23 +374,21 @@ const Planos = () => {
                 </motion.ul>
 
                 {/* CTA */}
-                <motion.button
-                  className="w-full rounded-xl py-4 text-sm font-semibold tracking-wide transition"
-                  style={{
-                    background: selected.ctaBg,
-                    color: selected.ctaColor,
-                    fontFamily: "inherit",
-                    border: "none",
-                    cursor: "pointer",
-                  }}
+                <motion.a
+                  href={getPlanReleaseUrl(selected)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Assinar ${selected.name} pelo WhatsApp`}
+                  className={`flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-none py-4 text-sm font-semibold tracking-wide transition-colors ${selected.visual.cta}`}
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6 }}
-                  whileHover={{ opacity: 0.88, scale: 0.998 }}
+                  whileHover={{ scale: 0.998 }}
                   whileTap={{ scale: 0.97 }}
                 >
-                  Assinar agora
-                </motion.button>
+                  <MessageCircle className="h-4 w-4" aria-hidden="true" />
+                  Assinar pelo WhatsApp
+                </motion.a>
               </div>
             </motion.div>
           </motion.div>

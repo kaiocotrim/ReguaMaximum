@@ -1,91 +1,173 @@
+import { randomBytes } from "node:crypto"
 import { NextResponse } from "next/server"
-import { db } from "@/app/_lib/prisma"
 import { Resend } from "resend"
-import crypto from "crypto"
+
+import {
+  hashResetToken,
+  isValidEmail,
+  normalizeEmail,
+} from "@/app/_lib/auth-security"
+import { db } from "@/app/_lib/prisma"
+import {
+  consumeRateLimit,
+  getClientIp,
+} from "@/app/_lib/server-rate-limit"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
+const GENERIC_MESSAGE =
+  "Se existir uma conta com esse e-mail, enviaremos as instruções de recuperação."
 
-export async function POST(req: Request) {
-  const { email } = await req.json()
+function genericResponse() {
+  const response = NextResponse.json({
+    success: true,
+    message: GENERIC_MESSAGE,
+  })
+  response.headers.set("Cache-Control", "no-store")
+  return response
+}
 
-  const user = await db.user.findUnique({
-    where: { email },
+function rateLimitResponse(retryAfterSeconds: number) {
+  const response = NextResponse.json(
+    { error: "Muitas tentativas. Aguarde alguns minutos e tente novamente." },
+    { status: 429 },
+  )
+  response.headers.set("Cache-Control", "no-store")
+  response.headers.set("Retry-After", String(retryAfterSeconds))
+  return response
+}
+
+export async function POST(request: Request) {
+  const rateLimit = consumeRateLimit({
+    namespace: "forgot-password",
+    identifier: getClientIp(request.headers),
+    limit: 5,
+    windowMs: 15 * 60 * 1000,
   })
 
-  if (!user) {
-    return NextResponse.json(
-      { error: "Usuário não encontrado" },
-      { status: 404 }
-    )
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.retryAfterSeconds)
   }
 
-  const token = crypto.randomBytes(32).toString("hex")
+  let email = ""
 
-  await db.user.update({
-    where: { id: user.id },
-    data: {
-      resetPasswordToken: token,
-      resetPasswordExpiry: new Date(
-        Date.now() + 1000 * 60 * 60 // 1 hora
-      ),
-    },
+  try {
+    const body = await request.json()
+    email = normalizeEmail(body?.email)
+  } catch {
+    return genericResponse()
+  }
+
+  if (!isValidEmail(email)) {
+    return genericResponse()
+  }
+
+  const emailRateLimit = consumeRateLimit({
+    namespace: "forgot-password-email",
+    identifier: email,
+    limit: 3,
+    windowMs: 60 * 60 * 1000,
   })
 
-const resetLink =
-  `${process.env.NEXTAUTH_URL}/reset-password?token=${token}`
+  if (!emailRateLimit.allowed) {
+    return genericResponse()
+  }
 
-await resend.emails.send({
-  from: "Equipe RegumaMaxima <equipe@cotrimdev.com.br>",
-  to: email,
-    subject: "Recuperação de senha",
-    html: `
-    <!DOCTYPE html>
-<html>
-  <body style="margin:0;padding:0;background:#0b0b0b;font-family:sans-serif;">
+  try {
+    const user = await db.user.findFirst({
+      where: {
+        email: {
+          equals: email,
+          mode: "insensitive",
+        },
+      },
+      select: {
+        id: true,
+        email: true,
+      },
+    })
 
-    <div style="max-width:480px;margin:40px auto;background:#111111;border-radius:12px;overflow:hidden;">
+    if (!user?.email) {
+      return genericResponse()
+    }
 
-      <!-- Header -->
-      <div style="background:#C3F32C;padding:32px;text-align:center;">
-        <h1 style="margin:0;color:#0b0b0b;font-size:22px;font-weight:800;">
-          RegumaMaxima
-        </h1>
-      </div>
+    const token = randomBytes(32).toString("hex")
+    const tokenHash = hashResetToken(token)
 
-      <!-- Content -->
-      <div style="padding:40px 32px;">
+    await db.user.update({
+      where: { id: user.id },
+      data: {
+        resetPasswordToken: tokenHash,
+        resetPasswordExpiry: new Date(Date.now() + 60 * 60 * 1000),
+      },
+    })
 
-        <h2 style="color:#ffffff;font-size:20px;margin:0 0 12px;">
-          Recuperação de senha
-        </h2>
+    try {
+      const baseUrl = process.env.NEXTAUTH_URL
 
-        <p style="color:#a3a3a3;font-size:14px;line-height:1.6;margin:0 0 32px;">
-          Recebemos uma solicitação para redefinir a senha da sua conta.
-          Clique no botão abaixo para criar uma nova senha.
-        </p>
+      if (!baseUrl) {
+        throw new Error("NEXTAUTH_URL não configurada")
+      }
 
-        <a href="${resetLink}"
-           style="display:block;background:#C3F32C;color:#0b0b0b;text-decoration:none;
-                  text-align:center;padding:14px 24px;border-radius:999px;
-                  font-weight:800;font-size:15px;">
-          Redefinir senha
-        </a>
+      const resetUrl = new URL("/reset-password", baseUrl)
+      resetUrl.searchParams.set("token", token)
 
-        <p style="color:#666;font-size:12px;margin:24px 0 0;text-align:center;line-height:1.6;">
-          Se você não solicitou isso, ignore este e-mail.<br/>
-          O link expira em <strong style="color:#999;">1 hora</strong>.
-        </p>
+      const emailResult = await resend.emails.send({
+        from: "Equipe ReguaMaxima <equipe@cotrimdev.com.br>",
+        to: user.email,
+        subject: "Recuperação de senha",
+        html: `
+          <!DOCTYPE html>
+          <html lang="pt-BR">
+            <body style="margin:0;padding:0;background:#0b0b0b;font-family:sans-serif;">
+              <div style="max-width:480px;margin:40px auto;background:#111111;border-radius:12px;overflow:hidden;">
+                <div style="background:#C3F32C;padding:32px;text-align:center;">
+                  <h1 style="margin:0;color:#0b0b0b;font-size:22px;font-weight:800;">
+                    Régua Máxima
+                  </h1>
+                </div>
+                <div style="padding:40px 32px;">
+                  <h2 style="color:#ffffff;font-size:20px;margin:0 0 12px;">
+                    Recuperação de senha
+                  </h2>
+                  <p style="color:#a3a3a3;font-size:14px;line-height:1.6;margin:0 0 32px;">
+                    Recebemos uma solicitação para redefinir a senha da sua conta.
+                    Clique no botão abaixo para criar uma nova senha.
+                  </p>
+                  <a href="${resetUrl.toString()}"
+                     style="display:block;background:#C3F32C;color:#0b0b0b;text-decoration:none;text-align:center;padding:14px 24px;border-radius:999px;font-weight:800;font-size:15px;">
+                    Redefinir senha
+                  </a>
+                  <p style="color:#666;font-size:12px;margin:24px 0 0;text-align:center;line-height:1.6;">
+                    Se você não solicitou isso, ignore este e-mail.<br />
+                    O link expira em <strong style="color:#999;">1 hora</strong>.
+                  </p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `,
+      })
 
-      </div>
+      if (emailResult.error) {
+        throw new Error("Falha no provedor de e-mail")
+      }
+    } catch {
+      await db.user.updateMany({
+        where: {
+          id: user.id,
+          resetPasswordToken: tokenHash,
+        },
+        data: {
+          resetPasswordToken: null,
+          resetPasswordExpiry: null,
+        },
+      })
 
-    </div>
+      console.error("Falha ao enviar o e-mail de recuperação de senha")
+    }
+  } catch {
+    console.error("Falha ao processar a recuperação de senha")
+  }
 
-  </body>
-</html>
-    `,
-  })
-
-return NextResponse.json({
-  success: true,
-})
+  return genericResponse()
 }
