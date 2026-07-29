@@ -1,7 +1,12 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { BriefcaseBusiness, Clock3, Settings2 } from "lucide-react"
+import {
+  BriefcaseBusiness,
+  Clock3,
+  Scissors,
+  Settings2,
+} from "lucide-react"
 import { toast } from "sonner"
 
 import { updateBarberSettings } from "@/app/_actions/barberSettings"
@@ -25,6 +30,20 @@ type Schedule = {
   endTime: string
 }
 
+type AvailableService = {
+  id: string
+  name: string
+  price: number
+  duration: number
+}
+
+type ServiceConfig = {
+  serviceId: string
+  enabled: boolean
+  customPrice: number | null
+  customDuration: number | null
+}
+
 const DAYS = [
   "Domingo",
   "Segunda",
@@ -41,6 +60,8 @@ export function BarberSettingsDialog({
   initialJobTitle,
   initialIsActive,
   initialSchedules,
+  availableServices,
+  initialServiceConfigs,
   defaultStartTime,
   defaultEndTime,
 }: {
@@ -49,6 +70,8 @@ export function BarberSettingsDialog({
   initialJobTitle: string
   initialIsActive: boolean
   initialSchedules: Schedule[]
+  availableServices: AvailableService[]
+  initialServiceConfigs: ServiceConfig[]
   defaultStartTime: string
   defaultEndTime: string
 }) {
@@ -71,6 +94,21 @@ export function BarberSettingsDialog({
   const [jobTitle, setJobTitle] = useState(initialJobTitle)
   const [isActive, setIsActive] = useState(initialIsActive)
   const [schedules, setSchedules] = useState<Schedule[]>(buildSchedules)
+  const [services, setServices] = useState<ServiceConfig[]>(() =>
+    availableServices.map((service) => {
+      const saved = initialServiceConfigs.find(
+        (config) => config.serviceId === service.id,
+      )
+      return (
+        saved ?? {
+          serviceId: service.id,
+          enabled: true,
+          customPrice: null,
+          customDuration: null,
+        }
+      )
+    }),
+  )
   const [pending, startTransition] = useTransition()
 
   const updateSchedule = (
@@ -92,6 +130,7 @@ export function BarberSettingsDialog({
           jobTitle,
           isActive,
           schedules,
+          services,
         })
         toast.success("Configurações do funcionário salvas.")
         setOpen(false)
@@ -103,6 +142,19 @@ export function BarberSettingsDialog({
         )
       }
     })
+  }
+
+  const updateService = (
+    serviceId: string,
+    changes: Partial<Omit<ServiceConfig, "serviceId">>,
+  ) => {
+    setServices((current) =>
+      current.map((service) =>
+        service.serviceId === serviceId
+          ? { ...service, ...changes }
+          : service,
+      ),
+    )
   }
 
   return (
@@ -154,6 +206,91 @@ export function BarberSettingsDialog({
               placeholder="Ex.: Barbeiro sênior, Gerente"
             />
           </label>
+
+          <div className="space-y-3">
+            <div>
+              <p className="flex items-center gap-2 text-sm font-semibold">
+                <Scissors className="size-4" />
+                Serviços realizados
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                Desative serviços ou personalize preço e duração para este
+                profissional.
+              </p>
+            </div>
+            <div className="min-w-0 divide-y overflow-hidden rounded-xl border">
+              {availableServices.map((service) => {
+                const config = services.find(
+                  (item) => item.serviceId === service.id,
+                )!
+                return (
+                  <div key={service.id} className="space-y-3 p-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium">
+                          {service.name}
+                        </p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
+                          Padrão: R$ {service.price.toFixed(2)} ·{" "}
+                          {service.duration} min
+                        </p>
+                      </div>
+                      <Switch
+                        checked={config.enabled}
+                        onCheckedChange={(enabled) =>
+                          updateService(service.id, { enabled })
+                        }
+                        aria-label={`${service.name} realizado pelo funcionário`}
+                      />
+                    </div>
+                    {config.enabled && (
+                      <div className="grid grid-cols-2 gap-2">
+                        <label className="space-y-1">
+                          <span className="text-[11px] text-muted-foreground">
+                            Preço personalizado
+                          </span>
+                          <Input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            placeholder={service.price.toFixed(2)}
+                            value={config.customPrice ?? ""}
+                            onChange={(event) =>
+                              updateService(service.id, {
+                                customPrice: event.target.value
+                                  ? Number(event.target.value)
+                                  : null,
+                              })
+                            }
+                          />
+                        </label>
+                        <label className="space-y-1">
+                          <span className="text-[11px] text-muted-foreground">
+                            Duração em minutos
+                          </span>
+                          <Input
+                            type="number"
+                            min="5"
+                            max="720"
+                            step="5"
+                            placeholder={String(service.duration)}
+                            value={config.customDuration ?? ""}
+                            onChange={(event) =>
+                              updateService(service.id, {
+                                customDuration: event.target.value
+                                  ? Number(event.target.value)
+                                  : null,
+                              })
+                            }
+                          />
+                        </label>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
 
           <div className="space-y-3">
             <div>

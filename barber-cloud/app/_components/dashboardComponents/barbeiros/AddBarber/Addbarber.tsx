@@ -188,6 +188,9 @@ const AddBarber = async () => {
 
   const barbershop = await db.barbershop.findFirst({
     where: { ownerId: session.user.id },
+    include: {
+      services: { orderBy: { name: "asc" } },
+    },
   })
 
   if (!barbershop) {
@@ -202,6 +205,7 @@ const AddBarber = async () => {
     where: { barbershopId: barbershop.id },
     include: {
       workSchedules: { orderBy: { weekday: "asc" } },
+      serviceConfigs: true,
       bookings: {
         where: {
           barbershopId: barbershop.id,
@@ -307,6 +311,23 @@ const AddBarber = async () => {
                       initialJobTitle={barbeiro.jobTitle}
                       initialIsActive={barbeiro.isActive}
                       initialSchedules={barbeiro.workSchedules}
+                      availableServices={barbershop.services.map((service) => ({
+                        id: service.id,
+                        name: service.name,
+                        price: Number(service.price),
+                        duration: service.duration,
+                      }))}
+                      initialServiceConfigs={barbeiro.serviceConfigs.map(
+                        (config) => ({
+                          serviceId: config.serviceId,
+                          enabled: config.enabled,
+                          customPrice:
+                            config.customPrice === null
+                              ? null
+                              : Number(config.customPrice),
+                          customDuration: config.customDuration,
+                        }),
+                      )}
                       defaultStartTime={barbershop.horarioAbertura ?? "08:00"}
                       defaultEndTime={barbershop.horarioFechamento ?? "19:00"}
                     />

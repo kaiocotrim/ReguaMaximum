@@ -13,6 +13,13 @@ type WorkScheduleInput = {
   endTime: string
 }
 
+type ServiceConfigInput = {
+  serviceId: string
+  enabled: boolean
+  customPrice: number | null
+  customDuration: number | null
+}
+
 const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/
 
 export async function updateBarberSettings(input: {
@@ -20,6 +27,7 @@ export async function updateBarberSettings(input: {
   jobTitle: string
   isActive: boolean
   schedules: WorkScheduleInput[]
+  services: ServiceConfigInput[]
 }) {
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) throw new Error("Não autenticado.")
@@ -55,9 +63,32 @@ export async function updateBarberSettings(input: {
       id: input.barberId,
       barbershop: { ownerId: session.user.id },
     },
-    select: { id: true },
+    select: {
+      id: true,
+      barbershopId: true,
+      barbershop: {
+        select: {
+          services: { select: { id: true } },
+        },
+      },
+    },
   })
   if (!barber) throw new Error("Funcionário não encontrado nesta barbearia.")
+
+  const allowedServiceIds = new Set(
+    barber.barbershop?.services.map((service) => service.id) ?? [],
+  )
+  if (
+    input.services.some(
+      (service) =>
+        !allowedServiceIds.has(service.serviceId) ||
+        (service.customPrice !== null && service.customPrice < 0) ||
+        (service.customDuration !== null &&
+          (service.customDuration < 5 || service.customDuration > 720)),
+    )
+  ) {
+    throw new Error("Existe uma configuração de serviço inválida.")
+  }
 
   await db.$transaction([
     db.barber.update({
@@ -80,6 +111,38 @@ export async function updateBarberSettings(input: {
         },
       }),
     ),
+    ...input.services.map((service) =>
+      db.barberServiceConfig.upsert({
+        where: {
+          barberId_serviceId: {
+            barberId: barber.id,
+            serviceId: service.serviceId,
+          },
+        },
+        create: { barberId: barber.id, ...service },
+        update: {
+          enabled: service.enabled,
+          customPrice: service.customPrice,
+          customDuration: service.customDuration,
+        },
+      }),
+    ),
+    db.auditLog.create({
+      data: {
+        barbershopId: barber.barbershopId!,
+        actorId: session.user.id,
+        action: "BARBER_SETTINGS_UPDATED",
+        entityType: "Barber",
+        entityId: barber.id,
+        details: {
+          jobTitle,
+          isActive: input.isActive,
+          enabledServices: input.services
+            .filter((service) => service.enabled)
+            .map((service) => service.serviceId),
+        },
+      },
+    }),
   ])
 
   revalidatePath("/dashboard/barbeiros")

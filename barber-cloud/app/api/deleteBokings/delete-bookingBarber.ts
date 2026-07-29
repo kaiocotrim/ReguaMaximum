@@ -21,21 +21,52 @@ export async function cancelBooking(id: string) {
     return { success: false as const, error: "Não autorizado." }
   }
 
-  const cancelled = await db.booking.updateMany({
+  const booking = await db.booking.findFirst({
     where: {
       id,
       status: "EM_ANDAMENTO",
       barbershop: { ownerId: session.user.id },
     },
-    data: { status: "CANCELADO", cancelledAt: new Date() },
+    select: {
+      id: true,
+      userId: true,
+      date: true,
+      barbershopId: true,
+      barbershop: { select: { name: true } },
+      service: { select: { name: true } },
+    },
   })
 
-  if (cancelled.count === 0) {
+  if (!booking) {
     return {
       success: false as const,
       error: "Agendamento não encontrado ou não está em andamento.",
     }
   }
+
+  await db.$transaction([
+    db.booking.update({
+      where: { id: booking.id },
+      data: { status: "CANCELADO", cancelledAt: new Date() },
+    }),
+    db.userNotification.create({
+      data: {
+        userId: booking.userId,
+        bookingId: booking.id,
+        title: "Agendamento cancelado",
+        message: `${booking.barbershop.name} cancelou seu agendamento de ${booking.service.name} em ${booking.date.toLocaleString("pt-BR")}.`,
+      },
+    }),
+    db.auditLog.create({
+      data: {
+        barbershopId: booking.barbershopId,
+        actorId: session.user.id,
+        action: "BOOKING_CANCELLED",
+        entityType: "Booking",
+        entityId: booking.id,
+      },
+    }),
+  ])
 
   revalidatePath("/dashboard")
   revalidatePath("/dashboard/agendamentos")

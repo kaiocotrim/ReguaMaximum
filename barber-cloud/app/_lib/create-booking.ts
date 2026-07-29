@@ -11,6 +11,7 @@ type BookingInput = {
   barberId: string
   date: string
   time: string
+  rescheduleBookingId?: string
 }
 
 type DayAvailabilityInput = Pick<BookingInput, "barbershopId" | "serviceId"> & {
@@ -34,6 +35,7 @@ type ReservedBooking = {
 type BookingWithDuration = {
   barberId: string
   date: Date
+  durationMinutes: number | null
   service: { duration: number }
 }
 
@@ -44,6 +46,9 @@ type BarberForAvailability = {
     enabled: boolean
     startTime: string
     endTime: string
+  }[]
+  serviceConfigs: {
+    customDuration: number | null
   }[]
 }
 
@@ -220,7 +225,7 @@ function createAvailableSlots({
           slotStart,
           slotEnd,
           booking.date,
-          booking.service.duration,
+          booking.durationMinutes ?? booking.service.duration,
         ),
     )
 
@@ -254,7 +259,18 @@ async function getDayAvailability(
       },
     }),
     tx.barber.findMany({
-      where: { barbershopId: data.barbershopId, isActive: true },
+      where: {
+        barbershopId: data.barbershopId,
+        isActive: true,
+        OR: [
+          { serviceConfigs: { none: { serviceId: data.serviceId } } },
+          {
+            serviceConfigs: {
+              some: { serviceId: data.serviceId, enabled: true },
+            },
+          },
+        ],
+      },
       select: {
         id: true,
         workSchedules: {
@@ -265,6 +281,10 @@ async function getDayAvailability(
             startTime: true,
             endTime: true,
           },
+        },
+        serviceConfigs: {
+          where: { serviceId: data.serviceId, enabled: true },
+          select: { customDuration: true },
         },
       },
     }),
@@ -295,6 +315,7 @@ async function getDayAvailability(
     select: {
       barberId: true,
       date: true,
+      durationMinutes: true,
       service: { select: { duration: true } },
     },
   })
@@ -302,6 +323,8 @@ async function getDayAvailability(
   const timesByBarber = new Map(
     (barbers as BarberForAvailability[]).map((barber) => {
       const schedule = barber.workSchedules[0]
+      const serviceDuration =
+        barber.serviceConfigs[0]?.customDuration ?? service.duration
       const times =
         schedule && !schedule.enabled
           ? []
@@ -311,7 +334,7 @@ async function getDayAvailability(
                 schedule?.startTime ?? barbershop.horarioAbertura,
               closingTime:
                 schedule?.endTime ?? barbershop.horarioFechamento,
-              serviceDuration: service.duration,
+              serviceDuration,
               bookings,
               barberId: barber.id,
             })
@@ -325,11 +348,20 @@ async function getDayAvailability(
 
 async function unavailableBarbers(
   tx: typeof db,
-  data: Pick<BookingInput, "barbershopId" | "serviceId" | "date" | "time">,
+  data: Pick<
+    BookingInput,
+    "barbershopId" | "serviceId" | "barberId" | "date" | "time"
+  >,
 ) {
   const service = await tx.barbeshopService.findFirst({
     where: { id: data.serviceId, barbershopId: data.barbershopId },
-    select: { duration: true },
+    select: {
+      duration: true,
+      barberConfigs: {
+        where: { barberId: data.barberId, enabled: true },
+        select: { customDuration: true },
+      },
+    },
   })
 
   if (!service) {
@@ -337,8 +369,10 @@ async function unavailableBarbers(
   }
 
   const requestedStart = bookingDateTime(data.date, data.time)
+  const requestedDuration =
+    service.barberConfigs[0]?.customDuration ?? service.duration
   const requestedEnd = new Date(
-    requestedStart.getTime() + service.duration * 60_000,
+    requestedStart.getTime() + requestedDuration * 60_000,
   )
   const longestService = await tx.barbeshopService.aggregate({
     where: { barbershopId: data.barbershopId },
@@ -358,6 +392,7 @@ async function unavailableBarbers(
     select: {
       barberId: true,
       date: true,
+      durationMinutes: true,
       service: { select: { duration: true } },
     },
   })
@@ -370,7 +405,7 @@ async function unavailableBarbers(
             requestedStart,
             requestedEnd,
             booking.date,
-            booking.service.duration,
+            booking.durationMinutes ?? booking.service.duration,
           ),
         )
         .map((booking) => booking.barberId),
@@ -386,13 +421,19 @@ export async function getAvailableBarberIdsForDate(
     const barberIds = [...timesByBarber.entries()]
       .filter(([, times]) => times.length > 0)
       .map(([barberId]) => barberId)
+    const firstTimes = Object.fromEntries(
+      [...timesByBarber.entries()]
+        .filter(([, times]) => times.length > 0)
+        .map(([barberId, times]) => [barberId, times[0]]),
+    )
 
-    return { success: true as const, barberIds }
+    return { success: true as const, barberIds, firstTimes }
   } catch (error) {
     console.error("Erro ao consultar barbeiros disponíveis:", error)
     return {
       success: false as const,
       barberIds: [] as string[],
+      firstTimes: {} as Record<string, string>,
       error: availabilityErrorMessage(error),
     }
   }
@@ -463,11 +504,39 @@ export async function createBooking(data: BookingInput) {
                 id: data.barberId,
                 barbershopId: data.barbershopId,
                 isActive: true,
+                OR: [
+                  { serviceConfigs: { none: { serviceId: data.serviceId } } },
+                  {
+                    serviceConfigs: {
+                      some: { serviceId: data.serviceId, enabled: true },
+                    },
+                  },
+                ],
               },
-              select: { id: true },
+              select: {
+                id: true,
+                serviceConfigs: {
+                  where: { serviceId: data.serviceId, enabled: true },
+                  select: {
+                    customPrice: true,
+                    customDuration: true,
+                  },
+                },
+              },
             })
             if (!barber) {
               throw new Error("Barbeiro não pertence a esta barbearia.")
+            }
+
+            const selectedService = await tx.barbeshopService.findFirst({
+              where: {
+                id: data.serviceId,
+                barbershopId: data.barbershopId,
+              },
+              select: { price: true, duration: true },
+            })
+            if (!selectedService) {
+              throw new Error("Serviço não encontrado nesta barbearia.")
             }
 
             const { timesByBarber } = await getDayAvailability(
@@ -492,6 +561,7 @@ export async function createBooking(data: BookingInput) {
               {
                 barbershopId: data.barbershopId,
                 serviceId: data.serviceId,
+                barberId: data.barberId,
                 date: data.date,
                 time: data.time,
               },
@@ -505,6 +575,12 @@ export async function createBooking(data: BookingInput) {
             const created = await tx.booking.create({
               data: {
                 date: requestedDate,
+                agreedPrice:
+                  barber.serviceConfigs[0]?.customPrice ??
+                  selectedService.price,
+                durationMinutes:
+                  barber.serviceConfigs[0]?.customDuration ??
+                  selectedService.duration,
                 user: { connect: { id: session.user.id } },
                 barbershop: { connect: { id: data.barbershopId } },
                 service: { connect: { id: data.serviceId } },
@@ -523,6 +599,39 @@ export async function createBooking(data: BookingInput) {
                 },
               },
             })
+
+            if (data.rescheduleBookingId) {
+              const previous = await tx.booking.updateMany({
+                where: {
+                  id: data.rescheduleBookingId,
+                  userId: session.user.id,
+                  status: "EM_ANDAMENTO",
+                  date: { gt: new Date() },
+                },
+                data: {
+                  status: "CANCELADO",
+                  cancelledAt: new Date(),
+                },
+              })
+              if (previous.count !== 1) {
+                throw new Error(
+                  "O agendamento original não está mais disponível para reagendamento.",
+                )
+              }
+
+              await tx.auditLog.create({
+                data: {
+                  barbershopId: data.barbershopId,
+                  actorId: session.user.id,
+                  action: "BOOKING_RESCHEDULED",
+                  entityType: "Booking",
+                  entityId: created.id,
+                  details: {
+                    previousBookingId: data.rescheduleBookingId,
+                  },
+                },
+              })
+            }
 
             return {
               id: created.id,

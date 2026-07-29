@@ -430,6 +430,7 @@ import {
   CreditCard,
   Mail,
   Scissors,
+  Bell,
 } from "lucide-react"
 
 interface MenuBtnProps {
@@ -471,6 +472,13 @@ const MENU_ITEMS = [
     label: "Favoritos",
     description: "Seus favoritos",
     href: "/favorites",
+    requiresAuth: true,
+  },
+  {
+    icon: Bell,
+    label: "Notificações",
+    description: "Avisos sobre seus agendamentos",
+    href: "/notificacoes",
     requiresAuth: true,
   },
   {

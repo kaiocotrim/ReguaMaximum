@@ -52,12 +52,12 @@ const createPrismaClient = () =>
 type AppPrismaClient = ReturnType<typeof createPrismaClient>
 
 const globalForPrisma = globalThis as unknown as {
-  prismaStaffSettingsV1: AppPrismaClient | undefined
+  prismaCustomerExperienceV2: AppPrismaClient | undefined
 }
 
 export const db =
-  globalForPrisma.prismaStaffSettingsV1 || createPrismaClient()
+  globalForPrisma.prismaCustomerExperienceV2 || createPrismaClient()
 
 if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prismaStaffSettingsV1 = db
+  globalForPrisma.prismaCustomerExperienceV2 = db
 }

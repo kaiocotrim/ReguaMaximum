@@ -1,7 +1,7 @@
 import Header from "../_components/header"
 import BarbershopItem from "../_components/barbershop-item"
 import { db } from "../_lib/prisma"
-import { Heart } from "lucide-react"
+import { Heart, Scissors } from "lucide-react"
 import Image from "next/image"
 import { getServerSession } from "next-auth"
 import { authOptions } from "../api/auth/[...nextauth]/route"
@@ -14,18 +14,35 @@ const FavoritesPage = async () => {
     redirect("/login")
   }
 
-  const favorites = await db.favoriteBarbershop.findMany({
-    where: {
-      userId: session.user.id,
-    },
-    include: {
-      barbershop: {
-        include: {
-          reviews: { select: { rating: true } },
+  const [favorites, favoriteBarbers] = await Promise.all([
+    db.favoriteBarbershop.findMany({
+      where: {
+        userId: session.user.id,
+      },
+      include: {
+        barbershop: {
+          include: {
+            reviews: { select: { rating: true } },
+          },
         },
       },
-    },
-  })
+    }),
+    db.favoriteBarber.findMany({
+      where: { userId: session.user.id },
+      include: {
+        barber: {
+          select: {
+            id: true,
+            nome: true,
+            avatar: true,
+            jobTitle: true,
+            barbershop: { select: { id: true, name: true } },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    }),
+  ])
 
 
   return (
@@ -114,6 +131,57 @@ const FavoritesPage = async () => {
           ))}
         </div>
       )}
+
+      <section className="mt-10">
+        <div className="mb-4">
+          <p className="text-xs font-bold uppercase tracking-wider text-[#71910d] dark:text-[#C3F32C]">
+            Profissionais
+          </p>
+          <h2 className="mt-1 text-xl font-bold">Seus profissionais favoritos</h2>
+        </div>
+        {favoriteBarbers.length > 0 ? (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {favoriteBarbers.map(({ barber }) => (
+              <a
+                key={barber.id}
+                href={
+                  barber.barbershop
+                    ? `/barbershops/${barber.barbershop.id}`
+                    : "#"
+                }
+                className="flex items-center gap-3 rounded-2xl border bg-card p-4 transition-colors hover:border-[#9fc821]/60"
+              >
+                <div className="relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted">
+                  {barber.avatar ? (
+                    <Image
+                      src={barber.avatar}
+                      alt={barber.nome ?? "Profissional"}
+                      fill
+                      sizes="48px"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <Scissors className="size-5 text-muted-foreground" />
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold">
+                    {barber.nome ?? "Profissional"}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {barber.jobTitle}
+                    {barber.barbershop ? ` · ${barber.barbershop.name}` : ""}
+                  </p>
+                </div>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p className="rounded-2xl border border-dashed p-6 text-center text-sm text-muted-foreground">
+            Você ainda não salvou nenhum profissional.
+          </p>
+        )}
+      </section>
       </main>
     </div>
   )

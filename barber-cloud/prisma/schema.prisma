@@ -85,6 +85,9 @@ model User {
   reviews           Review[]
   barbershopReviews BarbershopReview[]
   favorites         FavoriteBarbershop[]
+  favoriteBarbers   FavoriteBarber[]
+  notifications     UserNotification[]
+  auditLogs         AuditLog[]            @relation("AuditLogActor")
 
   // Convites enviados (como dono de barbearia) e recebidos (como barbeiro convidado)
   invitesSent     BarbershopInvite[] @relation("InviteSender")
@@ -133,6 +136,8 @@ model Barber {
   reviews         Review[]
   portfolioPhotos BarberPortfolioPhoto[]
   workSchedules  BarberWorkSchedule[]
+  serviceConfigs BarberServiceConfig[]
+  favoritedBy    FavoriteBarber[]
 }
 
 model BarberWorkSchedule {
@@ -184,6 +189,7 @@ model Barbershop {
   photos        BarbershopPhoto[]
   cashMovements CashMovement[]
   licenses      PlanLicense[]
+  auditLogs     AuditLog[]
 }
 
 model BarbeshopService {
@@ -198,6 +204,24 @@ model BarbeshopService {
   barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
 
   bookings Booking[]
+  barberConfigs BarberServiceConfig[]
+}
+
+model BarberServiceConfig {
+  id String @id @default(cuid())
+
+  barberId String
+  barber   Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
+
+  serviceId String
+  service   BarbeshopService @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  enabled        Boolean @default(true)
+  customPrice    Decimal? @db.Decimal(10, 2)
+  customDuration Int?
+
+  @@unique([barberId, serviceId])
+  @@index([serviceId])
 }
 
 model Booking {
@@ -216,6 +240,8 @@ model Booking {
   barber   Barber @relation(fields: [barberId], references: [id])
 
   date DateTime
+  agreedPrice    Decimal? @db.Decimal(10, 2)
+  durationMinutes Int?
 
   status      BookingStatus     @default(EM_ANDAMENTO)
   cancelledAt DateTime?
@@ -342,6 +368,55 @@ model FavoriteBarbershop {
   createdAt DateTime @default(now())
 
   @@unique([userId, barbershopId])
+}
+
+model FavoriteBarber {
+  id String @id @default(cuid())
+
+  userId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  barberId String
+  barber   Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, barberId])
+  @@index([barberId])
+}
+
+model UserNotification {
+  id String @id @default(cuid())
+
+  userId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title     String
+  message   String
+  bookingId String?
+  readAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
+
+model AuditLog {
+  id String @id @default(cuid())
+
+  barbershopId String
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+
+  actorId String
+  actor   User @relation("AuditLogActor", fields: [actorId], references: [id], onDelete: Restrict)
+
+  action     String
+  entityType String
+  entityId   String?
+  details    Json?
+  createdAt  DateTime @default(now())
+
+  @@index([barbershopId, createdAt])
+  @@index([actorId])
 }
 
 /// Convite de um dono de barbearia para um barbeiro se juntar à equipe.
