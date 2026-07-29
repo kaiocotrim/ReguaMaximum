@@ -469,7 +469,12 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
                   acceptsBookings={barbershop.acceptsBookings}
                   barbers={barbershop.barbers.map((barber) => ({
                     id: barber.id,
-                    user: { name: barber.user.name },
+                    avatar:
+                      normalizeAllowedImageUrl(barber.avatar) ??
+                      normalizeAllowedImageUrl(barber.user.image),
+                    user: {
+                      name: barber.nome ?? barber.user.name,
+                    },
                   }))}
                 />
               ))

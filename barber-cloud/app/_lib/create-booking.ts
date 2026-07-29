@@ -9,11 +9,12 @@ type BookingInput = {
   barbershopId: string
   serviceId: string
   barberId: string
-  date: Date
+  date: string
+  time: string
 }
 
 type DayAvailabilityInput = Pick<BookingInput, "barbershopId" | "serviceId"> & {
-  date: Date
+  date: string
 }
 
 type BarberAvailabilityInput = DayAvailabilityInput & {
@@ -39,6 +40,7 @@ type BookingWithDuration = {
 const DEFAULT_OPENING_TIME = "08:00"
 const DEFAULT_CLOSING_TIME = "19:00"
 const SLOT_INTERVAL_MINUTES = 30
+const BOOKING_TIME_ZONE = "America/Sao_Paulo"
 const BOOKING_DISABLED_MESSAGE =
   "Esta barbearia está temporariamente fechada para novos agendamentos."
 
@@ -71,24 +73,101 @@ function clockToMinutes(value: string | null, fallback: string) {
   return hours * 60 + minutes
 }
 
-function startOfSelectedDay(date: Date) {
-  const dayStart = new Date(date)
-  if (Number.isNaN(dayStart.getTime())) {
+function parseDateKey(value: string) {
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/)
+  if (!match) throw new Error("Data inválida.")
+
+  const year = Number(match[1])
+  const month = Number(match[2])
+  const day = Number(match[3])
+  const testDate = new Date(Date.UTC(year, month - 1, day))
+
+  if (
+    testDate.getUTCFullYear() !== year ||
+    testDate.getUTCMonth() !== month - 1 ||
+    testDate.getUTCDate() !== day
+  ) {
     throw new Error("Data inválida.")
   }
-  dayStart.setHours(0, 0, 0, 0)
-  return dayStart
+
+  return { year, month, day }
+}
+
+function timeZoneOffsetMs(date: Date) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: BOOKING_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(date)
+  const values = Object.fromEntries(
+    parts
+      .filter((part) => part.type !== "literal")
+      .map((part) => [part.type, Number(part.value)]),
+  )
+
+  return (
+    Date.UTC(
+      values.year,
+      values.month - 1,
+      values.day,
+      values.hour,
+      values.minute,
+      values.second,
+    ) - date.getTime()
+  )
+}
+
+function bookingDateTime(dateKey: string, time: string) {
+  const { year, month, day } = parseDateKey(dateKey)
+  const timeMatch = time.match(/^(\d{2}):(\d{2})$/)
+  if (!timeMatch) throw new Error("Horário inválido.")
+
+  const hours = Number(timeMatch[1])
+  const minutePart = Number(timeMatch[2])
+  if (hours > 23 || minutePart > 59) {
+    throw new Error("Horário inválido.")
+  }
+
+  const intendedUtc = Date.UTC(
+    year,
+    month - 1,
+    day,
+    hours,
+    minutePart,
+  )
+  let result = new Date(intendedUtc)
+
+  for (let attempt = 0; attempt < 2; attempt++) {
+    result = new Date(intendedUtc - timeZoneOffsetMs(result))
+  }
+
+  return result
+}
+
+function nextDateKey(dateKey: string) {
+  const { year, month, day } = parseDateKey(dateKey)
+  const nextDay = new Date(Date.UTC(year, month - 1, day + 1))
+  return [
+    nextDay.getUTCFullYear(),
+    String(nextDay.getUTCMonth() + 1).padStart(2, "0"),
+    String(nextDay.getUTCDate()).padStart(2, "0"),
+  ].join("-")
 }
 
 function createAvailableSlots({
-  dayStart,
+  dateKey,
   openingTime,
   closingTime,
   serviceDuration,
   bookings,
   barberId,
 }: {
-  dayStart: Date
+  dateKey: string
   openingTime: string | null
   closingTime: string | null
   serviceDuration: number
@@ -111,7 +190,10 @@ function createAvailableSlots({
     minutes + serviceDuration <= closingMinutes;
     minutes += SLOT_INTERVAL_MINUTES
   ) {
-    const slotStart = new Date(dayStart.getTime() + minutes * 60_000)
+    const hours = String(Math.floor(minutes / 60)).padStart(2, "0")
+    const mins = String(minutes % 60).padStart(2, "0")
+    const slotTime = `${hours}:${mins}`
+    const slotStart = bookingDateTime(dateKey, slotTime)
     const slotEnd = new Date(slotStart.getTime() + serviceDuration * 60_000)
 
     if (slotStart.getTime() <= now) continue
@@ -128,9 +210,7 @@ function createAvailableSlots({
     )
 
     if (!hasConflict) {
-      const hours = String(Math.floor(minutes / 60)).padStart(2, "0")
-      const mins = String(minutes % 60).padStart(2, "0")
-      availableSlots.push(`${hours}:${mins}`)
+      availableSlots.push(slotTime)
     }
   }
 
@@ -141,9 +221,9 @@ async function getDayAvailability(
   tx: typeof db,
   data: DayAvailabilityInput,
 ) {
-  const dayStart = startOfSelectedDay(data.date)
-  const dayEnd = new Date(dayStart)
-  dayEnd.setDate(dayEnd.getDate() + 1)
+  parseDateKey(data.date)
+  const dayStart = bookingDateTime(data.date, "00:00")
+  const dayEnd = bookingDateTime(nextDateKey(data.date), "00:00")
 
   const [service, barbershop, barbers, longestService] = await Promise.all([
     tx.barbeshopService.findFirst({
@@ -197,7 +277,7 @@ async function getDayAvailability(
     barbers.map((barber) => [
       barber.id,
       createAvailableSlots({
-        dayStart,
+        dateKey: data.date,
         openingTime: barbershop.horarioAbertura,
         closingTime: barbershop.horarioFechamento,
         serviceDuration: service.duration,
@@ -212,7 +292,7 @@ async function getDayAvailability(
 
 async function unavailableBarbers(
   tx: typeof db,
-  data: Pick<BookingInput, "barbershopId" | "serviceId" | "date">,
+  data: Pick<BookingInput, "barbershopId" | "serviceId" | "date" | "time">,
 ) {
   const service = await tx.barbeshopService.findFirst({
     where: { id: data.serviceId, barbershopId: data.barbershopId },
@@ -223,7 +303,7 @@ async function unavailableBarbers(
     throw new Error("Serviço não encontrado nesta barbearia.")
   }
 
-  const requestedStart = new Date(data.date)
+  const requestedStart = bookingDateTime(data.date, data.time)
   const requestedEnd = new Date(
     requestedStart.getTime() + service.duration * 60_000,
   )
@@ -318,9 +398,18 @@ export async function createBooking(data: BookingInput) {
     return { success: false as const, error: "Faça login para agendar." }
   }
 
-  const requestedDate = new Date(data.date)
+  let requestedDate: Date
+
+  try {
+    requestedDate = bookingDateTime(data.date, data.time)
+  } catch {
+    return {
+      success: false as const,
+      error: "Escolha uma data e um horário válidos.",
+    }
+  }
+
   if (
-    Number.isNaN(requestedDate.getTime()) ||
     requestedDate.getTime() <= Date.now()
   ) {
     return {
@@ -344,25 +433,17 @@ export async function createBooking(data: BookingInput) {
               throw new Error("Barbeiro não pertence a esta barbearia.")
             }
 
-            const dayStart = startOfSelectedDay(requestedDate)
-            const requestedMinutes =
-              (requestedDate.getTime() - dayStart.getTime()) / 60_000
-            const requestedTime =
-              Number.isInteger(requestedMinutes) && requestedMinutes >= 0
-                ? `${String(Math.floor(requestedMinutes / 60)).padStart(2, "0")}:${String(requestedMinutes % 60).padStart(2, "0")}`
-                : ""
             const { timesByBarber } = await getDayAvailability(
               tx as unknown as typeof db,
               {
                 barbershopId: data.barbershopId,
                 serviceId: data.serviceId,
-                date: dayStart,
+                date: data.date,
               },
             )
 
             if (
-              !requestedTime ||
-              !timesByBarber.get(data.barberId)?.includes(requestedTime)
+              !timesByBarber.get(data.barberId)?.includes(data.time)
             ) {
               throw new Error(
                 "Este horário não está mais disponível. Escolha outro horário.",
@@ -374,7 +455,8 @@ export async function createBooking(data: BookingInput) {
               {
                 barbershopId: data.barbershopId,
                 serviceId: data.serviceId,
-                date: requestedDate,
+                date: data.date,
+                time: data.time,
               },
             )
             if (unavailableBarberIds.includes(data.barberId)) {
