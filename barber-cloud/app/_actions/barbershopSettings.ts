@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth"
 
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { db } from "@/app/_lib/prisma"
+import { assertAllowedImageUrl } from "@/app/_lib/image-url"
 
 export type BarbershopDetailsFormState = {
   success: boolean
@@ -147,4 +148,68 @@ export async function updateBarbershopBookingAvailability(enabled: boolean) {
   }
 
   return { success: true as const, enabled }
+}
+
+function validateBrandImageUrl(value: string, label: string) {
+  const candidate = value.trim()
+  if (/^\/[a-zA-Z0-9/_-]+\.(?:png|jpe?g|webp)$/i.test(candidate)) {
+    return candidate
+  }
+  return assertAllowedImageUrl(candidate, `A URL da ${label} não é permitida.`)
+}
+
+export async function updateBarbershopBrandImages(input: {
+  imageUrl: string
+  coverUrl: string
+}) {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) {
+    return { success: false as const, error: "Não autorizado." }
+  }
+
+  let imageUrl: string
+  let coverUrl: string | null
+  try {
+    imageUrl = validateBrandImageUrl(input.imageUrl, "foto de perfil")
+    coverUrl = input.coverUrl.trim()
+      ? validateBrandImageUrl(input.coverUrl, "foto de capa")
+      : null
+  } catch (error) {
+    return {
+      success: false as const,
+      error: error instanceof Error ? error.message : "Imagem inválida.",
+    }
+  }
+
+  const barbershop = await db.barbershop.findFirst({
+    where: { ownerId: session.user.id },
+    select: { id: true },
+  })
+  if (!barbershop) {
+    return { success: false as const, error: "Barbearia não encontrada." }
+  }
+
+  await db.$transaction([
+    db.barbershop.update({
+      where: { id: barbershop.id },
+      data: { imageUrl, capaUrl: coverUrl },
+    }),
+    db.auditLog.create({
+      data: {
+        barbershopId: barbershop.id,
+        actorId: session.user.id,
+        action: "BARBERSHOP_IMAGES_UPDATED",
+        entityType: "Barbershop",
+        entityId: barbershop.id,
+      },
+    }),
+  ])
+
+  revalidatePath("/dashboard")
+  revalidatePath("/dashboard/perfil")
+  revalidatePath("/")
+  revalidatePath("/barbershops")
+  revalidatePath(`/barbershops/${barbershop.id}`)
+
+  return { success: true as const }
 }

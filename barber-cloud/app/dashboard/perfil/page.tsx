@@ -7,6 +7,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { db } from "@/app/_lib/prisma"
 import { Card } from "@/app/_components/ui/card"
 import { BarbershopGalleryManager } from "@/app/_components/dashboardComponents/BarbershopGalleryManager"
+import { BarbershopBrandImagesDialog } from "@/app/_components/dashboardComponents/BarbershopBrandImagesDialog"
 
 export default async function PerfilBarber({
   searchParams,
@@ -76,6 +77,12 @@ export default async function PerfilBarber({
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <BarbershopBrandImagesDialog
+            imageUrl={barbershop.imageUrl}
+            coverUrl={barbershop.capaUrl}
+            target="cover"
+            className="absolute right-4 top-4 z-10"
+          />
         </div>
 
         <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
@@ -85,6 +92,12 @@ export default async function PerfilBarber({
               alt={barbershop.name}
               fill
               className="object-cover"
+            />
+            <BarbershopBrandImagesDialog
+              imageUrl={barbershop.imageUrl}
+              coverUrl={barbershop.capaUrl}
+              target="logo"
+              className="absolute bottom-0.5 right-0.5 z-10 size-7"
             />
           </div>
           <div className="min-w-0 flex-1">

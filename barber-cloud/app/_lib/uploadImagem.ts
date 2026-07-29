@@ -83,19 +83,19 @@ async function requireBarberForBrand(
   userId: string,
   purpose: "barbershop-logo" | "barbershop-cover",
 ): Promise<UploadTarget> {
-  const [user, barber] = await Promise.all([
+  const [user, barbershop] = await Promise.all([
     db.user.findUnique({
       where: { id: userId },
       select: { role: true },
     }),
-    db.barber.findUnique({
-      where: { userId },
+    db.barbershop.findFirst({
+      where: { ownerId: userId },
       select: { id: true },
     }),
   ])
 
-  if (user?.role !== "BARBER" || !barber) {
-    throw new Error("Apenas barbeiros podem enviar imagens da barbearia.")
+  if (user?.role !== "BARBER" || !barbershop) {
+    throw new Error("Apenas o proprietário pode alterar estas imagens.")
   }
 
   return purpose === "barbershop-logo"
