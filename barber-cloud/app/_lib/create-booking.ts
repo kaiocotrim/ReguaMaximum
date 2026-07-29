@@ -37,6 +37,16 @@ type BookingWithDuration = {
   service: { duration: number }
 }
 
+type BarberForAvailability = {
+  id: string
+  workSchedules: {
+    weekday: number
+    enabled: boolean
+    startTime: string
+    endTime: string
+  }[]
+}
+
 const DEFAULT_OPENING_TIME = "08:00"
 const DEFAULT_CLOSING_TIME = "19:00"
 const SLOT_INTERVAL_MINUTES = 30
@@ -159,6 +169,11 @@ function nextDateKey(dateKey: string) {
   ].join("-")
 }
 
+function weekdayFromDateKey(dateKey: string) {
+  const { year, month, day } = parseDateKey(dateKey)
+  return new Date(Date.UTC(year, month - 1, day)).getUTCDay()
+}
+
 function createAvailableSlots({
   dateKey,
   openingTime,
@@ -239,8 +254,19 @@ async function getDayAvailability(
       },
     }),
     tx.barber.findMany({
-      where: { barbershopId: data.barbershopId },
-      select: { id: true },
+      where: { barbershopId: data.barbershopId, isActive: true },
+      select: {
+        id: true,
+        workSchedules: {
+          where: { weekday: weekdayFromDateKey(data.date) },
+          select: {
+            weekday: true,
+            enabled: true,
+            startTime: true,
+            endTime: true,
+          },
+        },
+      },
     }),
     tx.barbeshopService.aggregate({
       where: { barbershopId: data.barbershopId },
@@ -274,17 +300,24 @@ async function getDayAvailability(
   })
 
   const timesByBarber = new Map(
-    barbers.map((barber) => [
-      barber.id,
-      createAvailableSlots({
-        dateKey: data.date,
-        openingTime: barbershop.horarioAbertura,
-        closingTime: barbershop.horarioFechamento,
-        serviceDuration: service.duration,
-        bookings,
-        barberId: barber.id,
-      }),
-    ]),
+    (barbers as BarberForAvailability[]).map((barber) => {
+      const schedule = barber.workSchedules[0]
+      const times =
+        schedule && !schedule.enabled
+          ? []
+          : createAvailableSlots({
+              dateKey: data.date,
+              openingTime:
+                schedule?.startTime ?? barbershop.horarioAbertura,
+              closingTime:
+                schedule?.endTime ?? barbershop.horarioFechamento,
+              serviceDuration: service.duration,
+              bookings,
+              barberId: barber.id,
+            })
+
+      return [barber.id, times] as const
+    }),
   )
 
   return { timesByBarber }
@@ -426,7 +459,11 @@ export async function createBooking(data: BookingInput) {
         booking = await db.$transaction(
           async (tx) => {
             const barber = await tx.barber.findFirst({
-              where: { id: data.barberId, barbershopId: data.barbershopId },
+              where: {
+                id: data.barberId,
+                barbershopId: data.barbershopId,
+                isActive: true,
+              },
               select: { id: true },
             })
             if (!barber) {

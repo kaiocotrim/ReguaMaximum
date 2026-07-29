@@ -6,25 +6,54 @@ import SearchBar from "../_components/SearchBar"
 type BarbershopsPageProps = {
   searchParams: Promise<{
     search?: string
+    service?: string
   }>
 }
 
 const BarbershopsPage = async ({ searchParams }: BarbershopsPageProps) => {
-  const { search } = await searchParams
+  const { search, service } = await searchParams
+  const searchTerm = search?.trim()
+  const serviceTerm = service?.trim()
 
   const barbershops = await db.barbershop.findMany({
     where: {
-      name: {
-        contains: search || "",
-        mode: "insensitive",
-      },
+      AND: [
+        searchTerm
+          ? {
+              name: {
+                contains: searchTerm,
+                mode: "insensitive",
+              },
+            }
+          : {},
+        serviceTerm
+          ? {
+              services: {
+                some: {
+                  OR: [
+                    {
+                      name: {
+                        contains: serviceTerm,
+                        mode: "insensitive",
+                      },
+                    },
+                    {
+                      description: {
+                        contains: serviceTerm,
+                        mode: "insensitive",
+                      },
+                    },
+                  ],
+                },
+              },
+            }
+          : {},
+      ],
     },
     include: {
       reviews: { select: { rating: true } },
     },
   })
-
-  const searchTerm = search?.trim()
 
   return (
     <div className="min-h-screen bg-background">
@@ -37,7 +66,7 @@ const BarbershopsPage = async ({ searchParams }: BarbershopsPageProps) => {
               Encontre sua barbearia
             </h1>
             <p className="text-sm text-muted-foreground lg:text-base">
-              Pesquise pelo nome e escolha onde será o seu próximo atendimento.
+              Pesquise pelo nome ou encontre barbearias pelo serviço desejado.
             </p>
           </div>
           <div className="w-full lg:max-w-3xl">
@@ -52,7 +81,9 @@ const BarbershopsPage = async ({ searchParams }: BarbershopsPageProps) => {
                 Barbearias
               </p>
               <h2 className="mt-1 text-xl font-bold lg:text-2xl">
-                {searchTerm
+                {serviceTerm
+                  ? `Barbearias com ${serviceTerm}`
+                  : searchTerm
                   ? `Resultados para "${searchTerm}"`
                   : "Todas as barbearias"}
               </h2>
@@ -77,7 +108,9 @@ const BarbershopsPage = async ({ searchParams }: BarbershopsPageProps) => {
               <div>
                 <h3 className="font-semibold">Nenhuma barbearia encontrada</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Tente pesquisar usando outro nome.
+                  {serviceTerm
+                    ? `Nenhuma barbearia cadastrou o serviço "${serviceTerm}" ainda.`
+                    : "Tente pesquisar usando outro nome."}
                 </p>
               </div>
             </div>

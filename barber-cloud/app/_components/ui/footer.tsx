@@ -1,5 +1,8 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import {
   CalendarDays,
   CircleHelp,
@@ -31,6 +34,12 @@ const linkClass =
   "flex min-h-10 items-center rounded-lg px-2 text-[13px] leading-4 text-[#44504a] transition-colors hover:bg-black/[0.04] hover:text-[#6d8d08] dark:text-white/65 dark:hover:bg-white/[0.05] dark:hover:text-[#C3F32C] lg:min-h-0 lg:w-fit lg:px-0 lg:text-sm lg:leading-normal lg:hover:bg-transparent"
 
 const Footer = () => {
+  const pathname = usePathname()
+
+  if (pathname === "/dashboard" || pathname.startsWith("/dashboard/")) {
+    return null
+  }
+
   return (
     <footer className="relative overflow-hidden border-t border-black/10 bg-[#f3f5f1] text-[#18201c] tracking-normal dark:border-white/5 dark:bg-[#0e100f] dark:text-white">
       <div

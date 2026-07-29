@@ -201,6 +201,15 @@
     @apply border-border outline-ring/50;
   }
 
+  html.theme-transition *,
+  html.theme-transition *::before,
+  html.theme-transition *::after {
+    transition-property: background-color, border-color, color, fill, stroke,
+      box-shadow;
+    transition-duration: 350ms;
+    transition-timing-function: ease-in-out;
+  }
+
   body {
     @apply bg-background text-foreground h-full;
     font-family: "Satoshi", "Inter", "General Sans", sans-serif;
@@ -453,6 +462,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html.theme-transition *,
+  html.theme-transition *::before,
+  html.theme-transition *::after {
+    transition-duration: 0.01ms;
+  }
+
   .barbershop-story-pulse,
   .ruler-logo-animation,
   .ruler-logo-jump,

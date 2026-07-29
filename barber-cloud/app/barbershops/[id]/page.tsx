@@ -98,6 +98,7 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
         orderBy: { createdAt: "desc" },
       },
       barbers: {
+        where: { isActive: true },
         select: {
           id: true,
           nome: true,

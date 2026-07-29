@@ -122,6 +122,8 @@ model Barber {
   bio            String?
   cidade         String?
   especialidades String[]
+  isActive       Boolean  @default(true)
+  jobTitle       String   @default("Barbeiro")
 
   barbershopId String?
   barbershop   Barbershop? @relation(fields: [barbershopId], references: [id])
@@ -130,6 +132,22 @@ model Barber {
   bookings        Booking[]
   reviews         Review[]
   portfolioPhotos BarberPortfolioPhoto[]
+  workSchedules  BarberWorkSchedule[]
+}
+
+model BarberWorkSchedule {
+  id String @id @default(cuid())
+
+  barberId String
+  barber   Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
+
+  weekday  Int
+  enabled  Boolean @default(true)
+  startTime String
+  endTime   String
+
+  @@unique([barberId, weekday])
+  @@index([barberId])
 }
 
 model Barbershop {

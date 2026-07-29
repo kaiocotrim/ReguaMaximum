@@ -1,5 +1,4 @@
 import Link from "next/link"
-import Image from "next/image"
 import {
   BarChart3,
   CalendarDays,
@@ -112,7 +111,7 @@ export default function AjudaPage() {
 
       <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
         <section className="overflow-hidden rounded-3xl border border-border bg-card">
-          <div className="grid bg-[radial-gradient(circle_at_top_right,rgba(195,243,44,0.22),transparent_38%)] lg:grid-cols-[minmax(0,0.9fr)_minmax(420px,1.1fr)]">
+          <div className="bg-[radial-gradient(circle_at_top_right,rgba(195,243,44,0.22),transparent_38%)]">
             <div className="px-6 py-10 sm:px-10 sm:py-14">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#C3F32C] text-black">
                 <CircleHelp className="h-6 w-6" />
@@ -145,16 +144,6 @@ export default function AjudaPage() {
                   </Link>
                 </Button>
               </div>
-            </div>
-            <div className="relative min-h-64 overflow-hidden border-t border-border bg-[#dff67e] lg:min-h-full lg:border-l lg:border-t-0">
-              <Image
-                src="/AJUDA.png"
-                alt="Atendente da central de ajuda com dúvidas frequentes, contato e tutoriais"
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 55vw"
-                className="object-cover"
-              />
             </div>
           </div>
         </section>

@@ -163,12 +163,20 @@ export default function HomeClient({
           custom={2}
         >
           {[
-            { src: "/cabeloIcon.png", label: "Cabelo" },
-            { src: "/barbarIcon.png", label: "Barba" },
-            { src: "/acabamentoIcon.png", label: "Acabamento" },
-            { src: "/acabamentoIcon.png", label: "Barbearias perto de você" },
-            { src: "/acabamentoIcon.png", label: "Luzes" },
-          ].map(({ src, label }) => (
+            { src: "/cabeloIcon.png", label: "Cabelo", service: "Cabelo" },
+            { src: "/barbarIcon.png", label: "Barba", service: "Barba" },
+            {
+              src: "/acabamentoIcon.png",
+              label: "Acabamento",
+              service: "Acabamento",
+            },
+            {
+              src: "/acabamentoIcon.png",
+              label: "Barbearias perto de você",
+              href: "/map",
+            },
+            { src: "/acabamentoIcon.png", label: "Luzes", service: "Luzes" },
+          ].map(({ src, label, service, href }) => (
             <motion.div
               key={label}
               whileHover={{ scale: 1.05 }}
@@ -180,6 +188,13 @@ export default function HomeClient({
               }}
             >
               <Button
+                type="button"
+                onClick={() =>
+                  router.push(
+                    href ??
+                      `/barbershops?service=${encodeURIComponent(service ?? "")}`,
+                  )
+                }
                 className="cursor-pointer gap-1 whitespace-nowrap p-4 bg-card hover:bg-[#C3F32C] dark:bg-secondary"
                 variant="secondary"
               >
