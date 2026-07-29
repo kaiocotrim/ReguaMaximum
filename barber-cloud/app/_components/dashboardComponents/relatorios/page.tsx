@@ -25,8 +25,15 @@ import {
 
 const CHART_COLOR = "#C3F32C"
 
+type ReportKey = "agendamentos" | "barbeiros" | "clientes"
+type Report = {
+  label: string
+  description: string
+  data: { month: string; total: number }[]
+}
+
 // Dados fake — depois é só trocar pelas queries reais do Prisma
-const reports = {
+const reports: Record<ReportKey, Report> = {
   agendamentos: {
     label: "Agendamentos",
     description: "Total de agendamentos nos últimos 6 meses",
@@ -63,9 +70,7 @@ const reports = {
       { month: "Jun", total: 95 },
     ],
   },
-} as const
-
-type ReportKey = keyof typeof reports
+}
 
 const Relatorios = () => {
   const [active, setActive] = useState<ReportKey>("agendamentos")

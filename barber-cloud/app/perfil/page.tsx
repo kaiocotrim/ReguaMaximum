@@ -13,7 +13,7 @@ import {
 } from "../_components/ui/accordion"
 
 // Importações para animações fluidas na interface
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, type Variants } from "framer-motion"
 
 // Componentes que serão renderizados após a escolha do perfil
 import CadastroBarbeiro from "@/app/_components/CadastroBarbeiro"
@@ -23,7 +23,7 @@ import { ThemeToggle } from "@/app/_components/ui/theme-toggle"
 // --- CONFIGURAÇÕES DE ANIMAÇÃO (FRAMER MOTION) ---
 
 // Variante para o container dos cards (controla o atraso em cascata dos filhos)
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: {},
   visible: {
     transition: {
@@ -33,7 +33,7 @@ const containerVariants = {
 }
 
 // Variante para os cards individuais (efeito de surgir de baixo para cima)
-const cardVariants = {
+const cardVariants: Variants = {
   hidden: { opacity: 0, y: 40 },
   visible: {
     opacity: 1,
