@@ -2,8 +2,6 @@ import "server-only"
 
 import { Resend } from "resend"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 function escapeHtml(value: string) {
   return value.replace(/[&<>"']/g, (character) => {
     switch (character) {
@@ -32,6 +30,13 @@ export const sendBookingEmail = async (data: {
   date: string
   time: string
 }) => {
+  const resendApiKey = process.env.RESEND_API_KEY
+
+  if (!resendApiKey) {
+    throw new Error("RESEND_API_KEY não configurada")
+  }
+
+  const resend = new Resend(resendApiKey)
   const safeUserName = escapeHtml(data.userName)
   const safeBarbershopName = escapeHtml(data.barbershopName)
   const safeServiceName = escapeHtml(data.serviceName)
