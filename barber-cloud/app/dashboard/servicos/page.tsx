@@ -8,7 +8,7 @@ export default async function ServicesPage() {
 
   return (
     <div className="space-y-8 p-6">
-      <ServicesHeader />
+      <ServicesHeader total={services.length} />
 
       {services.length === 0 ? (
         <EmptyServices />
