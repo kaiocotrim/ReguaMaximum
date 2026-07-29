@@ -384,8 +384,79 @@
   animation: barbershop-story-pulse 2s ease-out infinite;
 }
 
+@keyframes ruler-stand-up {
+  0%,
+  16% {
+    transform: rotate(0deg) translateY(0);
+  }
+  32%,
+  48% {
+    transform: rotate(-90deg) translateX(2px);
+  }
+  63% {
+    transform: rotate(7deg) translateY(-1px);
+  }
+  70% {
+    transform: rotate(-3deg);
+  }
+  77%,
+  100% {
+    transform: rotate(0deg) translateY(0);
+  }
+}
+
+.ruler-logo-animation {
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.ruler-logo-animation:hover {
+  animation: ruler-stand-up 1.8s cubic-bezier(0.4, 0, 0.2, 1) 1;
+}
+
+@keyframes ruler-logo-jump {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  38% {
+    transform: translateY(-10px) scale(1.06);
+  }
+  65% {
+    transform: translateY(2px) scale(0.98);
+  }
+  82% {
+    transform: translateY(-3px) scale(1.01);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ruler-logo-jump {
+  animation: ruler-logo-jump 480ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes barbershop-star-gentle-spin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  45% {
+    transform: rotate(180deg) scale(1.08);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+.group:hover .barbershop-card-star {
+  animation: barbershop-star-gentle-spin 1.4s ease-in-out 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .barbershop-story-pulse {
+  .barbershop-story-pulse,
+  .ruler-logo-animation,
+  .ruler-logo-jump,
+  .barbershop-card-star {
     animation: none;
   }
 }
