@@ -13,7 +13,6 @@ import {
   getClientIp,
 } from "@/app/_lib/server-rate-limit"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
 const GENERIC_MESSAGE =
   "Se existir uma conta com esse e-mail, enviaremos as instruções de recuperação."
 
@@ -103,11 +102,17 @@ export async function POST(request: Request) {
 
     try {
       const baseUrl = process.env.NEXTAUTH_URL
+      const resendApiKey = process.env.RESEND_API_KEY
 
       if (!baseUrl) {
         throw new Error("NEXTAUTH_URL não configurada")
       }
 
+      if (!resendApiKey) {
+        throw new Error("RESEND_API_KEY não configurada")
+      }
+
+      const resend = new Resend(resendApiKey)
       const resetUrl = new URL("/reset-password", baseUrl)
       resetUrl.searchParams.set("token", token)
 
