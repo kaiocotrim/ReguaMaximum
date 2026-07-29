@@ -1,11 +1,13 @@
 import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
-import { Moon, Sun } from "lucide-react"
+import Link from "next/link"
+import { ChevronRight, CircleHelp, Moon, Sun } from "lucide-react"
 import Header from "@/app/_components/header"
 import { ThemeToggle } from "@/app/_components/ui/theme-toggle"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { db } from "@/app/_lib/prisma"
 import { UserProfileSettings } from "@/app/_components/UserProfileSettings"
+import { Button } from "@/app/_components/ui/button"
 
 export default async function ConfiguracoesPage() {
   const session = await getServerSession(authOptions)
@@ -52,6 +54,27 @@ export default async function ConfiguracoesPage() {
               </div>
             </div>
             <ThemeToggle />
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-border bg-card p-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#C3F32C]/20">
+              <CircleHelp className="h-5 w-5 text-[#71910d] dark:text-[#C3F32C]" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold">Central de ajuda</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                Veja o manual completo de agendamentos, serviços, equipe,
+                pagamentos, relatórios e configurações.
+              </p>
+            </div>
+            <Button asChild variant="outline" className="h-9 shrink-0">
+              <Link href="/ajuda">
+                Ver manual
+                <ChevronRight />
+              </Link>
+            </Button>
           </div>
         </div>
       </main>

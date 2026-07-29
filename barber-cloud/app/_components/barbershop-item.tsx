@@ -26,7 +26,7 @@ const BarbershopItem = ({ barbershop }: BarbershopItemProps) => {
       : null
 
   return (
-    <Card className="h-full w-full min-w-[167px] rounded-2xl p-1 transition-all hover:bg-accent lg:min-w-0">
+    <Card className="h-full w-full min-w-[167px] rounded-2xl p-1 transition-all hover:bg-background lg:min-w-0">
       <CardContent className="p-0 px-1 pt-0 ">
         <div className="relative h-[159px] w-full sm:h-[180px] lg:h-[190px]">
           <Image

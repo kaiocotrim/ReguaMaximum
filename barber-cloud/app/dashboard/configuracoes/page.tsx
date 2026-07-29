@@ -4,11 +4,13 @@ import {
   CalendarClock,
   CheckCircle2,
   Clock3,
+  Store,
   Settings2,
   ShieldCheck,
 } from "lucide-react"
 
 import { BarbershopAvailabilitySettings } from "@/app/_components/dashboardComponents/BarbershopAvailabilitySettings"
+import { BarbershopDetailsForm } from "@/app/_components/dashboardComponents/BarbershopDetailsForm"
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/_components/ui/card"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { PlanLicenseStatus } from "@/app/generated/prisma/client"
@@ -52,6 +54,13 @@ export default async function ConfiguracoesPage() {
     select: {
       id: true,
       name: true,
+      address: true,
+      phones: true,
+      description: true,
+      cidade: true,
+      instagram: true,
+      horarioAbertura: true,
+      horarioFechamento: true,
       acceptsBookings: true,
       licenses: {
         select: {
@@ -93,9 +102,27 @@ export default async function ConfiguracoesPage() {
           Configurações
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Controle o recebimento de novos agendamentos e acompanhe sua licença.
+          Atualize os dados públicos, controle os agendamentos e acompanhe sua licença.
         </p>
       </div>
+
+      <Card className="mb-5 rounded-3xl border-border/60 shadow-sm">
+        <CardHeader className="pb-4">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#C3F32C]/20 text-[#557500] dark:text-[#C3F32C]">
+            <Store className="h-5 w-5" />
+          </div>
+          <CardTitle className="mt-3 text-xl">
+            Informações da barbearia
+          </CardTitle>
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            Estes dados aparecem para os clientes no perfil público da sua
+            barbearia.
+          </p>
+        </CardHeader>
+        <CardContent>
+          <BarbershopDetailsForm barbershop={barbershop} />
+        </CardContent>
+      </Card>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
         <Card className="rounded-3xl border-border/60 shadow-sm">
