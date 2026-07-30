@@ -37,10 +37,9 @@ export default async function BarbershopCreationLayout({
     }),
   ])
 
-  if (user?.role !== UserRole.BARBER || !barber) redirect("/")
+  if (user?.role !== UserRole.BARBER || !barber) redirect("/inicio")
   if (ownedBarbershop) redirect("/dashboard")
   if (barber.barbershopId || !claimedLicense) redirect("/minha-barbearia")
 
   return children
 }
-

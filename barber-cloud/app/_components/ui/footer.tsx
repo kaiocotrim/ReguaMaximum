@@ -39,6 +39,7 @@ const routesWithoutFooter = [
   "/perfil",
   "/barbiecreation",
   "/admin",
+  "/sobre",
 ]
 
 const Footer = () => {
@@ -46,6 +47,7 @@ const Footer = () => {
   const normalizedPathname = pathname.toLowerCase()
 
   if (
+    normalizedPathname === "/" ||
     normalizedPathname === "/dashboard" ||
     normalizedPathname.startsWith("/dashboard/") ||
     routesWithoutFooter.some(
@@ -68,7 +70,7 @@ const Footer = () => {
         <div className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-8 lg:grid-cols-[1.15fr_0.8fr_0.8fr_1.05fr] lg:gap-14">
           <div className="col-span-2 flex flex-col items-center text-center lg:col-span-1 lg:items-start lg:text-left">
             <Link
-              href="/"
+              href="/inicio"
               aria-label="Ir para o início"
               className="flex h-20 w-36 items-center justify-center rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5 transition-transform duration-300 hover:-translate-y-1 sm:h-24 sm:w-40 lg:h-28 lg:w-44 lg:p-5"
             >

@@ -1,315 +1,274 @@
-// import Image from "next/image"
-// import { Button } from "@/app/_components/ui/button"
-// import Header from "./_components/header"
-// import { Input } from "./_components/ui/input"
-// import { SearchIcon, MapPin } from "lucide-react"
-// import { Card, CardContent } from "./_components/ui/card"
-// import { Badge } from "./_components/ui/badge"
-// import { Avatar, AvatarImage } from "./_components/ui/avatar"
-// import BarbershopItem from "./_components/barbershop-item"
-// import { db } from "./_lib/prisma"
-// import SearchBar from "./_components/SearchBar"
+import type { Metadata } from "next"
+import Image from "next/image"
+import Link from "next/link"
+import {
+  ArrowRight,
+  BarChart3,
+  CalendarCheck2,
+  Check,
+  Users,
+} from "lucide-react"
 
-// {
-//   /*  Este componente é a página inicial da aplicação BarberCloud. Ele exibe um cabeçalho, uma saudação personalizada, uma barra de pesquisa, botões de busca rápida para diferentes categorias de serviços, um banner promocional, seções para agendamentos e recomendações de barbearias, além de um rodapé. A página utiliza o Prisma para buscar dados das barbearias no banco de dados e exibi-los usando componentes personalizados para criar uma interface atraente e funcional.*/
-// }
-// export default async function Home() {
-//   const barbershops = await db.barbershop.findMany()
+import LandingPhoneDemo from "./_components/landing-phone-demo"
+import {
+  MotionArticle,
+  MotionDiv,
+  MotionFooter,
+  MotionSection,
+  TransitionLink,
+} from "./_components/landing-motion"
+import styles from "./landing.module.css"
 
-//   const poularesBarber = await db.barbershop.findMany({
-//     orderBy: {
-//       name: "desc",
-//     },
-//   })
+export const metadata: Metadata = {
+  title: {
+    absolute: "Régua Máxima - Sistema para Barbearias",
+  },
+  description:
+    "Organize agendamentos, clientes, equipe e finanças da sua barbearia em um único sistema.",
+}
 
-//   return (
-//     <div>
-//       <Header />
-//       <div className="space-y-6 px-6 py-6">
-//         {/* Saudação */}
-//         <div className="space-y-1">
-//           <h2 className="text-xl font-bold">
-//             Olá, <span className="shine-text">Bruno Odorissi Campaner.</span>
-//           </h2>
-//           <p className="text-sm text-gray-500">Segunda-feira, 12 de junho</p>
-//         </div>
+const features = [
+  {
+    icon: CalendarCheck2,
+    title: "Agendamento online",
+    description:
+      "Seus clientes escolhem o serviço, profissional, dia e horário sem depender de mensagens.",
+  },
+  {
+    icon: Users,
+    title: "Clientes e equipe",
+    description:
+      "Centralize o histórico dos clientes e organize os profissionais da sua barbearia.",
+  },
+  {
+    icon: BarChart3,
+    title: "Controle financeiro",
+    description:
+      "Acompanhe entradas, resultados e informações importantes para tomar decisões melhores.",
+  },
+]
 
-//         <SearchBar />
+const plans = [
+  { name: "Básico", price: 29, description: "Para começar com organização." },
+  { name: "Pro", price: 59, description: "Para barbearias em crescimento." },
+  {
+    name: "Premium",
+    price: 99,
+    description: "Para operações maiores e completas.",
+  },
+]
 
-//         {/* Busca rapida*/}
-//         <div className="mt-6 flex gap-3 overflow-x-scroll [&::-webkit-scrollbar]:hidden">
-//           <Button className="gap-1" variant="secondary">
-//             <Image
-//               src="/cabeloIcon.png"
-//               alt="Ícone de barbearia"
-//               width={16}
-//               height={16}
-//             />
-//             <span className="ml-2">Cabelo</span>
-//           </Button>
-
-//           <Button className="gap-1" variant="secondary">
-//             <Image
-//               src="/barbarIcon.png"
-//               alt="Ícone de barbearia"
-//               width={16}
-//               height={16}
-//             />
-//             <span className="ml-2">Barba</span>
-//           </Button>
-
-//           <Button className="gap-1" variant="secondary">
-//             <Image
-//               src="/acabamentoIcon.png"
-//               alt="Ícone de barbearia"
-//               width={16}
-//               height={16}
-//             />
-//             <span className="ml-2">Acabamento</span>
-//           </Button>
-
-//           <Button className="gap-1" variant="secondary">
-//             <Image
-//               src="/acabamentoIcon.png"
-//               alt="Ícone de barbearia"
-//               width={16}
-//               height={16}
-//             />
-//             <span className="ml-2">Barberia perto de voce</span>
-//           </Button>
-
-//           <Button className="gap-1" variant="secondary">
-//             <Image
-//               src="/acabamentoIcon.png"
-//               alt="Ícone de barbearia"
-//               width={16}
-//               height={16}
-//             />
-//             <span className="ml-2">Luzes</span>
-//           </Button>
-//         </div>
-
-//         {/* Banner Image */}
-//         <div className="relative h-37.5 w-full overflow-hidden rounded-xl">
-//           <Image
-//             src="/bannerReguaM.png"
-//             alt="Banner-barberCloud"
-//             fill
-//             className="object-cover"
-//           />
-//         </div>
-
-//         {/* Agendamentos */}
-//         <div className="space-y-4">
-//           <h2 className="text-xs font-bold uppercase">Agendado</h2>
-
-//           <Card>
-//             <CardContent className="flex justify-between p-0">
-//               {/* DIV esquerda */}
-//               <div className="flex items-center gap-3 py-5 pl-5">
-//                 <Avatar className="h-14 w-14 border-2 border-solid border-white">
-//                   <AvatarImage
-//                     src="https://utfs.io/f/c97a2dc9-cf62-468b-a851-bfd2bdde775f-16p.png"
-//                     alt="Logo da barbearia"
-//                   />
-//                 </Avatar>
-
-//                 <div className="flex flex-col gap-2">
-//                   <Badge
-//                     variant="outline"
-//                     className="w-fit bg-[#C3F32C] font-bold text-[#254F50]"
-//                   >
-//                     Confirmado
-//                   </Badge>
-//                   <h3 className="font-semibold">Corte de cabelo</h3>
-//                   <span className="inline-flex items-center gap-1 text-sm">
-//                     <MapPin size={14} />
-//                     <span>Las Vegas Barbearia</span>
-//                   </span>
-//                 </div>
-//               </div>
-
-//               {/* DIV direita */}
-//               <div className="flex flex-col items-center justify-center border-l-2 border-solid px-5">
-//                 <p className="text-sm">Maio</p>
-//                 <p className="text-2xl font-bold">12</p>
-//                 <p className="text-sm font-bold">16:00</p>
-//               </div>
-//             </CardContent>
-//           </Card>
-
-//           <h2 className="text-xs font-bold uppercase">Recomendações</h2>
-//           <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
-//             {barbershops.map((barbershop) => (
-//               <BarbershopItem key={barbershop.id} barbershop={barbershop} />
-//             ))}
-//           </div>
-//           <h2 className="text-xs font-bold uppercase">Populares</h2>
-//           <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
-//             {poularesBarber.map((barbershop) => (
-//               <BarbershopItem key={barbershop.id} barbershop={barbershop} />
-//             ))}
-//           </div>
-//         </div>
-
-//         {/* Footer */}
-//       </div>
-//     </div>
-//   )
-// }
-
-// import { db } from "./_lib/prisma"
-// import HomeClient from "./_components/HomeClient"
-
-// export default async function Home() {
-//   const barbershops = await db.barbershop.findMany()
-
-//   const poularesBarber = await db.barbershop.findMany({
-//     orderBy: { name: "desc" },
-//   })
-
-//   return (
-//     <HomeClient  barbershops={barbershops} popularBarbershops={poularesBarber}/>
-//   )
-// }
-
-
-// import { db } from "./_lib/prisma"
-// import HomeClient from "./_components/HomeClient"
-// import { authOptions } from "./_providers/auth"
-// import { getServerSession } from "next-auth"
-
-// export default async function Home() {
-//   const session = await getServerSession(authOptions)
-
-//   const barbershops = await db.barbershop.findMany()
-
-//   const poularesBarber = await db.barbershop.findMany({
-//     orderBy: { name: "desc" },
-//   })
-
-//   const confirmedBookings = session?.user
-//     ? await db.booking.findMany({
-//         where: {
-//           user: { email: session.user.email! },
-//           date: { gte: new Date() },
-//         },
-//         include: {
-//           Service: true,
-//           barbershop: true,
-//         },
-//         orderBy: { date: "asc" },
-//       })
-//     : []
-
-//   // ✅ Linha nova — converte Decimal para number
-//   const serializedBookings = confirmedBookings.map((booking) => ({
-//     ...booking,
-//     Service: {
-//       ...booking.Service,
-//       price: Number(booking.Service.price),
-//     },
-//   }))
-
-//   return (
-//     <HomeClient
-//       barbershops={barbershops}
-//       popularBarbershops={poularesBarber}
-//       confirmedBookings={serializedBookings} // ✅ trocou aqui
-//     />
-//   )
-// }
-
-import { db } from "./_lib/prisma"
-import HomeClient from "./_components/HomeClient"
-import { authOptions } from "./api/auth/[...nextauth]/route"
-import { getServerSession } from "next-auth"
-
-const barbershopCardSelect = {
-  id: true,
-  name: true,
-  address: true,
-  imageUrl: true,
-  reviews: { select: { rating: true } },
-} as const
-
-export default async function Home() {
-  const session = await getServerSession(authOptions)
-
-  const barbershops = await db.barbershop.findMany({
-    select: barbershopCardSelect,
-  })
-
-  const popularBarbershops = await db.barbershop.findMany({
-    orderBy: { name: "desc" },
-    select: barbershopCardSelect,
-  })
-
-  const confirmedBookings = session?.user?.id
-    ? await db.booking.findMany({
-        where: {
-          userId: session.user.id,
-          date: { gte: new Date() },
-        },
-        select: {
-          id: true,
-          date: true,
-          service: { select: { name: true } },
-          barbershop: {
-            select: {
-              name: true,
-              imageUrl: true,
-            },
-          },
-        },
-        orderBy: { date: "asc" },
-      })
-    : []
-
-  const pendingReviews = session?.user?.id
-    ? await db.booking.findMany({
-        where: {
-          userId: session.user.id,
-          status: "CONCLUIDO",
-          OR: [{ review: null }, { barbershopReview: null }],
-        },
-        select: {
-          id: true,
-          date: true,
-          review: { select: { id: true } },
-          barbershopReview: { select: { id: true } },
-          service: { select: { name: true } },
-          barbershop: { select: { name: true } },
-          barber: {
-            select: { nome: true, user: { select: { name: true } } },
-          },
-        },
-        orderBy: { date: "desc" },
-      })
-    : []
-
+export default function LandingPage() {
   return (
-    <HomeClient
-      barbershops={barbershops}
-      popularBarbershops={popularBarbershops}
-      confirmedBookings={confirmedBookings.map((booking) => ({
-        id: booking.id,
-        date: booking.date.toISOString(),
-        service: { name: booking.service.name },
-        barbershop: {
-          name: booking.barbershop.name,
-          imageUrl: booking.barbershop.imageUrl,
-        },
-      }))}
-      pendingReviews={pendingReviews.map((booking) => ({
-        id: booking.id,
-        date: booking.date.toISOString(),
-        service: booking.service.name,
-        barbershop: booking.barbershop.name,
-        barber: booking.barber.nome ?? booking.barber.user.name ?? "Barbeiro",
-        barberReviewed: Boolean(booking.review),
-        barbershopReviewed: Boolean(booking.barbershopReview),
-      }))}
-    />
+    <main className={styles.page}>
+      <MotionSection className={styles.hero}>
+        <MotionDiv className={styles.heroContent}>
+          <h1>
+            Faça sua <span className="shine-text">barbearia</span> faturar mais
+          </h1>
+          <p>
+            Organize agendamentos, clientes, equipe e finanças em um único
+            sistema. Tenha mais controle da sua barbearia, economize tempo e
+            ofereça uma experiência ainda melhor para seus clientes.
+          </p>
+          <div className={styles.heroActions}>
+            <TransitionLink href="/inicio" className={styles.primaryButton}>
+              Entrar
+              <ArrowRight aria-hidden="true" />
+            </TransitionLink>
+            <Link href="#como-funciona" className={styles.secondaryButton}>
+              Ver como funciona
+            </Link>
+          </div>
+          <div className={styles.trustLine}>
+            <span>
+              <Check aria-hidden="true" /> Agenda organizada
+            </span>
+            <span>
+              <Check aria-hidden="true" /> Gestão em um só lugar
+            </span>
+          </div>
+        </MotionDiv>
+
+        <MotionDiv
+          className={styles.phoneArea}
+          aria-label="Demonstração do sistema"
+          delay={0.18}
+          distance={18}
+        >
+          <div className={styles.phone}>
+            <span className={styles.volumeButtons} aria-hidden="true" />
+            <span className={styles.powerButton} aria-hidden="true" />
+            <span className={styles.dynamicIsland} aria-hidden="true">
+              <i />
+            </span>
+            <LandingPhoneDemo />
+          </div>
+        </MotionDiv>
+      </MotionSection>
+
+      <MotionSection className={styles.section} id="recursos">
+        <div className={styles.sectionIntro}>
+          <span>Recursos</span>
+          <h2>O essencial para organizar sua operação</h2>
+          <p>
+            Menos tarefas manuais e mais tempo para cuidar dos clientes e fazer
+            sua barbearia crescer.
+          </p>
+        </div>
+        <div className={styles.featureGrid}>
+          {features.map((feature, index) => (
+            <MotionArticle
+              key={feature.title}
+              className={`${styles.featureCard} ${
+                index === 0
+                  ? styles.imageFeatureCard
+                  : index === 1
+                    ? styles.photoFeatureCard
+                    : styles.productFeatureCard
+              }`}
+              delay={index * 0.09}
+            >
+              {index === 0 ? (
+                <>
+                  <div className={styles.imageFeatureCopy}>
+                    <span>Agendamento online</span>
+                    <h3>
+                      Organize sua agenda.
+                      <br />
+                      Em qualquer dispositivo.
+                    </h3>
+                  </div>
+                  <div className={styles.featureImage}>
+                    <Image
+                      src="/fotoCard1.png"
+                      alt="Sistema Régua Máxima em celular, tablet e computador"
+                      fill
+                      sizes="(max-width: 900px) 100vw, 33vw"
+                    />
+                  </div>
+                </>
+              ) : index === 1 ? (
+                <>
+                  <div className={styles.photoFeatureImage}>
+                    <Image
+                      src="/card2foto.png"
+                      alt="Equipe da Régua Máxima atendendo clientes"
+                      fill
+                      sizes="(max-width: 900px) 100vw, 33vw"
+                    />
+                  </div>
+                  <div className={styles.photoFeatureShade} aria-hidden="true" />
+                  <div className={styles.photoFeatureCopy}>
+                    <span>Clientes e equipe</span>
+                    <h3>
+                      Pessoas conectadas.
+                      <br />
+                      Gestão simplificada.
+                    </h3>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className={styles.productFeatureCopy}>
+                    <span>Controle financeiro</span>
+                    <h3>
+                      Decisões melhores.
+                      <br />
+                      Resultados maiores.
+                    </h3>
+                    <p>Acompanhe sua operação com clareza.</p>
+                  </div>
+                  <div className={styles.productFeatureImage}>
+                    <Image
+                      src="/card3foto.png"
+                      alt="Máquina profissional da Régua Máxima"
+                      fill
+                      sizes="(max-width: 900px) 100vw, 33vw"
+                    />
+                  </div>
+                </>
+              )}
+            </MotionArticle>
+          ))}
+        </div>
+      </MotionSection>
+
+      <MotionSection className={styles.stepsSection} id="como-funciona">
+        <div className={styles.sectionIntro}>
+          <span>Como funciona</span>
+          <h2>Comece em poucos passos</h2>
+        </div>
+        <div className={styles.stepsGrid}>
+          {[
+            ["01", "Cadastre sua barbearia", "Informe serviços, equipe e horários."],
+            ["02", "Receba agendamentos", "Seus clientes reservam pela plataforma."],
+            ["03", "Acompanhe os resultados", "Visualize sua operação com clareza."],
+          ].map(([number, title, description], index) => (
+            <MotionArticle key={number} delay={index * 0.09}>
+              <span>{number}</span>
+              <h3>{title}</h3>
+              <p>{description}</p>
+            </MotionArticle>
+          ))}
+        </div>
+      </MotionSection>
+
+      <MotionSection className={styles.section} id="planos">
+        <div className={styles.sectionIntro}>
+          <span>Planos</span>
+          <h2>Escolha o plano da sua barbearia</h2>
+          <p>Comece com o que precisa hoje e evolua quando sua operação crescer.</p>
+        </div>
+        <div className={styles.planGrid}>
+          {plans.map((plan, index) => (
+            <MotionArticle
+              key={plan.name}
+              className={`${styles.planCard} ${index === 1 ? styles.featuredPlan : ""}`}
+              delay={index * 0.09}
+            >
+              {index === 1 && <span className={styles.planBadge}>Mais escolhido</span>}
+              <h3>{plan.name}</h3>
+              <p>{plan.description}</p>
+              <div className={styles.price}>
+                <span>R$</span>
+                <strong>{plan.price}</strong>
+                <span>/mês</span>
+              </div>
+              <Link href="/login">Começar agora</Link>
+            </MotionArticle>
+          ))}
+        </div>
+      </MotionSection>
+
+      <MotionSection className={styles.cta}>
+        <h2>Sua barbearia mais organizada com a Régua Máxima</h2>
+        <p>
+          Crie sua conta e centralize sua rotina em um sistema simples de usar.
+        </p>
+        <Link href="/login" className={styles.primaryButton}>
+          Criar minha conta
+          <ArrowRight aria-hidden="true" />
+        </Link>
+      </MotionSection>
+
+      <MotionFooter className={styles.footer}>
+        <div>
+          <Image
+            src="/LogoMComBorder3.png"
+            alt="Logo da Régua Máxima"
+            width={54}
+            height={36}
+          />
+          <strong>Régua Máxima</strong>
+        </div>
+        <nav aria-label="Links institucionais">
+          <Link href="/sobre">Sobre</Link>
+          <Link href="/login">Entrar</Link>
+          <Link href="/inicio">Explorar barbearias</Link>
+        </nav>
+        <span>© 2026 Régua Máxima</span>
+      </MotionFooter>
+    </main>
   )
 }
