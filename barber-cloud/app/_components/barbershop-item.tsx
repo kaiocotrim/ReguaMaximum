@@ -26,9 +26,9 @@ const BarbershopItem = ({ barbershop }: BarbershopItemProps) => {
       : null
 
   return (
-    <Card className="group h-full w-full min-w-[167px] overflow-hidden rounded-2xl border-border/70 p-1 transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-[1.015] hover:border-[#C3F32C]/60 hover:bg-background hover:shadow-[0_16px_38px_-18px_rgba(135,180,0,0.65)] motion-reduce:transform-none motion-reduce:transition-none lg:min-w-0">
+    <Card className="group h-full w-full min-w-0 overflow-hidden rounded-2xl border-border/70 p-1 transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-[1.015] hover:border-[#C3F32C]/60 hover:bg-background hover:shadow-[0_16px_38px_-18px_rgba(135,180,0,0.65)] motion-reduce:transform-none motion-reduce:transition-none">
       <CardContent className="p-0 px-1 pt-0">
-        <div className="relative h-[159px] w-full overflow-hidden rounded-2xl sm:h-[180px] lg:h-[190px]">
+        <div className="relative h-36 w-full overflow-hidden rounded-2xl sm:h-44 lg:h-48">
           <Image
             fill
             className="rounded-2xl object-cover p-1 transition-transform duration-500 ease-out group-hover:scale-110 motion-reduce:transform-none motion-reduce:transition-none"

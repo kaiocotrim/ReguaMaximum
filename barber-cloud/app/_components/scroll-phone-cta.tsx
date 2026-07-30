@@ -1,48 +1,33 @@
 "use client"
 
 import { useRef } from "react"
-import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import {
   motion,
+  useInView,
   useReducedMotion,
-  useScroll,
-  useTransform,
 } from "framer-motion"
 
 import styles from "../landing.module.css"
+import LandingPhoneDemo from "./landing-phone-demo"
 
 export default function ScrollPhoneCta() {
   const sectionRef = useRef<HTMLElement>(null)
   const reduceMotion = useReducedMotion()
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  })
-
-  const phoneY = useTransform(scrollYProgress, [0, 0.5, 0.8], [210, 10, -20])
-  const phoneScale = useTransform(
-    scrollYProgress,
-    [0, 0.48, 0.82],
-    [0.74, 1, 1.04],
-  )
-  const phoneOpacity = useTransform(scrollYProgress, [0, 0.18], [0, 1])
-  const copyY = useTransform(scrollYProgress, [0, 0.38], [45, 0])
-  const copyOpacity = useTransform(scrollYProgress, [0, 0.2], [0, 1])
+  const isInView = useInView(sectionRef, { once: true, amount: 0.18 })
 
   return (
     <section ref={sectionRef} className={styles.scrollCta}>
       <motion.div
         className={styles.scrollCtaCopy}
-        style={
-          reduceMotion
-            ? undefined
-            : {
-                y: copyY,
-                opacity: copyOpacity,
-              }
+        initial={reduceMotion ? false : { opacity: 0, y: 26 }}
+        animate={
+          reduceMotion || isInView
+            ? { opacity: 1, y: 0 }
+            : { opacity: 0, y: 26 }
         }
+        transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
       >
         <span>Régua Máxima</span>
         <h2>Sua barbearia mais organizada com a Régua Máxima</h2>
@@ -57,24 +42,30 @@ export default function ScrollPhoneCta() {
 
       <motion.div
         className={styles.scrollPhone}
-        style={
-          reduceMotion
-            ? undefined
-            : {
-                y: phoneY,
-                scale: phoneScale,
-                opacity: phoneOpacity,
-              }
+        initial={reduceMotion ? false : { opacity: 0, y: 150, scale: 0.94 }}
+        animate={
+          reduceMotion || isInView
+            ? { opacity: 1, y: 0, scale: 1 }
+            : { opacity: 0, y: 150, scale: 0.94 }
         }
+        transition={{
+          delay: reduceMotion ? 0 : 0.65,
+          duration: 1.45,
+          ease: [0.22, 1, 0.36, 1],
+        }}
       >
         <div className={styles.scrollPhoneGlow} aria-hidden="true" />
-        <Image
-          src="/celular1451.png"
-          alt="Tela inicial da Régua Máxima em um celular"
-          width={1820}
-          height={2048}
-          sizes="(max-width: 700px) 95vw, 620px"
-        />
+        <div
+          className={styles.scrollIphone}
+          aria-label="Demonstração animada do sistema Régua Máxima"
+        >
+          <span className={styles.volumeButtons} aria-hidden="true" />
+          <span className={styles.powerButton} aria-hidden="true" />
+          <span className={styles.dynamicIsland} aria-hidden="true">
+            <i />
+          </span>
+          <LandingPhoneDemo />
+        </div>
       </motion.div>
     </section>
   )
