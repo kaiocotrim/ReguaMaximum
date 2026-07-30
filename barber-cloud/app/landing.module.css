@@ -795,29 +795,77 @@
   color: #172000;
 }
 
-.cta {
+.scrollCta {
+  position: relative;
   width: min(calc(100% - 48px), 1180px);
+  min-height: 860px;
   margin: 30px auto 90px;
+  overflow: hidden;
   border: 1px solid rgba(36, 76, 78, 0.11);
   border-radius: 24px;
   background: white;
-  padding: 72px 24px;
+  padding: 72px 24px 0;
   text-align: center;
 }
 
-.cta h2 {
+.scrollCtaCopy {
+  position: relative;
+  z-index: 3;
+}
+
+.scrollCtaCopy > span {
+  color: #71910d;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.scrollCta h2 {
   max-width: 760px;
-  margin: 0 auto;
+  margin: 12px auto 0;
   font-size: clamp(38px, 5vw, 60px);
   font-weight: 900;
   line-height: 1.05;
   letter-spacing: -0.06em;
 }
 
-.cta p {
+.scrollCta p {
   margin: 18px auto 28px;
   color: #66726c;
   line-height: 1.7;
+}
+
+.scrollPhone {
+  position: absolute;
+  right: 0;
+  bottom: -170px;
+  left: 0;
+  z-index: 1;
+  width: min(620px, 82%);
+  margin: 0 auto;
+  transform-origin: center bottom;
+  will-change: transform, opacity;
+}
+
+.scrollPhone img {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 35px 45px rgba(25, 48, 43, 0.22));
+}
+
+.scrollPhoneGlow {
+  position: absolute;
+  z-index: 0;
+  right: 6%;
+  bottom: 13%;
+  left: 6%;
+  height: 42%;
+  border-radius: 50%;
+  background: rgba(195, 243, 44, 0.2);
+  filter: blur(55px);
 }
 
 .footer {
@@ -904,7 +952,7 @@
   .hero,
   .section,
   .stepsSection,
-  .cta,
+  .scrollCta,
   .footer {
     width: calc(100% - 32px);
   }
@@ -953,8 +1001,14 @@
     padding: 34px 22px;
   }
 
-  .cta {
-    padding: 52px 20px;
+  .scrollCta {
+    min-height: 820px;
+    padding: 52px 20px 0;
+  }
+
+  .scrollPhone {
+    bottom: 0;
+    width: 95%;
   }
 
   .footer nav {

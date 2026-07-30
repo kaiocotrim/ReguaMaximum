@@ -10,6 +10,7 @@ import {
 } from "lucide-react"
 
 import LandingPhoneDemo from "./_components/landing-phone-demo"
+import ScrollPhoneCta from "./_components/scroll-phone-cta"
 import {
   MotionArticle,
   MotionDiv,
@@ -241,16 +242,7 @@ export default function LandingPage() {
         </div>
       </MotionSection>
 
-      <MotionSection className={styles.cta}>
-        <h2>Sua barbearia mais organizada com a Régua Máxima</h2>
-        <p>
-          Crie sua conta e centralize sua rotina em um sistema simples de usar.
-        </p>
-        <Link href="/login" className={styles.primaryButton}>
-          Criar minha conta
-          <ArrowRight aria-hidden="true" />
-        </Link>
-      </MotionSection>
+      <ScrollPhoneCta />
 
       <MotionFooter className={styles.footer}>
         <div>
