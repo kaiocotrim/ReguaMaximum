@@ -14,7 +14,6 @@ import { LicenseGeneratorForm } from "@/app/_components/licenses/LicenseGenerato
 import { RevokeLicenseButton } from "@/app/_components/licenses/RevokeLicenseButton"
 import {
   getLicenseAdminUser,
-  isPublicLicenseGeneratorEnabled,
 } from "@/app/_lib/license-admin"
 import {
   getPlanDetails,
@@ -70,9 +69,7 @@ function getDisplayStatus(license: {
 
 export default async function LicenseAdminPage() {
   const admin = await getLicenseAdminUser()
-  const isPublicAccess = isPublicLicenseGeneratorEnabled()
-
-  if (!admin && !isPublicAccess) redirect("/")
+  if (!admin) redirect("/login")
 
   const licenses = await db.planLicense.findMany({
     orderBy: { createdAt: "desc" },
@@ -123,11 +120,11 @@ export default async function LicenseAdminPage() {
     <div className="min-h-screen bg-[#f5f7f3] text-foreground dark:bg-zinc-950">
       <main className="mx-auto w-full max-w-7xl px-5 py-8 md:px-8 md:py-12">
         <Link
-          href="/"
+          href="/admin"
           className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
-          Voltar ao início
+          Voltar ao Admin Master
         </Link>
 
         <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
@@ -148,13 +145,6 @@ export default async function LicenseAdminPage() {
             {admin ? "Acesso administrativo" : "Acesso público temporário"}
           </div>
         </div>
-
-        {!admin && (
-          <div className="mb-6 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-800 dark:text-amber-200">
-            Esta página está pública para testes. Telefones, e-mails e demais
-            dados sensíveis permanecem ocultos.
-          </div>
-        )}
 
         <section className="mb-8 grid gap-3 sm:grid-cols-3">
           {[
@@ -243,21 +233,15 @@ export default async function LicenseAdminPage() {
                         <td className="px-5 py-4">{license.durationDays}</td>
                         <td className="px-5 py-4">
                           <p className="max-w-44 truncate font-medium">
-                            {admin
-                              ? license.customerName ??
-                                license.claimedBy?.name ??
-                                "Não informado"
-                              : license.customerName || license.claimedBy
-                                ? "Cliente cadastrado"
-                                : "Não informado"}
+                            {license.customerName ??
+                              license.claimedBy?.name ??
+                              "Não informado"}
                           </p>
                           <p className="max-w-44 truncate text-xs text-muted-foreground">
-                            {admin
-                              ? license.customerPhone ??
-                                license.claimedBy?.email ??
-                                license.barbershop?.name ??
-                                "—"
-                              : "Dados protegidos"}
+                            {license.customerPhone ??
+                              license.claimedBy?.email ??
+                              license.barbershop?.name ??
+                              "—"}
                           </p>
                         </td>
                         <td className="px-5 py-4">
@@ -280,12 +264,11 @@ export default async function LicenseAdminPage() {
                             : "—"}
                         </td>
                         <td className="px-5 py-4">
-                          {admin &&
-                          license.status !== PlanLicenseStatus.REVOKED ? (
+                          {license.status !== PlanLicenseStatus.REVOKED ? (
                             <RevokeLicenseButton licenseId={license.id} />
                           ) : (
                             <span className="text-xs text-muted-foreground">
-                              {admin ? "Sem ações" : "Somente administrador"}
+                              Sem ações
                             </span>
                           )}
                         </td>

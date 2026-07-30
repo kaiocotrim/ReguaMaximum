@@ -3,18 +3,21 @@ export const PLAN_OPTIONS = [
     value: "BASIC",
     label: "Básico",
     prefix: "BAS",
+    monthlyPrice: 29,
     description: "Organização essencial para começar.",
   },
   {
     value: "PRO",
     label: "Pro",
     prefix: "PRO",
+    monthlyPrice: 59,
     description: "Mais recursos para crescer e acompanhar resultados.",
   },
   {
     value: "PREMIUM",
     label: "Premium",
     prefix: "PRE",
+    monthlyPrice: 99,
     description: "Estrutura completa para operações maiores.",
   },
 ] as const
@@ -30,4 +33,3 @@ export function isSubscriptionPlanCode(
 export function getPlanDetails(plan: SubscriptionPlanCode) {
   return PLAN_OPTIONS.find((option) => option.value === plan)!
 }
-

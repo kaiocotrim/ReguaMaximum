@@ -33,10 +33,27 @@ const supportWhatsapp =
 const linkClass =
   "flex min-h-10 items-center rounded-lg px-2 text-[13px] leading-4 text-[#44504a] transition-colors hover:bg-black/[0.04] hover:text-[#6d8d08] dark:text-white/65 dark:hover:bg-white/[0.05] dark:hover:text-[#C3F32C] lg:min-h-0 lg:w-fit lg:px-0 lg:text-sm lg:leading-normal lg:hover:bg-transparent"
 
+const routesWithoutFooter = [
+  "/login",
+  "/reset-password",
+  "/perfil",
+  "/barbiecreation",
+  "/admin",
+]
+
 const Footer = () => {
   const pathname = usePathname()
+  const normalizedPathname = pathname.toLowerCase()
 
-  if (pathname === "/dashboard" || pathname.startsWith("/dashboard/")) {
+  if (
+    normalizedPathname === "/dashboard" ||
+    normalizedPathname.startsWith("/dashboard/") ||
+    routesWithoutFooter.some(
+      (route) =>
+        normalizedPathname === route ||
+        normalizedPathname.startsWith(`${route}/`),
+    )
+  ) {
     return null
   }
 

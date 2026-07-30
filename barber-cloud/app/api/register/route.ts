@@ -12,8 +12,8 @@ import {
   getClientIp,
 } from "@/app/_lib/server-rate-limit"
 
-const REGISTRATION_ERROR =
-  "Não foi possível criar a conta com os dados informados"
+const EMAIL_ALREADY_REGISTERED_ERROR =
+  "Este e-mail já está conectado a uma conta. Entre ou recupere sua senha."
 
 function jsonNoStore(
   body: Record<string, unknown>,
@@ -48,14 +48,23 @@ export async function POST(request: Request) {
     const password = body?.password
     const passwordError = getPasswordValidationError(password)
 
-    if (
-      name.length < 2 ||
-      name.length > 80 ||
-      !isValidEmail(email) ||
-      passwordError
-    ) {
+    if (name.length < 2 || name.length > 80) {
       return jsonNoStore(
-        { error: passwordError ?? REGISTRATION_ERROR },
+        { error: "O nome deve ter entre 2 e 80 caracteres" },
+        { status: 400 },
+      )
+    }
+
+    if (!isValidEmail(email)) {
+      return jsonNoStore(
+        { error: "Informe um endereço de e-mail válido" },
+        { status: 400 },
+      )
+    }
+
+    if (passwordError) {
+      return jsonNoStore(
+        { error: passwordError },
         { status: 400 },
       )
     }
@@ -71,7 +80,10 @@ export async function POST(request: Request) {
     })
 
     if (userExists) {
-      return jsonNoStore({ error: REGISTRATION_ERROR }, { status: 400 })
+      return jsonNoStore(
+        { error: EMAIL_ALREADY_REGISTERED_ERROR },
+        { status: 409 },
+      )
     }
 
     const hashedPassword = await bcrypt.hash(password, 12)
@@ -101,8 +113,12 @@ export async function POST(request: Request) {
     }
 
     return jsonNoStore(
-      { error: isDuplicateEmail ? REGISTRATION_ERROR : "Erro ao criar usuário" },
-      { status: isDuplicateEmail ? 400 : 500 },
+      {
+        error: isDuplicateEmail
+          ? EMAIL_ALREADY_REGISTERED_ERROR
+          : "Não foi possível criar a conta. Tente novamente.",
+      },
+      { status: isDuplicateEmail ? 409 : 500 },
     )
   }
 }

@@ -1,10 +1,9 @@
 import "server-only"
 
 import { createHash, createHmac } from "node:crypto"
+export { getPasswordValidationError } from "./password-policy"
 
 const EMAIL_MAX_LENGTH = 254
-const PASSWORD_MIN_LENGTH = 8
-const PASSWORD_MAX_BYTES = 72
 const RESET_TOKEN_PATTERN = /^[a-f0-9]{64}$/
 
 export function normalizeEmail(value: unknown) {
@@ -17,22 +16,6 @@ export function isValidEmail(email: string) {
     email.length <= EMAIL_MAX_LENGTH &&
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
   )
-}
-
-export function getPasswordValidationError(password: unknown) {
-  if (typeof password !== "string") {
-    return "Informe uma senha válida"
-  }
-
-  if (password.length < PASSWORD_MIN_LENGTH) {
-    return `A senha deve ter pelo menos ${PASSWORD_MIN_LENGTH} caracteres`
-  }
-
-  if (Buffer.byteLength(password, "utf8") > PASSWORD_MAX_BYTES) {
-    return "A senha deve ter no máximo 72 bytes"
-  }
-
-  return null
 }
 
 export function isValidResetToken(token: unknown): token is string {
