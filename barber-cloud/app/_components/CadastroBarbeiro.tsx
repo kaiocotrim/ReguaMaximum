@@ -207,7 +207,7 @@ const CadastroBarbeiro = ({ nomeInicial }: { nomeInicial: string }) => {
         return
       }
 
-      window.location.href = "/"
+      window.location.href = "/inicio"
     } catch (error) {
       console.error("Erro inesperado:", error)
     }

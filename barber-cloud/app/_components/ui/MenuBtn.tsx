@@ -442,7 +442,7 @@ const MENU_ITEMS = [
     icon: House,
     label: "Inicio",
     description: "Volte para tela de inicio",
-    href: "/",
+    href: "/inicio",
   },
   {
     icon: Scissors,

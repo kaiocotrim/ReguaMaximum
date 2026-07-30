@@ -170,7 +170,7 @@ const CadastroCliente = ({ nomeInicial }: { nomeInicial: string }) => {
         return
       }
 
-      window.location.href = "/"
+      window.location.href = "/inicio"
     } catch (error) {
       console.error(error)
     }

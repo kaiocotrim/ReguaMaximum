@@ -168,7 +168,7 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
         />
         <div className="absolute inset-x-0 bottom-0 h-28 rounded-b-3xl bg-gradient-to-t from-black/70 to-transparent lg:rounded-none" />
 
-        <Link href="/">
+            <Link href="/inicio">
           <Button
             size="icon"
             variant="secondary"

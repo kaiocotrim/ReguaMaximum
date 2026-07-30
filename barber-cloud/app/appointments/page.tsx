@@ -11,7 +11,7 @@ const AppointmentsPage = async () => {
   const session = await getServerSession(authOptions)
 
   if (!session?.user) {
-    redirect("/")
+    redirect("/login")
   }
 
   const appointments = await db.booking.findMany({

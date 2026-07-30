@@ -155,7 +155,7 @@ export default async function MasterAdminPage() {
           </div>
           <div className="flex items-center gap-3">
             <Link
-              href="/"
+              href="/inicio"
               className="hidden text-sm font-medium text-muted-foreground transition hover:text-foreground sm:block"
             >
               Ver plataforma

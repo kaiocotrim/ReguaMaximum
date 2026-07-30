@@ -143,7 +143,7 @@ const Planos = () => {
   useEffect(() => {
     if (status === "loading") return
     if (session?.user?.role !== "BARBER") {
-      router.push("/")
+      router.push("/inicio")
     }
   }, [session, status, router])
 
@@ -157,7 +157,7 @@ const Planos = () => {
       <AnimatePresence>
         {!selected && (
           <motion.button
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/inicio")}
             className="absolute top-5 left-5 z-50 flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             initial={{ opacity: 0, x: -12 }}
             animate={{ opacity: 1, x: 0 }}

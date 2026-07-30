@@ -5,10 +5,10 @@ import { signIn } from "next-auth/react"
 import { Button } from "./ui/button"
  
 const LOGIN_PROVIDERS = [
-  { id: "google", src: "/google-icon.svg", label: "Google" ,callbackUrl: "/", },
-  { id: "facebook", src: "/facebook-icon.svg", label: "Facebook" ,callbackUrl: "/", },
-  { id: "apple", src: "/Apple-icon.svg", label: "Apple" ,callbackUrl: "/", },
-  { id: "github", src: "/GitHub-icon.svg", label: "GitHub" ,callbackUrl: "/", },
+  { id: "google", src: "/google-icon.svg", label: "Google" ,callbackUrl: "/inicio", },
+  { id: "facebook", src: "/facebook-icon.svg", label: "Facebook" ,callbackUrl: "/inicio", },
+  { id: "apple", src: "/Apple-icon.svg", label: "Apple" ,callbackUrl: "/inicio", },
+  { id: "github", src: "/GitHub-icon.svg", label: "GitHub" ,callbackUrl: "/inicio", },
 ]
 
 export function LoginProviders() {

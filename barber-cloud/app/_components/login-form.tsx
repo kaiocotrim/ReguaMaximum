@@ -55,7 +55,7 @@ export function LoginForm({
     const profileResponse = await fetch("/api/user/profile-check")
     const profileData = await profileResponse.json()
 
-    window.location.href = profileData.hasProfile ? "/" : "/perfil"
+    window.location.href = profileData.hasProfile ? "/inicio" : "/perfil"
   }
   const handleModeSwitch = (next: Mode) => {
     setMode(next)

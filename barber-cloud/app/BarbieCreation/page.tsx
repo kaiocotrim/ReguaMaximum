@@ -422,7 +422,7 @@ const BarbieCreation = () => {
   useEffect(() => {
     if (status === "loading") return
     if (session?.user?.role !== "BARBER") {
-      router.push("/")
+      router.push("/inicio")
     }
   }, [session, status, router])
 
