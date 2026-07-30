@@ -362,26 +362,38 @@ export default function HomeClient({
               Recomendações
             </motion.h2>
 
-            <motion.h2
-              className="text-xs font-bold uppercase flex cursor-pointer text-lime-400"
+            <motion.div
+              className="flex items-center gap-3 text-xs font-bold uppercase"
               variants={fadeIn}
               initial="hidden"
               animate="show"
               custom={6}
-              onClick={() => router.push(`/map`)}
             >
-              Mapa
-            </motion.h2>
+              <button
+                type="button"
+                className="cursor-pointer text-muted-foreground transition-colors hover:text-foreground"
+                onClick={() => router.push("/barbershops")}
+              >
+                Todas
+              </button>
+              <button
+                type="button"
+                className="cursor-pointer text-lime-500 transition-colors hover:text-lime-600 dark:text-lime-400"
+                onClick={() => router.push("/map")}
+              >
+                Mapa
+              </button>
+            </motion.div>
           </div>
 
           <motion.div
-            className="grid grid-flow-col auto-cols-[minmax(180px,220px)] gap-4 overflow-x-auto pb-2 lg:grid-flow-row lg:grid-cols-3 lg:overflow-visible xl:grid-cols-4 [&::-webkit-scrollbar]:hidden"
+            className="grid grid-cols-2 gap-3 pb-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4"
             variants={fadeUp}
             initial="hidden"
             animate="show"
             custom={7}
           >
-            {barbershops.map((barbershop, i) => (
+            {barbershops.slice(0, 8).map((barbershop, i) => (
               <motion.div
                 key={barbershop.id}
                 variants={fadeUp}
@@ -390,7 +402,7 @@ export default function HomeClient({
                 custom={7 + i * 0.5}
                 whileHover={{ y: -4, scale: 1.02 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className="min-w-0 pt-2"
+                className={`min-w-0 pt-2 ${i >= 6 ? "hidden lg:block" : ""}`}
               >
                 <BarbershopItem barbershop={barbershop} />
               </motion.div>
@@ -398,24 +410,37 @@ export default function HomeClient({
           </motion.div>
 
           {/* Populares */}
-          <motion.h2
-            className="text-xs font-bold uppercase"
-            variants={fadeIn}
-            initial="hidden"
-            animate="show"
-            custom={9}
-          >
-            Populares
-          </motion.h2>
+          <div className="flex items-center justify-between">
+            <motion.h2
+              className="text-xs font-bold uppercase"
+              variants={fadeIn}
+              initial="hidden"
+              animate="show"
+              custom={9}
+            >
+              Populares
+            </motion.h2>
+            <motion.button
+              type="button"
+              className="cursor-pointer text-xs font-bold uppercase text-muted-foreground transition-colors hover:text-foreground"
+              variants={fadeIn}
+              initial="hidden"
+              animate="show"
+              custom={9}
+              onClick={() => router.push("/barbershops")}
+            >
+              Todas
+            </motion.button>
+          </div>
 
           <motion.div
-            className="grid grid-flow-col auto-cols-[minmax(180px,220px)] gap-4 overflow-x-auto pb-2 lg:grid-flow-row lg:grid-cols-3 lg:overflow-visible xl:grid-cols-4 [&::-webkit-scrollbar]:hidden"
+            className="grid grid-cols-2 gap-3 pb-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4"
             variants={fadeUp}
             initial="hidden"
             animate="show"
             custom={10}
           >
-            {popularBarbershops.map((barbershop, i) => (
+            {popularBarbershops.slice(0, 8).map((barbershop, i) => (
               <motion.div
                 key={barbershop.id}
                 variants={fadeUp}
@@ -424,7 +449,7 @@ export default function HomeClient({
                 custom={10 + i * 0.5}
                 whileHover={{ y: -4, scale: 1.02 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className="min-w-0 pt-2"
+                className={`min-w-0 pt-2 ${i >= 6 ? "hidden lg:block" : ""}`}
               >
                 <BarbershopItem barbershop={barbershop} />
               </motion.div>

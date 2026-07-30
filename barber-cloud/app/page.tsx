@@ -9,12 +9,11 @@ import {
   Users,
 } from "lucide-react"
 
-import LandingPhoneDemo from "./_components/landing-phone-demo"
+import LandingPhoneBookingDemo from "./_components/landing-phone-booking-demo"
 import ScrollPhoneCta from "./_components/scroll-phone-cta"
 import {
   MotionArticle,
   MotionDiv,
-  MotionFooter,
   MotionSection,
   TransitionLink,
 } from "./_components/landing-motion"
@@ -64,6 +63,14 @@ export default function LandingPage() {
     <main className={styles.page}>
       <MotionSection className={styles.hero}>
         <MotionDiv className={styles.heroContent}>
+          <Image
+            className={styles.mobileHeroLogo}
+            src="/LogoMComBorder3.png"
+            alt="Logo da Régua Máxima"
+            width={88}
+            height={58}
+            priority
+          />
           <h1>
             Faça sua <span className="shine-text">barbearia</span> faturar mais
           </h1>
@@ -103,7 +110,7 @@ export default function LandingPage() {
             <span className={styles.dynamicIsland} aria-hidden="true">
               <i />
             </span>
-            <LandingPhoneDemo />
+            <LandingPhoneBookingDemo />
           </div>
         </MotionDiv>
       </MotionSection>
@@ -142,7 +149,7 @@ export default function LandingPage() {
                   </div>
                   <div className={styles.featureImage}>
                     <Image
-                      src="/fotoCard1.png"
+                      src="/fotoCard1-v2.png"
                       alt="Sistema Régua Máxima em celular, tablet e computador"
                       fill
                       sizes="(max-width: 900px) 100vw, 33vw"
@@ -244,23 +251,6 @@ export default function LandingPage() {
 
       <ScrollPhoneCta />
 
-      <MotionFooter className={styles.footer}>
-        <div>
-          <Image
-            src="/LogoMComBorder3.png"
-            alt="Logo da Régua Máxima"
-            width={54}
-            height={36}
-          />
-          <strong>Régua Máxima</strong>
-        </div>
-        <nav aria-label="Links institucionais">
-          <Link href="/sobre">Sobre</Link>
-          <Link href="/login">Entrar</Link>
-          <Link href="/inicio">Explorar barbearias</Link>
-        </nav>
-        <span>© 2026 Régua Máxima</span>
-      </MotionFooter>
     </main>
   )
 }

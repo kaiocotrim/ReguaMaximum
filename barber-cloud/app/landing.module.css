@@ -1,6 +1,7 @@
 .page {
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: clip;
+  overflow-y: visible;
   background: #f5f7f3;
   color: #244c4e;
   letter-spacing: -0.025em;
@@ -165,6 +166,560 @@
   box-sizing: border-box;
   height: 100%;
   padding: 20px 16px 22px;
+}
+
+.browserDemo {
+  position: relative;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 14px 14px;
+  background: #fff;
+}
+
+.safariTop {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  color: #202321;
+  font-size: 9px;
+}
+
+.safariTop strong {
+  font-size: 10px;
+}
+
+.googleLogo {
+  display: flex;
+  margin-top: 74px;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.08em;
+}
+
+.googleLogo span:nth-child(1),
+.googleLogo span:nth-child(4) {
+  color: #4285f4;
+}
+
+.googleLogo span:nth-child(2),
+.googleLogo span:nth-child(6) {
+  color: #ea4335;
+}
+
+.googleLogo span:nth-child(3) {
+  color: #fbbc05;
+}
+
+.googleLogo span:nth-child(5) {
+  color: #34a853;
+}
+
+.googleSearch {
+  display: flex;
+  min-height: 42px;
+  width: 100%;
+  margin-top: 24px;
+  align-items: center;
+  border: 1px solid #dfe1e5;
+  border-radius: 999px;
+  padding: 0 15px;
+  color: #3c4043;
+  font-size: 10px;
+}
+
+.googleSearch i {
+  width: 1px;
+  height: 14px;
+  margin-left: 2px;
+  background: #3c4043;
+  animation: cursorBlink 700ms steps(1) infinite;
+}
+
+@keyframes cursorBlink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.searchResults {
+  width: 100%;
+  margin-top: 25px;
+  border-top: 1px solid #ecefed;
+  padding-top: 18px;
+  text-align: left;
+}
+
+.searchResults > span {
+  color: #4d5551;
+  font-size: 8px;
+}
+
+.searchResults h3 {
+  margin-top: 5px;
+  color: #1a0dab;
+  font-size: 16px;
+}
+
+.searchResults p {
+  margin-top: 7px;
+  color: #4d5156;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.searchResults div {
+  display: inline-flex;
+  margin-top: 14px;
+  border-radius: 999px;
+  background: #c3f32c;
+  padding: 8px 13px;
+  color: #172000;
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.safariBar {
+  display: flex;
+  min-height: 38px;
+  width: 100%;
+  margin-top: auto;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 12px;
+  background: #edf0ed;
+  padding: 0 12px;
+  color: #333936;
+  font-size: 8px;
+}
+
+.safariBar strong {
+  font-size: 9px;
+}
+
+.homePreview {
+  height: 100%;
+  overflow: hidden;
+  background: #f6f7f5;
+}
+
+.previewHeader {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  min-height: 62px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(36, 76, 78, 0.08);
+  background: rgba(246, 247, 245, 0.96);
+  padding: 14px 16px 8px;
+}
+
+.previewHeader img {
+  width: 48px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.previewHeader svg {
+  width: 17px;
+  color: #244c4e;
+}
+
+.previewContent {
+  padding: 20px 14px 24px;
+}
+
+.previewGreeting h3 {
+  color: #244c4e;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+
+.previewGreeting p {
+  margin-top: 5px;
+  color: #6b716e;
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.previewSearch {
+  display: flex;
+  min-height: 42px;
+  margin-top: 20px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.previewSearch > span {
+  display: flex;
+  height: 42px;
+  flex: 1;
+  align-items: center;
+  border: 1px solid rgba(36, 76, 78, 0.12);
+  border-radius: 10px;
+  background: #fff;
+  padding: 0 10px;
+  color: #6b716e;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.previewSearch > div {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  place-items: center;
+  border-radius: 10px;
+  background: #244c4e;
+}
+
+.previewSearch svg {
+  width: 15px;
+  color: #c3f32c;
+}
+
+.previewCategories {
+  display: flex;
+  gap: 7px;
+  margin-top: 14px;
+  overflow: hidden;
+}
+
+.previewCategories span {
+  display: inline-flex;
+  min-height: 33px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 5px;
+  border-radius: 9px;
+  background: #fff;
+  padding: 0 10px;
+  color: #244c4e;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.previewCategories svg {
+  width: 12px;
+}
+
+.previewBanner {
+  position: relative;
+  height: 120px;
+  margin-top: 18px;
+  overflow: hidden;
+  border-radius: 14px;
+  box-shadow: 0 5px 12px rgba(36, 76, 78, 0.08);
+}
+
+.previewBanner img {
+  object-fit: cover;
+}
+
+.previewSectionTitle {
+  display: flex;
+  margin-top: 18px;
+  align-items: center;
+  justify-content: space-between;
+  color: #244c4e;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.previewSectionTitle span {
+  color: #80a900;
+  font-weight: 900;
+}
+
+.previewCards {
+  display: grid;
+  margin-top: 12px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.previewCards article {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  border: 1px solid rgba(36, 76, 78, 0.09);
+  border-radius: 12px;
+  background: #fff;
+  padding: 8px;
+}
+
+.previewCards article > div {
+  display: grid;
+  height: 58px;
+  place-items: center;
+  border-radius: 8px;
+  background: #ecf5d8;
+  color: #71910d;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.previewCards strong {
+  margin-top: 7px;
+  overflow: hidden;
+  color: #244c4e;
+  font-size: 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.previewCards span {
+  margin-top: 3px;
+  overflow: hidden;
+  color: #79817d;
+  font-size: 6px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.staticHome {
+  background: #080908;
+  color: #fff;
+  text-align: left;
+}
+
+.staticStatusBar {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 24px 5px 17px;
+  color: #fff;
+}
+
+.staticStatusBar > strong {
+  font-size: 12px;
+  letter-spacing: -0.02em;
+}
+
+.staticStatusBar > div {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.staticStatusBar span {
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.statusBattery {
+  position: relative;
+  display: grid;
+  width: 21px;
+  height: 11px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 2px;
+}
+
+.statusBattery::after {
+  position: absolute;
+  top: 2px;
+  right: -2px;
+  width: 1px;
+  height: 5px;
+  border-radius: 0 2px 2px 0;
+  background: rgba(255, 255, 255, 0.72);
+  content: "";
+}
+
+.statusBattery span {
+  width: 16px;
+  height: 7px;
+  border-radius: 1px;
+  background: #c3f32c;
+}
+
+.staticHomeHeader {
+  display: flex;
+  min-height: 54px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 12px 14px 7px;
+}
+
+.staticHomeHeader img {
+  width: 44px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.staticHomeHeader svg {
+  width: 17px;
+  color: #dce4df;
+}
+
+.staticHomeContent {
+  padding: 17px 14px 30px;
+}
+
+.staticGreeting h3 {
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+}
+
+.staticGreeting p {
+  margin-top: 6px;
+  color: #a6aaa8;
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.staticSearch {
+  display: flex;
+  min-height: 32px;
+  margin-top: 18px;
+  gap: 8px;
+}
+
+.staticSearch > span {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 10px;
+  background: #151615;
+  padding: 0 10px;
+  color: #aeb2af;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.staticSearch button {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 10px;
+  background: #151615;
+}
+
+.staticSearch svg {
+  width: 15px;
+  color: #c3f32c;
+}
+
+.staticCategories {
+  display: flex;
+  gap: 7px;
+  margin-top: 12px;
+  overflow: hidden;
+}
+
+.staticCategories span {
+  display: inline-flex;
+  min-height: 28px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 5px;
+  border-radius: 8px;
+  background: #202120;
+  padding: 0 10px;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.staticCategories img {
+  width: 12px;
+  height: 12px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.staticBanner {
+  position: relative;
+  height: 142px;
+  margin-top: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+}
+
+.staticBanner img {
+  object-fit: cover;
+}
+
+.staticSectionTitle {
+  display: flex;
+  margin-top: 18px;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.staticSectionTitle span {
+  color: #c3f32c;
+  font-weight: 900;
+}
+
+.staticRecommendations {
+  display: grid;
+  width: 138%;
+  margin-top: 13px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+}
+
+.staticRecommendations article {
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 13px;
+  background: #141514;
+  padding: 7px;
+}
+
+.staticRecommendations article > div {
+  position: relative;
+  height: 106px;
+  overflow: hidden;
+  border-radius: 9px;
+}
+
+.staticRecommendations article > div img {
+  object-fit: cover;
+}
+
+.staticRecommendations article > div span {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 2;
+  border-radius: 999px;
+  background: #c3f32c;
+  padding: 3px 6px;
+  color: #244c4e;
+  font-size: 6px;
+  font-weight: 900;
+}
+
+.staticRecommendations article > strong {
+  display: block;
+  margin-top: 7px;
+  overflow: hidden;
+  font-size: 7px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .phoneAdvertisement {
@@ -798,8 +1353,8 @@
 .scrollCta {
   position: relative;
   width: min(calc(100% - 48px), 1180px);
-  min-height: 860px;
-  margin: 30px auto 90px;
+  min-height: 990px;
+  margin: 30px auto 110px;
   overflow: hidden;
   border: 1px solid rgba(36, 76, 78, 0.11);
   border-radius: 24px;
@@ -811,6 +1366,10 @@
 .scrollCtaCopy {
   position: relative;
   z-index: 3;
+}
+
+.mobileHeroLogo {
+  display: none;
 }
 
 .scrollCtaCopy > span {
@@ -830,7 +1389,7 @@
   letter-spacing: -0.06em;
 }
 
-.scrollCta p {
+.scrollCtaCopy > p {
   margin: 18px auto 28px;
   color: #66726c;
   line-height: 1.7;
@@ -839,21 +1398,42 @@
 .scrollPhone {
   position: absolute;
   right: 0;
-  bottom: -170px;
+  bottom: -550px;
   left: 0;
   z-index: 1;
-  width: min(620px, 82%);
+  display: flex;
+  width: min(580px, 84%);
+  justify-content: center;
   margin: 0 auto;
   transform-origin: center bottom;
   will-change: transform, opacity;
 }
 
-.scrollPhone img {
+.scrollIphone {
   position: relative;
   z-index: 2;
-  width: 100%;
-  height: auto;
-  filter: drop-shadow(0 35px 45px rgba(25, 48, 43, 0.22));
+  width: 326px;
+  height: 662px;
+  padding: 7px;
+  border: 1px solid #5f625f;
+  border-radius: 58px;
+  background: linear-gradient(
+    145deg,
+    #4b4e4b 0%,
+    #171918 18%,
+    #050606 72%,
+    #555855 100%
+  );
+  box-shadow:
+    0 38px 70px rgba(25, 48, 43, 0.25),
+    0 0 0 1px #050605,
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  transform: scale(1.65);
+  transform-origin: center bottom;
+}
+
+.scrollIphone > div {
+  border-radius: 51px;
 }
 
 .scrollPhoneGlow {
@@ -997,18 +1577,64 @@
     padding: 70px 0;
   }
 
+  .featureImage {
+    min-height: 210px;
+    margin: auto 8px 8px;
+    border-radius: 12px;
+  }
+
+  .featureImage img {
+    top: 0 !important;
+    bottom: auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
+    object-position: center bottom;
+    transform: none;
+  }
+
   .stepsSection {
     padding: 34px 22px;
   }
 
   .scrollCta {
-    min-height: 820px;
+    min-height: 740px;
+    margin-bottom: 90px;
     padding: 52px 20px 0;
   }
 
+  .scrollCta h2 {
+    font-size: 34px;
+  }
+
+  .mobileHeroLogo {
+    display: block;
+    width: 76px;
+    height: 50px;
+    margin: 0 auto 16px;
+    object-fit: contain;
+  }
+
+  .scrollCtaCopy > p {
+    max-width: 310px;
+    font-size: 14px;
+  }
+
   .scrollPhone {
-    bottom: 0;
-    width: 95%;
+    bottom: -220px;
+    width: calc(100% - 12px);
+  }
+
+  .scrollIphone {
+    width: min(300px, calc(100vw - 44px));
+    height: auto;
+    aspect-ratio: 326 / 662;
+    border-radius: 50px;
+    transform: scale(1);
+  }
+
+  .scrollIphone > div {
+    border-radius: 43px;
   }
 
   .footer nav {
