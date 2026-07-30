@@ -126,13 +126,13 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
             scale: 1.012,
           }}
           whileTap={{ scale: 0.984 }}
-          className="flex w-full cursor-pointer overflow-hidden rounded-3xl border border-border bg-card backdrop-blur-xl transition-colors duration-200 hover:bg-accent/40"
+          className="flex min-h-[118px] w-full cursor-pointer overflow-hidden rounded-3xl border border-border bg-card shadow-sm backdrop-blur-xl transition-colors duration-200 hover:border-[#9abd20]/40 hover:bg-accent/40 hover:shadow-md"
         >
           {/* Lado esquerdo */}
-          <div className="flex min-w-0 flex-1 items-center gap-4 p-4">
+          <div className="flex min-w-0 flex-1 items-center gap-4 p-4 sm:gap-5 sm:p-5">
             {/* Avatar com glow pulsante */}
             <motion.div
-              className="relative h-[52px] w-[52px] shrink-0 overflow-hidden rounded-full border-2 border-border"
+              className="relative h-[52px] w-[52px] shrink-0 overflow-hidden rounded-full border-2 border-border sm:h-16 sm:w-16"
               animate={
                 !isPast
                   ? {
@@ -183,7 +183,7 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
               {/* Nome do serviço */}
               <motion.p
                 {...fadeUp(0.14)}
-                className="truncate text-[14px] font-semibold tracking-tight text-foreground"
+                className="truncate text-[14px] font-semibold tracking-tight text-foreground sm:text-base"
               >
                 {service?.name ?? "Serviço"}
               </motion.p>
@@ -194,7 +194,7 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
                 className="flex items-center gap-1.5"
               >
                 <User size={11} className="shrink-0 text-muted-foreground" />
-                <span className="truncate text-[11px] text-muted-foreground">
+                <span className="truncate text-[11px] text-muted-foreground sm:text-xs">
                   {barbershop.name}
                 </span>
               </motion.div>
@@ -206,7 +206,7 @@ const AgendBarber = ({ appointment }: AgendBarberProps) => {
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.38, delay: 0.1, ease: "easeOut" }}
-            className="flex shrink-0 flex-col items-center justify-center gap-0.5 border-l border-border px-5"
+            className="flex min-w-[76px] shrink-0 flex-col items-center justify-center gap-0.5 border-l border-border px-4 sm:min-w-[92px] sm:px-6"
           >
             <motion.p
               {...fadeUp(0.16)}

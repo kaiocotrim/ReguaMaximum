@@ -2,7 +2,6 @@
 
 import { getServerSession } from "next-auth"
 import { revalidatePath } from "next/cache"
-import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
 import {
@@ -15,10 +14,7 @@ import type {
   ActivateLicenseState,
   GenerateLicenseState,
 } from "@/app/_lib/plan-license-action-state"
-import {
-  getLicenseAdminUser,
-  isPublicLicenseGeneratorEnabled,
-} from "@/app/_lib/license-admin"
+import { getLicenseAdminUser } from "@/app/_lib/license-admin"
 import {
   getPlanDetails,
   isSubscriptionPlanCode,
@@ -33,10 +29,7 @@ import {
   normalizePlanLicenseCode,
 } from "@/app/_lib/plan-license"
 import { db } from "@/app/_lib/prisma"
-import {
-  consumeRateLimit,
-  getClientIp,
-} from "@/app/_lib/server-rate-limit"
+import { consumeRateLimit } from "@/app/_lib/server-rate-limit"
 
 function readOptionalText(
   formData: FormData,
@@ -71,28 +64,10 @@ export async function generatePlanLicense(
 ): Promise<GenerateLicenseState> {
   const admin = await getLicenseAdminUser()
 
-  if (!admin && !isPublicLicenseGeneratorEnabled()) {
+  if (!admin) {
     return {
       status: "error",
       message: "Você não possui permissão para gerar licenças.",
-    }
-  }
-
-  if (!admin) {
-    const requestHeaders = await headers()
-    const rateLimit = consumeRateLimit({
-      namespace: "public-license-generator",
-      identifier: getClientIp(requestHeaders),
-      limit: 20,
-      windowMs: 60 * 60 * 1000,
-    })
-
-    if (!rateLimit.allowed) {
-      return {
-        status: "error",
-        message:
-          "Limite temporário de geração atingido. Aguarde antes de tentar novamente.",
-      }
     }
   }
 
@@ -129,7 +104,7 @@ export async function generatePlanLicense(
       customerName,
       customerPhone,
       notes,
-      createdById: admin?.id ?? null,
+      createdById: admin.id,
     },
   })
 
@@ -153,6 +128,8 @@ export async function generatePlanLicense(
   ].join("\n")
 
   revalidatePath("/dashboard/licencas")
+  revalidatePath("/admin")
+  revalidatePath("/admin/licencas")
 
   return {
     status: "success",
@@ -186,6 +163,8 @@ export async function revokePlanLicense(formData: FormData) {
   })
 
   revalidatePath("/dashboard/licencas")
+  revalidatePath("/admin")
+  revalidatePath("/admin/licencas")
 }
 
 export async function activatePlanLicense(

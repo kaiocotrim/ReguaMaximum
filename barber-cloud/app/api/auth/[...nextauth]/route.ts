@@ -126,11 +126,19 @@ export const authOptions: AuthOptions = {
     GitHubProvider({
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
+      // O GitHub solicita `user:email`; contas com o mesmo e-mail devem ser
+      // vinculadas ao usuário existente em vez de criar um cadastro duplicado.
+      allowDangerousEmailAccountLinking: true,
     }),
 
     FacebookProvider({
       clientId: process.env.FACEBOOK_CLIENT_ID!,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          scope: "public_profile",
+        },
+      },
     }),
   ],
 

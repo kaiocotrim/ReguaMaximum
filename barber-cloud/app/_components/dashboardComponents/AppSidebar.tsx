@@ -226,14 +226,24 @@ export function AppSidebar({
                 />
               ))}
               {isLicenseAdmin && (
-                <NavItem
-                  item={{
-                    title: "Licenças",
-                    url: "/admin/licencas",
-                    icon: KeyRound,
-                  }}
-                  isActive={pathname === "/admin/licencas"}
-                />
+                <>
+                  <NavItem
+                    item={{
+                      title: "Admin Master",
+                      url: "/admin",
+                      icon: LayoutDashboard,
+                    }}
+                    isActive={pathname === "/admin"}
+                  />
+                  <NavItem
+                    item={{
+                      title: "Licenças",
+                      url: "/admin/licencas",
+                      icon: KeyRound,
+                    }}
+                    isActive={pathname === "/admin/licencas"}
+                  />
+                </>
               )}
             </SidebarMenu>
           </SidebarGroupContent>

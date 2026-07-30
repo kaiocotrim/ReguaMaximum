@@ -1,6 +1,7 @@
 "use client"
 
 import { cn } from "@/app/_lib/utils"
+import { getPasswordValidationError } from "@/app/_lib/password-policy"
 import { Button } from "@/app/_components/ui/button"
 import { Field, FieldGroup, FieldLabel } from "@/app/_components/ui/field"
 import { LoginProviders } from "@/app/_components/LoginProviders"
@@ -9,6 +10,7 @@ import React, { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { signIn } from "next-auth/react"
+import { Eye, EyeOff } from "lucide-react"
 
 type Mode = "login" | "register" | "success"
 
@@ -26,6 +28,8 @@ export function LoginForm({
   const [registerEmail, setRegisterEmail] = useState("")
   const [registerPassword, setRegisterPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [name, setName] = useState("")
   const [password, setPassword] = useState("")
   const [registeredName, setRegisteredName] = useState("")
@@ -56,7 +60,10 @@ export function LoginForm({
   const handleModeSwitch = (next: Mode) => {
     setMode(next)
     setShowPassword(false)
+    setShowRegisterPassword(false)
+    setShowConfirmPassword(false)
     setForgotOpen(false)
+    setError("")
   }
 
   const handleForgot = () => {
@@ -90,51 +97,52 @@ export function LoginForm({
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError("")
 
     if (registerPassword !== confirmPassword) {
-      alert("As senhas não coincidem")
+      setError("As senhas não coincidem")
       return
     }
 
-    if (registerPassword.length < 8) {
-      alert("A senha deve ter pelo menos 8 caracteres")
+    const passwordError = getPasswordValidationError(registerPassword)
+    if (passwordError) {
+      setError(passwordError)
       return
     }
 
-    if (new TextEncoder().encode(registerPassword).length > 72) {
-      alert("A senha deve ter no máximo 72 bytes")
-      return
-    }
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email: registerEmail,
+          password: registerPassword,
+        }),
+      })
 
-    const response = await fetch("/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name,
+      const data = await response.json()
+
+      if (!response.ok) {
+        setError(data.error ?? "Não foi possível criar a conta. Tente novamente.")
+        return
+      }
+
+      setRegisteredName(name)
+      setMode("success")
+
+      await signIn("credentials", {
         email: registerEmail,
         password: registerPassword,
-      }),
-    })
+        redirect: false,
+      })
 
-    const data = await response.json()
-
-    if (!response.ok) {
-      alert(data.error ?? "Não foi possível criar a conta")
-      return
+      setTimeout(() => {
+        window.location.href = "/perfil"
+      }, 3000)
+    } catch {
+      setError("Não foi possível conectar ao servidor. Tente novamente.")
     }
-
-    setRegisteredName(name)
-    setMode("success")
-
-    await signIn("credentials", {
-      email: registerEmail,
-      password: registerPassword,
-      redirect: false,
-    })
-
-    setTimeout(() => {
-      window.location.href = "/perfil"
-    }, 3000)
   }
 
   return (
@@ -148,8 +156,14 @@ export function LoginForm({
       <div className="w-full max-w-[400px] space-y-8">
         {/* Logo + título */}
         <div className="flex flex-col items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
-            <Image src="/logoPretoBranco2.png" alt="Logo" width={40} height={40} />
+          <div className="flex h-12 w-20 items-center justify-center rounded-xl border border-border bg-card shadow-sm">
+            <Image
+              src="/logoPretoBrancoFundoOFF.png"
+              alt="Régua Máxima"
+              width={56}
+              height={24}
+              className="h-auto w-14 dark:invert"
+            />
           </div>
 
           <AnimatePresence mode="wait">
@@ -373,17 +387,31 @@ export function LoginForm({
                     <FieldLabel htmlFor="reg-password" className="text-sm font-bold text-foreground">
                       Senha
                     </FieldLabel>
-                    <Input
-                      value={registerPassword}
-                      onChange={(e) => setRegisterPassword(e.target.value)}
-                      id="reg-password"
-                      type="password"
-                      placeholder="Crie uma senha"
-                      required
-                      minLength={8}
-                      autoComplete="new-password"
-                      className={inputClassName}
-                    />
+                    <div className="relative">
+                      <Input
+                        value={registerPassword}
+                        onChange={(e) => setRegisterPassword(e.target.value)}
+                        id="reg-password"
+                        type={showRegisterPassword ? "text" : "password"}
+                        placeholder="Crie uma senha"
+                        required
+                        minLength={8}
+                        autoComplete="new-password"
+                        className={`${inputClassName} pr-12`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowRegisterPassword((value) => !value)}
+                        aria-label={showRegisterPassword ? "Ocultar senha" : "Mostrar senha"}
+                        aria-pressed={showRegisterPassword}
+                        className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        {showRegisterPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Use 8 ou mais caracteres e combine pelo menos 3 tipos: minúscula, maiúscula, número e símbolo.
+                    </p>
                   </Field>
                 </motion.div>
 
@@ -397,17 +425,28 @@ export function LoginForm({
                     <FieldLabel htmlFor="reg-confirm" className="text-sm font-bold text-foreground">
                       Confirmar senha
                     </FieldLabel>
-                    <Input
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      id="reg-confirm"
-                      type="password"
-                      placeholder="Repita a senha"
-                      required
-                      minLength={8}
-                      autoComplete="new-password"
-                      className={inputClassName}
-                    />
+                    <div className="relative">
+                      <Input
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        id="reg-confirm"
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder="Repita a senha"
+                        required
+                        minLength={8}
+                        autoComplete="new-password"
+                        className={`${inputClassName} pr-12`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword((value) => !value)}
+                        aria-label={showConfirmPassword ? "Ocultar senha" : "Mostrar senha"}
+                        aria-pressed={showConfirmPassword}
+                        className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
                   </Field>
                 </motion.div>
               </FieldGroup>
@@ -418,6 +457,11 @@ export function LoginForm({
               >
                 Criar conta
               </Button>
+              {error && (
+                <p role="alert" className="text-center text-xs text-red-500">
+                  {error}
+                </p>
+              )}
             </motion.form>
           )}
 
