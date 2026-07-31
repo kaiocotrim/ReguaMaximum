@@ -197,6 +197,11 @@
    8. ESTILOS BASE
    ========================================================================== */
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 28px;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
@@ -292,6 +297,12 @@
   color: #ffffff;
   font-size: 1rem;
   font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 /* Agenda administrativa — visual inspirado no Google Calendar */

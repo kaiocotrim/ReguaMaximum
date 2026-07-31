@@ -1,10 +1,288 @@
 .page {
+  --landing-content-width: 1180px;
+  --landing-frame-width: 1320px;
+  --landing-gutter: 24px;
+  --landing-line: #dce4e3;
+  --landing-pattern-height: 128px;
+  position: relative;
+  isolation: isolate;
   min-height: 100vh;
   overflow-x: clip;
   overflow-y: visible;
   background: #f5f7f3;
   color: #244c4e;
   letter-spacing: -0.025em;
+}
+
+.page section[id] {
+  scroll-margin-top: 28px;
+}
+
+.page > :not(.pageGrid) {
+  position: relative;
+  z-index: 1;
+}
+
+.pageGrid {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  display: grid;
+  grid-template-columns:
+    minmax(var(--landing-gutter), 1fr)
+    minmax(0, var(--landing-frame-width))
+    minmax(var(--landing-gutter), 1fr);
+  pointer-events: none;
+}
+
+.pageGrid::after {
+  position: absolute;
+  top: var(--landing-pattern-height);
+  right: 0;
+  left: 0;
+  border-top: 1px solid var(--landing-line);
+  content: "";
+}
+
+.pageGridFrame {
+  grid-column: 2;
+  grid-row: 1;
+  border-right: 1px solid var(--landing-line);
+  border-left: 1px solid var(--landing-line);
+}
+
+.pageGridSide {
+  grid-row: 1;
+  height: var(--landing-pattern-height);
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 14px,
+    var(--landing-line) 14px 15px
+  );
+}
+
+.pageGridSide:first-child {
+  grid-column: 1;
+}
+
+.pageGridSide:last-child {
+  grid-column: 3;
+}
+
+.landingHeader {
+  display: flex;
+  width: min(calc(100% - (var(--landing-gutter) * 2)), var(--landing-frame-width));
+  height: var(--landing-pattern-height);
+  margin: 0 auto;
+  align-items: center;
+  border-right: 1px solid var(--landing-line);
+  border-bottom: 1px solid var(--landing-line);
+  border-left: 1px solid var(--landing-line);
+  background: #f5f7f3;
+}
+
+.page > .landingHeader {
+  z-index: 20;
+}
+
+.landingHeaderInner {
+  display: grid;
+  width: min(calc(100% - 48px), var(--landing-content-width));
+  margin: 0 auto;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 36px;
+}
+
+.landingBrand {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+}
+
+.landingBrand img {
+  width: 92px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.landingNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(24px, 3vw, 42px);
+}
+
+.landingNav a {
+  color: #244c4e;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  transition: color 180ms ease;
+}
+
+.landingNav a:hover {
+  color: #71910d;
+}
+
+.navDropdown {
+  position: static;
+}
+
+.navTrigger {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  padding: 0 15px;
+  color: #244c4e;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.navTrigger svg {
+  width: 14px;
+  transition: transform 220ms ease;
+}
+
+.navDropdown:hover .navTrigger,
+.navDropdown:focus-within .navTrigger {
+  background: rgba(255, 255, 255, 0.78);
+  color: #71910d;
+}
+
+.navDropdown:hover .navTrigger svg,
+.navDropdown:focus-within .navTrigger svg {
+  transform: rotate(180deg);
+}
+
+.megaMenu {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 8px);
+  left: 50%;
+  display: grid;
+  visibility: hidden;
+  width: min(1080px, calc(100vw - 64px));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px 18px;
+  border: 1px solid var(--landing-line);
+  border-radius: 18px;
+  background: #fff;
+  padding: 28px;
+  opacity: 0;
+  box-shadow: 0 24px 70px rgba(36, 76, 78, 0.14);
+  transform: translate(-50%, -14px);
+  transition: visibility 220ms ease, opacity 220ms ease, transform 220ms ease;
+}
+
+.megaMenu::before {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  left: 0;
+  height: 56px;
+  content: "";
+}
+
+.navDropdown:hover .megaMenu,
+.navDropdown:focus-within .megaMenu {
+  visibility: visible;
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.landingNav .megaMenuItem {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 12px;
+  border-radius: 13px;
+  padding: 13px;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.landingNav .megaMenuItem:hover,
+.landingNav .megaMenuItem:focus-visible {
+  background: #f5f7f3;
+  color: #244c4e;
+  transform: translateY(-2px);
+}
+
+.megaMenuIcon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  place-items: center;
+  border-radius: 10px;
+  background: #f5f7f3;
+  color: #244c4e;
+}
+
+.megaMenuIcon svg {
+  width: 18px;
+}
+
+.megaMenuItem > span:last-child {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+  padding-top: 2px;
+}
+
+.megaMenuItem strong {
+  color: #244c4e;
+  font-size: 14px;
+  line-height: 1.1;
+}
+
+.megaMenuItem small {
+  color: #66726c;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.35;
+  white-space: normal;
+}
+
+.headerButton {
+  display: inline-flex;
+  min-height: 48px;
+  width: fit-content;
+  justify-self: end;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: #c3f32c;
+  padding: 0 24px;
+  color: #172000;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  transition: border-color 180ms ease, background 180ms ease, color 180ms ease,
+    transform 180ms ease;
+}
+
+.headerButton:hover {
+  border-color: #c3f32c;
+  background: #f3f4f0;
+  color: #71910d;
+  transform: translateY(-2px);
+}
+
+.headerButton svg {
+  width: 17px;
 }
 
 .pageTransition {
@@ -20,14 +298,65 @@
 }
 
 .hero {
+  position: relative;
+  isolation: isolate;
   display: grid;
-  width: min(calc(100% - 48px), 1180px);
+  width: min(calc(100% - (var(--landing-gutter) * 2)), var(--landing-content-width));
   min-height: 760px;
   margin: 0 auto;
   grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.92fr);
   align-items: center;
   gap: clamp(48px, 8vw, 110px);
   padding: 70px 0;
+}
+
+.heroWave {
+  position: absolute;
+  z-index: 0;
+  right: -6%;
+  bottom: 1px;
+  width: 92%;
+  height: 77%;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 108% 118% at 100% 100%,
+      #76e900 0%,
+      #9ef10d 38%,
+      rgba(195, 243, 44, 0.88) 58%,
+      rgba(226, 255, 144, 0.52) 75%,
+      transparent 91%
+    ),
+    radial-gradient(
+      ellipse 80% 90% at 62% 100%,
+      rgba(195, 243, 44, 0.48),
+      transparent 76%
+    );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.45) 5%,
+    #000 11%,
+    #000 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.45) 5%,
+    #000 11%,
+    #000 100%
+  );
+  content: "";
+}
+
+.hero::after {
+  position: absolute;
+  right: calc(50% - 50vw);
+  bottom: 0;
+  left: calc(50% - 50vw);
+  border-top: 1px solid var(--landing-line);
+  pointer-events: none;
+  content: "";
 }
 
 .heroContent h1 {
@@ -137,6 +466,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.heroContent,
+.phoneArea {
+  position: relative;
+  z-index: 1;
 }
 
 .phone {
@@ -1025,7 +1360,7 @@
 
 .section,
 .stepsSection {
-  width: min(calc(100% - 48px), 1180px);
+  width: min(calc(100% - (var(--landing-gutter) * 2)), var(--landing-content-width));
   margin: 0 auto;
   padding: 96px 0;
 }
@@ -1261,10 +1596,40 @@
 }
 
 .stepsSection {
+  position: relative;
+  overflow: hidden;
   border: 1px solid rgba(36, 76, 78, 0.11);
   border-radius: 24px;
   background: white;
   padding: 64px;
+}
+
+.stepsSection .sectionIntro {
+  display: flex;
+  max-width: 760px;
+  margin: 0 auto 56px;
+  align-items: center;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+}
+
+.stepsSection .sectionIntro > span,
+.stepsSection .sectionIntro h2,
+.stepsSection .sectionIntro p {
+  margin: 0;
+}
+
+.stepsSection .sectionIntro h2 {
+  max-width: 720px;
+  font-size: clamp(40px, 4.5vw, 58px);
+  line-height: 1.04;
+}
+
+.stepsSection .sectionIntro p {
+  max-width: 620px;
+  font-size: 15px;
+  line-height: 1.65;
 }
 
 .stepsGrid {
@@ -1288,6 +1653,1211 @@
 .stepsGrid h3 {
   margin-top: 22px;
   font-size: 18px;
+}
+
+.registrationDemo {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(36, 76, 78, 0.13);
+  border-radius: 22px;
+  background: #0f1110;
+  box-shadow: 0 24px 60px rgba(36, 76, 78, 0.13);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 68%,
+    rgba(0, 0, 0, 0.98) 73%,
+    rgba(0, 0, 0, 0.82) 80%,
+    rgba(0, 0, 0, 0.52) 87%,
+    rgba(0, 0, 0, 0.2) 94%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 68%,
+    rgba(0, 0, 0, 0.98) 73%,
+    rgba(0, 0, 0, 0.82) 80%,
+    rgba(0, 0, 0, 0.52) 87%,
+    rgba(0, 0, 0, 0.2) 94%,
+    transparent 100%
+  );
+}
+
+.demoMotionStage {
+  position: relative;
+  width: 100%;
+}
+
+.demoBrowserBar {
+  display: grid;
+  min-height: 54px;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0 20px;
+}
+
+.demoBrowserBar > div {
+  display: flex;
+  gap: 6px;
+}
+
+.demoBrowserBar i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.demoBrowserBar i:first-child {
+  background: #c3f32c;
+}
+
+.demoBrowserBar > span {
+  min-width: 260px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 9px 22px;
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 9px;
+  text-align: center;
+}
+
+.demoWorkspace {
+  display: grid;
+  height: 580px;
+  min-height: 0;
+  grid-template-columns: 230px minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.demoProgress {
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0f1110;
+  padding: 28px 20px;
+  color: #fff;
+}
+
+.demoProgressBrand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0 5px 24px;
+}
+
+.demoProgressBrand img {
+  width: 46px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.demoProgressBrand > span {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.demoProgress ol {
+  display: flex;
+  margin-top: 24px;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.demoProgress li button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 11px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  padding: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.demoProgress li button > span {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  place-items: center;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.demoProgress li svg {
+  width: 15px;
+}
+
+.demoProgress li button > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.demoProgress li strong {
+  font-size: 11px;
+}
+
+.demoProgress li small {
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 8px;
+}
+
+.demoProgress .activeDemoStep {
+  background: rgba(195, 243, 44, 0.12);
+  color: #fff;
+}
+
+.demoProgress .activeDemoStep > span {
+  background: #c3f32c;
+  color: #172000;
+}
+
+.demoFormPanel {
+  height: 100%;
+  min-height: 0;
+  align-self: stretch;
+  overflow: hidden;
+  background: #101211;
+  padding: clamp(34px, 5vw, 62px);
+}
+
+.demoFormHeading > span {
+  color: #71910d;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.demoFormHeading h3 {
+  max-width: 600px;
+  margin-top: 10px;
+  color: #f5f7f3;
+  font-size: clamp(24px, 3vw, 36px);
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+}
+
+.demoFormHeading p {
+  margin-top: 10px;
+  color: rgba(245, 247, 243, 0.58);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.demoFormGrid {
+  display: grid;
+  margin-top: 32px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.demoFormGrid label {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.demoFormGrid label > span {
+  color: rgba(245, 247, 243, 0.66);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.demoFormGrid label > div {
+  display: flex;
+  min-height: 48px;
+  min-width: 0;
+  align-items: center;
+  gap: 9px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 12px;
+  background: #181b19;
+  padding: 0 14px;
+  color: #f5f7f3;
+  font-size: 11px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.demoFieldControl input {
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #f5f7f3;
+  font: inherit;
+}
+
+.demoFormGrid label:focus-within > div {
+  border-color: rgba(195, 243, 44, 0.62);
+  box-shadow: 0 0 0 3px rgba(195, 243, 44, 0.08);
+}
+
+.demoFieldControl > span {
+  flex: 0 0 auto;
+  color: #71910d;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.demoFormGrid label svg {
+  width: 16px;
+  flex: 0 0 16px;
+  color: #c3f32c;
+}
+
+.demoFormGrid .demoFullField {
+  grid-column: 1 / -1;
+}
+
+.demoFormFooter {
+  display: flex;
+  margin-top: 28px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.demoFormFooter small {
+  color: rgba(245, 247, 243, 0.48);
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.demoFormFooter > button {
+  display: inline-flex;
+  min-height: 44px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 999px;
+  background: #c3f32c;
+  padding: 0 19px;
+  color: #172000;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.demoFormFooter > button:hover {
+  background: #d1fa51;
+  transform: translateY(-2px);
+}
+
+.demoFormFooter svg {
+  width: 14px;
+}
+
+.demoSchedule {
+  margin-top: 34px;
+}
+
+.demoSchedule > span {
+  color: rgba(245, 247, 243, 0.66);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.demoDays {
+  display: grid;
+  margin-top: 10px;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.demoDays button {
+  min-height: 46px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 11px;
+  background: #181b19;
+  color: rgba(245, 247, 243, 0.62);
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
+}
+
+.demoDays button:hover {
+  border-color: #a8d820;
+}
+
+.demoDays .activeDemoDay {
+  border-color: #c3f32c;
+  background: #c3f32c;
+  color: #172000;
+}
+
+.demoTimeFields {
+  display: grid;
+  margin-top: 22px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.demoTimeFields label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.demoTimeFields span {
+  color: rgba(245, 247, 243, 0.66);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.demoTimeFields input,
+.demoTimeFields select {
+  min-height: 48px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 12px;
+  background: #181b19;
+  padding: 0 14px;
+  color: #f5f7f3;
+  color-scheme: dark;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.demoTimeFields select {
+  cursor: pointer;
+}
+
+.demoSchedulePreview {
+  display: flex;
+  margin-top: 22px;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(195, 243, 44, 0.2);
+  border-radius: 14px;
+  background: rgba(195, 243, 44, 0.075);
+  padding: 14px;
+}
+
+.demoSchedulePreview > span {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  place-items: center;
+  border-radius: 10px;
+  background: #c3f32c;
+  color: #172000;
+}
+
+.demoSchedulePreview svg {
+  width: 17px;
+}
+
+.demoSchedulePreview > div {
+  display: flex;
+  min-width: 0;
+  margin-right: auto;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.demoSchedulePreview strong {
+  color: #f5f7f3;
+  font-size: 11px;
+}
+
+.demoSchedulePreview small {
+  overflow: hidden;
+  color: rgba(245, 247, 243, 0.54);
+  font-size: 9px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.demoSchedulePreview b {
+  border-radius: 999px;
+  background: rgba(195, 243, 44, 0.14);
+  padding: 7px 10px;
+  color: #c3f32c;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.productTourSection {
+  width: min(calc(100% - (var(--landing-gutter) * 2)), var(--landing-frame-width));
+  margin: 96px auto 0;
+  border-top: 1px solid var(--landing-line);
+  border-bottom: 1px solid var(--landing-line);
+  background: #f5f7f3;
+  padding: 86px clamp(28px, 5vw, 70px);
+}
+
+.productTourIntro {
+  max-width: 760px;
+  margin: 0 auto 44px;
+  text-align: center;
+}
+
+.productTourIntro > span {
+  color: #71910d;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.productTourIntro h2 {
+  margin-top: 13px;
+  color: #244c4e;
+  font-size: clamp(38px, 5vw, 62px);
+  font-weight: 900;
+  line-height: 1.03;
+  letter-spacing: -0.06em;
+}
+
+.productTourIntro p {
+  max-width: 620px;
+  margin: 16px auto 0;
+  color: #66726c;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.tourStage {
+  overflow: hidden;
+  border: 1px solid rgba(36, 76, 78, 0.15);
+  border-radius: 24px;
+  background: #173f41;
+  box-shadow: 0 30px 80px rgba(36, 76, 78, 0.16);
+}
+
+.tourBrowserBar {
+  display: grid;
+  min-height: 54px;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0 18px;
+}
+
+.tourBrowserBar > div {
+  display: flex;
+  gap: 6px;
+}
+
+.tourBrowserBar i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.tourBrowserBar i:first-child {
+  background: #c3f32c;
+}
+
+.tourBrowserBar > span {
+  min-width: 250px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  padding: 9px 20px;
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 9px;
+  text-align: center;
+}
+
+.tourBrowserBar > button {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  justify-self: end;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: #c3f32c;
+  cursor: pointer;
+}
+
+.tourBrowserBar svg {
+  width: 14px;
+}
+
+.tourViewport {
+  height: 610px;
+  overflow: hidden;
+  background: #f5f7f3;
+}
+
+.tourScene {
+  height: 100%;
+  animation: tourSceneIn 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes tourSceneIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.tourLoginVisual {
+  position: relative;
+  display: grid;
+  height: 100%;
+  overflow: hidden;
+  place-items: center;
+  background: #f5f7f3;
+}
+
+.tourLoginGlow {
+  position: absolute;
+  right: 2%;
+  bottom: -50%;
+  width: 72%;
+  height: 115%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #8bea00, rgba(195, 243, 44, 0.55) 42%, transparent 72%);
+  filter: blur(12px);
+}
+
+.tourLoginCard {
+  position: relative;
+  display: flex;
+  width: min(390px, calc(100% - 40px));
+  flex-direction: column;
+  border: 1px solid rgba(36, 76, 78, 0.12);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 36px;
+  box-shadow: 0 24px 70px rgba(36, 76, 78, 0.16);
+}
+
+.tourLoginCard img {
+  width: 64px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.tourLoginCard > span {
+  margin-top: 22px;
+  color: #71910d;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.tourLoginCard h3 {
+  margin: 8px 0 22px;
+  color: #244c4e;
+  font-size: 27px;
+  letter-spacing: -0.05em;
+}
+
+.tourLoginCard label {
+  display: flex;
+  margin-top: 12px;
+  flex-direction: column;
+  gap: 7px;
+  color: #66726c;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.tourLoginCard label div {
+  min-height: 44px;
+  border: 1px solid rgba(36, 76, 78, 0.12);
+  border-radius: 11px;
+  background: #fff;
+  padding: 15px 13px;
+  color: #244c4e;
+  font-size: 10px;
+}
+
+.tourLoginCard > button {
+  display: flex;
+  min-height: 44px;
+  margin-top: 20px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 999px;
+  background: #c3f32c;
+  color: #172000;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.tourLoginCard button svg {
+  width: 14px;
+}
+
+.tourAppShell {
+  display: grid;
+  height: 100%;
+  grid-template-columns: 220px minmax(0, 1fr);
+}
+
+.tourSidebar {
+  background: #173f41;
+  padding: 26px 18px;
+  color: #fff;
+}
+
+.tourShopIdentity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0 4px 24px;
+}
+
+.tourShopIdentity > span {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  place-items: center;
+  border-radius: 11px;
+  background: #c3f32c;
+  color: #172000;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.tourShopIdentity div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tourShopIdentity strong {
+  overflow: hidden;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tourShopIdentity small {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 8px;
+}
+
+.tourSidebar nav {
+  display: flex;
+  margin-top: 24px;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.tourSidebar nav span {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 10px;
+  border-radius: 11px;
+  padding: 0 12px;
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.tourSidebar nav svg {
+  width: 15px;
+}
+
+.tourSidebar nav .activeTourNav {
+  background: rgba(195, 243, 44, 0.13);
+  color: #fff;
+}
+
+.tourAppContent {
+  min-width: 0;
+  overflow: hidden;
+  background: #f7f9f5;
+}
+
+.tourPanel {
+  height: 100%;
+  padding: clamp(34px, 5vw, 62px);
+}
+
+.tourPanelHeading > span {
+  color: #71910d;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.tourPanelHeading h3 {
+  margin-top: 9px;
+  color: #244c4e;
+  font-size: clamp(25px, 3vw, 38px);
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+}
+
+.tourPanelHeading p {
+  margin-top: 9px;
+  color: #66726c;
+  font-size: 11px;
+}
+
+.tourFormGrid {
+  display: grid;
+  margin-top: 32px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.tourFormGrid label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.tourFormGrid label > span {
+  color: #52635d;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.tourFormGrid label div {
+  min-height: 46px;
+  overflow: hidden;
+  border: 1px solid rgba(36, 76, 78, 0.12);
+  border-radius: 11px;
+  background: #fff;
+  padding: 16px 13px;
+  color: #244c4e;
+  font-size: 10px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tourFormGrid .tourWideField {
+  grid-column: 1 / -1;
+}
+
+.tourSaved {
+  display: inline-flex;
+  margin-top: 22px;
+  align-items: center;
+  gap: 7px;
+  color: #71910d;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.tourSaved svg {
+  width: 14px;
+}
+
+.tourServiceGrid,
+.tourAppointmentList {
+  display: grid;
+  margin-top: 30px;
+  gap: 12px;
+}
+
+.tourServiceGrid article,
+.tourAppointmentList article {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(36, 76, 78, 0.11);
+  border-radius: 14px;
+  background: #fff;
+  padding: 15px;
+  animation: tourItemIn 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes tourItemIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.tourServiceGrid article > span,
+.tourAppointmentList article > span {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(195, 243, 44, 0.18);
+  color: #71910d;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.tourServiceGrid svg {
+  width: 17px;
+}
+
+.tourServiceGrid article > div,
+.tourAppointmentList article > div {
+  display: flex;
+  min-width: 0;
+  margin-right: auto;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.tourServiceGrid strong,
+.tourAppointmentList strong {
+  color: #244c4e;
+  font-size: 11px;
+}
+
+.tourServiceGrid small,
+.tourAppointmentList small {
+  color: #7b8580;
+  font-size: 9px;
+}
+
+.tourServiceGrid b,
+.tourAppointmentList b {
+  color: #244c4e;
+  font-size: 11px;
+}
+
+.tourServiceGrid article > i {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  place-items: center;
+  border-radius: 50%;
+  background: #c3f32c;
+  color: #172000;
+  animation: tourCheckIn 420ms ease both;
+}
+
+@keyframes tourCheckIn {
+  from { opacity: 0; transform: scale(0.4); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.tourServiceGrid article > i svg {
+  width: 12px;
+}
+
+.tourAppointmentList time {
+  width: 42px;
+  color: #244c4e;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.tourAppointmentList article > i {
+  border-radius: 999px;
+  background: rgba(195, 243, 44, 0.18);
+  padding: 6px 9px;
+  color: #71910d;
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.tourStats {
+  display: grid;
+  margin-top: 26px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.tourStats article {
+  display: grid;
+  min-width: 0;
+  border: 1px solid rgba(36, 76, 78, 0.11);
+  border-radius: 14px;
+  background: #fff;
+  padding: 16px;
+}
+
+.tourStats svg {
+  width: 17px;
+  color: #71910d;
+}
+
+.tourStats span {
+  margin-top: 15px;
+  color: #66726c;
+  font-size: 9px;
+}
+
+.tourStats strong {
+  margin-top: 7px;
+  overflow: hidden;
+  color: #244c4e;
+  font-size: 21px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tourStats small {
+  margin-top: 7px;
+  color: #71910d;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.tourChart {
+  margin-top: 14px;
+  border: 1px solid rgba(36, 76, 78, 0.11);
+  border-radius: 14px;
+  background: #fff;
+  padding: 15px 16px 7px;
+}
+
+.tourChart > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tourChart span {
+  color: #66726c;
+  font-size: 9px;
+}
+
+.tourChart strong {
+  color: #244c4e;
+  font-size: 13px;
+}
+
+.tourChart svg {
+  width: 100%;
+  height: 120px;
+  margin-top: 8px;
+}
+
+.tourTimeline {
+  display: grid;
+  margin-top: 24px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tourTimeline button {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #66726c;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tourTimeline button > span {
+  width: 100%;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(36, 76, 78, 0.1);
+}
+
+.tourTimeline button > span i {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: #91c600;
+}
+
+.tourIsPlaying .tourTimeline .activeTourStep > span i {
+  width: 100%;
+  animation: tourProgress 3.4s linear;
+}
+
+@keyframes tourProgress {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.tourTimeline strong {
+  margin-top: 11px;
+  color: #244c4e;
+  font-size: 10px;
+}
+
+.tourTimeline small {
+  margin-top: 5px;
+  overflow: hidden;
+  font-size: 8px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.testimonialsSection {
+  position: relative;
+  width: min(calc(100% - (var(--landing-gutter) * 2)), var(--landing-frame-width));
+  max-height: 790px;
+  margin: 96px auto 0;
+  overflow: hidden;
+  border-right: 1px solid var(--landing-line);
+  border-left: 1px solid var(--landing-line);
+  background: #f5f7f3;
+  padding: 76px clamp(28px, 5vw, 70px) 0;
+  color: #244c4e;
+}
+
+.testimonialsSection::before {
+  position: absolute;
+  top: 0;
+  right: calc(50% - 50vw);
+  left: calc(50% - 50vw);
+  border-top: 1px solid var(--landing-line);
+  pointer-events: none;
+  content: "";
+}
+
+.testimonialsSection::after {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 190px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, #f5f7f3 88%);
+  content: "";
+}
+
+.testimonialsIntro {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin-bottom: 42px;
+}
+
+.testimonialsIntro > span {
+  color: #c3f32c;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.testimonialsIntro h2 {
+  margin-top: 13px;
+  font-size: clamp(36px, 4.6vw, 58px);
+  font-weight: 900;
+  line-height: 1.03;
+  letter-spacing: -0.06em;
+  color: #244c4e;
+}
+
+.testimonialGrid {
+  position: relative;
+  z-index: 1;
+  columns: 4 230px;
+  column-gap: 16px;
+}
+
+.testimonialCard {
+  display: inline-block;
+  width: 100%;
+  margin: 0 0 16px;
+  break-inside: avoid;
+  border: 1px solid rgba(36, 76, 78, 0.12);
+  border-radius: 16px;
+  background: #fff;
+  padding: 24px;
+  vertical-align: top;
+  transition: border-color 200ms ease, background 200ms ease,
+    transform 200ms ease;
+}
+
+.testimonialCard:hover {
+  border-color: rgba(113, 145, 13, 0.38);
+  background: #fbfcf9;
+  transform: translateY(-3px);
+}
+
+.testimonialAuthor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.testimonialAvatar {
+  display: block;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  overflow: hidden;
+  border: 2px solid rgba(36, 76, 78, 0.1);
+  border-radius: 50%;
+}
+
+.testimonialAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.testimonialAuthor > span:last-child {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.testimonialAuthor strong {
+  overflow: hidden;
+  color: #244c4e;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.testimonialAuthor small {
+  overflow: hidden;
+  color: #7b8580;
+  font-size: 11px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.testimonialCard p {
+  margin-top: 22px;
+  color: #52635d;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: -0.02em;
 }
 
 .planCard {
@@ -1352,7 +2922,7 @@
 
 .scrollCta {
   position: relative;
-  width: min(calc(100% - 48px), 1180px);
+  width: min(calc(100% - (var(--landing-gutter) * 2)), var(--landing-content-width));
   min-height: 990px;
   margin: 30px auto 110px;
   overflow: hidden;
@@ -1451,7 +3021,7 @@
 .footer {
   display: grid;
   min-height: 120px;
-  width: min(calc(100% - 48px), 1180px);
+  width: min(calc(100% - (var(--landing-gutter) * 2)), var(--landing-content-width));
   margin: 0 auto;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -1484,6 +3054,40 @@
 }
 
 @media (max-width: 900px) {
+  .pageGrid {
+    display: none;
+  }
+
+  .landingHeader {
+    width: 100%;
+    height: 82px;
+    border-right: 0;
+    border-left: 0;
+    border-radius: 0;
+    padding: 0 24px;
+  }
+
+  .landingHeaderInner {
+    width: 100%;
+    grid-template-columns: 1fr auto;
+    gap: 18px;
+  }
+
+  .landingBrand img {
+    width: 76px;
+    height: 50px;
+  }
+
+  .landingNav {
+    display: none;
+  }
+
+  .headerButton {
+    min-height: 42px;
+    padding: 0 17px;
+    font-size: 12px;
+  }
+
   .hero {
     min-height: auto;
     grid-template-columns: 1fr;
@@ -1505,15 +3109,57 @@
     margin-top: 28px;
   }
 
+  .heroWave {
+    right: -18%;
+    width: 136%;
+    height: 54%;
+    opacity: 0.72;
+  }
+
   .featureGrid,
   .planGrid,
   .stepsGrid {
     grid-template-columns: 1fr;
   }
 
+  .testimonialsSection {
+    max-height: 860px;
+    padding: 62px 30px 0;
+  }
+
+  .testimonialGrid {
+    columns: 2 230px;
+  }
+
+  .productTourSection {
+    padding: 64px 30px;
+  }
+
+  .tourViewport {
+    height: 560px;
+  }
+
+  .tourAppShell {
+    grid-template-columns: 175px minmax(0, 1fr);
+  }
+
+  .tourSidebar {
+    padding: 22px 12px;
+  }
+
   .stepsSection {
-    width: min(calc(100% - 48px), 1180px);
+    width: min(calc(100% - (var(--landing-gutter) * 2)), var(--landing-content-width));
     padding: 42px 30px;
+  }
+
+  .demoWorkspace {
+    height: 580px;
+    min-height: 0;
+    grid-template-columns: 1fr;
+  }
+
+  .demoProgress {
+    display: none;
   }
 
   .footer {
@@ -1529,12 +3175,120 @@
 }
 
 @media (max-width: 560px) {
+  .landingHeader {
+    padding: 0 16px;
+  }
+
+  .landingBrand img {
+    width: 70px;
+  }
+
+  .headerButton {
+    min-height: 40px;
+    padding: 0 14px;
+  }
+
   .hero,
   .section,
   .stepsSection,
+  .productTourSection,
+  .testimonialsSection,
   .scrollCta,
   .footer {
     width: calc(100% - 32px);
+  }
+
+  .testimonialsSection {
+    max-height: 920px;
+    margin-top: 70px;
+    padding: 50px 18px 0;
+  }
+
+  .testimonialsIntro {
+    margin-bottom: 30px;
+  }
+
+  .testimonialsIntro h2 {
+    font-size: 34px;
+  }
+
+  .testimonialGrid {
+    columns: 1;
+  }
+
+  .testimonialCard {
+    padding: 20px;
+  }
+
+  .productTourSection {
+    margin-top: 70px;
+    padding: 52px 16px;
+  }
+
+  .productTourIntro {
+    margin-bottom: 32px;
+  }
+
+  .productTourIntro h2 {
+    font-size: 34px;
+  }
+
+  .tourBrowserBar {
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+    padding: 0 12px;
+  }
+
+  .tourBrowserBar > span {
+    min-width: 0;
+    overflow: hidden;
+    padding: 8px 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .tourViewport {
+    height: 520px;
+  }
+
+  .tourAppShell {
+    grid-template-columns: 1fr;
+  }
+
+  .tourSidebar {
+    display: none;
+  }
+
+  .tourAppContent {
+    overflow-y: auto;
+  }
+
+  .tourPanel {
+    padding: 30px 20px;
+  }
+
+  .tourFormGrid,
+  .tourStats {
+    grid-template-columns: 1fr;
+  }
+
+  .tourFormGrid .tourWideField {
+    grid-column: auto;
+  }
+
+  .tourTimeline {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 6px;
+  }
+
+  .tourTimeline button {
+    min-width: 132px;
+  }
+
+  .tourAppointmentList article > b,
+  .tourAppointmentList article > i {
+    display: none;
   }
 
   .hero {
@@ -1553,6 +3307,13 @@
     width: 260px;
     height: 530px;
     border-radius: 47px;
+  }
+
+  .heroWave {
+    right: -32%;
+    width: 165%;
+    height: 48%;
+    opacity: 0.58;
   }
 
   .phoneScreen {
@@ -1595,6 +3356,79 @@
 
   .stepsSection {
     padding: 34px 22px;
+  }
+
+  .stepsSection .sectionIntro {
+    margin-bottom: 38px;
+    gap: 13px;
+  }
+
+  .stepsSection .sectionIntro h2 {
+    font-size: 34px;
+  }
+
+  .stepsSection .sectionIntro p {
+    font-size: 14px;
+  }
+
+  .demoBrowserBar {
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    padding: 0 14px;
+  }
+
+  .demoBrowserBar > span {
+    min-width: 0;
+    overflow: hidden;
+    padding: 8px 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .demoFormPanel {
+    height: 760px;
+    padding: 30px 20px;
+  }
+
+  .demoWorkspace {
+    height: 760px;
+  }
+
+  .demoFormGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .demoFormGrid .demoFullField {
+    grid-column: auto;
+  }
+
+  .demoFormFooter {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .demoFormFooter > button {
+    justify-content: center;
+  }
+
+  .demoDays {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .demoTimeFields {
+    grid-template-columns: 1fr;
+  }
+
+  .demoSchedulePreview {
+    align-items: flex-start;
+  }
+
+  .demoSchedulePreview small {
+    white-space: normal;
+  }
+
+  .demoSchedulePreview b {
+    display: none;
   }
 
   .scrollCta {
