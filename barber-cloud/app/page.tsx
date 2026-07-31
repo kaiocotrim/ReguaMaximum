@@ -420,24 +420,30 @@ export default function LandingPage() {
         </div>
 
         <div className={styles.testimonialGrid}>
-          {testimonials.map((testimonial) => (
-            <article className={styles.testimonialCard} key={testimonial.handle}>
-              <div className={styles.testimonialAuthor}>
-                <span className={styles.testimonialAvatar}>
-                  <Image
-                    src={testimonial.avatar}
-                    alt=""
-                    width={46}
-                    height={46}
-                  />
-                </span>
-                <span>
-                  <strong>{testimonial.name}</strong>
-                  <small>{testimonial.handle}</small>
-                </span>
+          {testimonials.map((testimonial, index) => (
+            <MotionArticle
+              className={styles.testimonialCardShell}
+              delay={Math.min(index * 0.06, 0.42)}
+              key={testimonial.handle}
+            >
+              <div className={styles.testimonialCard}>
+                <div className={styles.testimonialAuthor}>
+                  <span className={styles.testimonialAvatar}>
+                    <Image
+                      src={testimonial.avatar}
+                      alt=""
+                      width={46}
+                      height={46}
+                    />
+                  </span>
+                  <span>
+                    <strong>{testimonial.name}</strong>
+                    <small>{testimonial.handle}</small>
+                  </span>
+                </div>
+                <p>{testimonial.quote}</p>
               </div>
-              <p>{testimonial.quote}</p>
-            </article>
+            </MotionArticle>
           ))}
         </div>
       </MotionSection>

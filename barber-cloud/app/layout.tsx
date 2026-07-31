@@ -43,9 +43,13 @@ export default function RootLayout({
     >
       <body className="min-h-full custom-scrollbar overflow-y-auto">
         <ThemeProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <div className="flex min-h-dvh w-full flex-col">
+            <AuthProvider>
+              <div className="min-h-dvh w-full flex-1">{children}</div>
+            </AuthProvider>
+            <Footer />
+          </div>
           <ToasterWithTheme />
-          <Footer></Footer>
         </ThemeProvider>
       </body>
     </html>

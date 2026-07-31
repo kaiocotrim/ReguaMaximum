@@ -2785,24 +2785,59 @@
   column-gap: 16px;
 }
 
-.testimonialCard {
+.testimonialCardShell {
   display: inline-block;
   width: 100%;
   margin: 0 0 16px;
   break-inside: avoid;
+  vertical-align: top;
+}
+
+.testimonialCard {
+  width: 100%;
   border: 1px solid rgba(36, 76, 78, 0.12);
   border-radius: 16px;
   background: #fff;
   padding: 24px;
-  vertical-align: top;
   transition: border-color 200ms ease, background 200ms ease,
     transform 200ms ease;
+  animation: testimonialCardDrift 7.2s ease-in-out infinite;
+  will-change: transform;
 }
 
-.testimonialCard:hover {
+.testimonialCardShell:nth-child(4n + 2) .testimonialCard {
+  animation-delay: -1.8s;
+  animation-duration: 8.4s;
+}
+
+.testimonialCardShell:nth-child(4n + 3) .testimonialCard {
+  animation-delay: -3.6s;
+  animation-duration: 6.8s;
+}
+
+.testimonialCardShell:nth-child(4n + 4) .testimonialCard {
+  animation-delay: -5.2s;
+  animation-duration: 9s;
+}
+
+.testimonialGrid:hover .testimonialCard {
+  animation-play-state: paused;
+}
+
+.testimonialCardShell:hover .testimonialCard {
   border-color: rgba(113, 145, 13, 0.38);
   background: #fbfcf9;
-  transform: translateY(-3px);
+}
+
+@keyframes testimonialCardDrift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -8px, 0);
+  }
 }
 
 .testimonialAuthor {
@@ -2924,9 +2959,10 @@
   position: relative;
   width: min(calc(100% - (var(--landing-gutter) * 2)), var(--landing-content-width));
   min-height: 990px;
-  margin: 30px auto 110px;
+  margin: 30px auto 0;
   overflow: hidden;
   border: 1px solid rgba(36, 76, 78, 0.11);
+  border-bottom: 0;
   border-radius: 24px;
   background: white;
   padding: 72px 24px 0;
@@ -3433,7 +3469,7 @@
 
   .scrollCta {
     min-height: 740px;
-    margin-bottom: 90px;
+    margin-bottom: 0;
     padding: 52px 20px 0;
   }
 
@@ -3474,5 +3510,11 @@
   .footer nav {
     flex-direction: column;
     gap: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .testimonialCard {
+    animation: none;
   }
 }
