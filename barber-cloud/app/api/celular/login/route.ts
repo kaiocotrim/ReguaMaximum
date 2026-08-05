@@ -2,11 +2,17 @@ import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
 import { NextResponse } from "next/server";
 
-import { prisma } from "@/lib/prisma";
+import { db } from "@/app/_lib/prisma";
 
 export async function POST(request: Request) {
   try {
-    const { email, password } = await request.json();
+    const body = await request.json();
+
+    const email = String(body.email ?? "")
+      .trim()
+      .toLowerCase();
+
+    const password = String(body.password ?? "");
 
     if (!email || !password) {
       return NextResponse.json(
@@ -15,30 +21,38 @@ export async function POST(request: Request) {
         },
         {
           status: 400,
-        }
+        },
       );
     }
 
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: {
-        email: email.toLowerCase(),
+        email,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+        role: true,
+        password: true,
       },
     });
 
-    if (!user || !user.password) {
+    if (!user?.password) {
       return NextResponse.json(
         {
           error: "E-mail ou senha inválidos.",
         },
         {
           status: 401,
-        }
+        },
       );
     }
 
     const passwordIsValid = await bcrypt.compare(
       password,
-      user.password
+      user.password,
     );
 
     if (!passwordIsValid) {
@@ -48,20 +62,29 @@ export async function POST(request: Request) {
         },
         {
           status: 401,
-        }
+        },
       );
     }
 
     const secret = process.env.MOBILE_JWT_SECRET;
 
     if (!secret) {
-      throw new Error("MOBILE_JWT_SECRET não configurado.");
+      console.error("MOBILE_JWT_SECRET não configurado.");
+
+      return NextResponse.json(
+        {
+          error: "Erro interno de autenticação.",
+        },
+        {
+          status: 500,
+        },
+      );
     }
 
     const token = await new SignJWT({
+      name: user.name,
       email: user.email,
       role: user.role,
-      name: user.name,
     })
       .setProtectedHeader({
         alg: "HS256",
@@ -73,25 +96,24 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       token,
-
       user: {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: user.role,
         image: user.image,
+        role: user.role,
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Erro no login celular:", error);
 
     return NextResponse.json(
       {
-        error: "Erro interno.",
+        error: "Não foi possível realizar o login.",
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }
