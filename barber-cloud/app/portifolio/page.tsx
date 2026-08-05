@@ -7,6 +7,7 @@ import { normalizeAllowedImageUrl } from "@/app/_lib/image-url"
 import { BarberPortfolioManager } from "@/app/_components/BarberPortfolioManager"
 import { BarberMembershipButton } from "@/app/_components/BarberMembershipButton"
 import { Card } from "@/app/_components/ui/card"
+import { ReguaMaximumCard } from "@/app/_components/ReguaMaximumCard"
 
 export default async function PortfolioPage() {
   const session = await getServerSession(authOptions)
@@ -53,7 +54,7 @@ export default async function PortfolioPage() {
               normalizeAllowedImageUrl(barber.user.image),
           }}
         />
-
+        <ReguaMaximumCard />
         {barber.barbershop && (
           <Card className="mt-8 rounded-2xl border-red-500/20 p-5 shadow-sm md:p-6">
             <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
