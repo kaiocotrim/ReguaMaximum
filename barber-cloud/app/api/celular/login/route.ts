@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
 import { NextResponse } from "next/server";
 
-import { db } from "@/lib/prisma";
+import { db } from "@/app/_lib/prisma";
 
 export async function POST(request: Request) {
   try {
