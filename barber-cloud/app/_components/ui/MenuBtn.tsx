@@ -422,7 +422,7 @@ import {
   LogOut,
   Menu,
   ScissorsLineDashed,
-  Settings,
+  Settings, Crown,
   CircleUser,
   House,
   Lock,
@@ -511,7 +511,8 @@ const MENU_ITEMS = [
     href: "/configuracoes",
     requiresAuth: true,
   },
-]
+  { icon: Crown, label: "Regua Máxima", description: "Projeto Regua Máxima", href: "/regua-maxima", },
+];
 
 const MenuBtn = ({ className }: MenuBtnProps) => {
   const { data } = useSession()
@@ -530,320 +531,318 @@ const MenuBtn = ({ className }: MenuBtnProps) => {
 
   return (
     <>
-    {!className && (
-      <div className="group relative hidden lg:block">
-        <Button
-          size="icon"
-          variant="secondary"
-          aria-label="Abrir menu"
-          className="cursor-pointer"
-        >
-          <Menu className="h-5 w-5" />
-        </Button>
+      {!className && (
+        <div className="group relative hidden lg:block">
+          <Button
+            size="icon"
+            variant="secondary"
+            aria-label="Abrir menu"
+            className="cursor-pointer"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
 
-        <div className="invisible absolute top-full right-0 z-50 w-80 translate-y-1 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
-          <div className="max-h-[72vh] overflow-y-auto rounded-2xl border border-white/10 bg-popover/80 p-3 shadow-[0_24px_70px_rgba(0,0,0,0.22)] backdrop-blur-2xl backdrop-saturate-150">
-            {data?.user ? (
-              <div className="mb-3 flex items-center gap-3 rounded-xl border border-border/70 bg-card/70 p-3">
-                <Avatar className="h-10 w-10 rounded-xl">
-                  <AvatarImage
-                    src={data.user.image ?? ""}
-                    alt="avatar"
-                    className="rounded-xl object-cover"
-                  />
-                  <AvatarFallback className="rounded-xl bg-[#C3F32C] text-sm font-bold text-black">
-                    {data.user.name
-                      ?.split(" ")
-                      .slice(0, 2)
-                      .map((part: string) => part.charAt(0).toUpperCase())
-                      .join("") || "U"}
-                  </AvatarFallback>
-                </Avatar>
+          <div className="invisible absolute top-full right-0 z-50 w-80 translate-y-1 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+            <div className="max-h-[72vh] overflow-y-auto rounded-2xl border border-white/10 bg-popover/80 p-3 shadow-[0_24px_70px_rgba(0,0,0,0.22)] backdrop-blur-2xl backdrop-saturate-150">
+              {data?.user ? (
+                <div className="mb-3 flex items-center gap-3 rounded-xl border border-border/70 bg-card/70 p-3">
+                  <Avatar className="h-10 w-10 rounded-xl">
+                    <AvatarImage
+                      src={data.user.image ?? ""}
+                      alt="avatar"
+                      className="rounded-xl object-cover"
+                    />
+                    <AvatarFallback className="rounded-xl bg-[#C3F32C] text-sm font-bold text-black">
+                      {data.user.name
+                        ?.split(" ")
+                        .slice(0, 2)
+                        .map((part: string) => part.charAt(0).toUpperCase())
+                        .join("") || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-foreground">
+                      {data.user.name}
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {data.user.email}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <Button
+                  onClick={() => router.push("/login")}
+                  className="mb-3 w-full cursor-pointer rounded-xl bg-[#C3F32C] font-bold text-[#254F50] hover:bg-[#d4f542]"
+                >
+                  <LogInIcon className="mr-2 h-4 w-4" />
+                  Entrar
+                </Button>
+              )}
+
+              <nav className="flex flex-col gap-1">
+                {visibleItems.map(
+                  ({ icon: Icon, label, description, href, requiresAuth }) => {
+                    const locked = requiresAuth && !isLoggedIn
+
+                    return (
+                      <Button
+                        key={label}
+                        variant="ghost"
+                        disabled={locked}
+                        onClick={() => !locked && href && router.push(href)}
+                        className="group/item h-auto w-full cursor-pointer justify-start gap-3 rounded-xl px-3 py-2.5 text-left hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#C3F32C]/10">
+                          <Icon className="h-4 w-4 text-[#93b91c] dark:text-[#C3F32C]" />
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-sm font-semibold text-foreground">
+                            {label}
+                          </span>
+                          <span className="block truncate text-[11px] font-normal text-muted-foreground">
+                            {description}
+                          </span>
+                        </span>
+                        {locked ? (
+                          <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                        ) : (
+                          <ChevronRight className="h-3.5 w-3.5 text-muted-foreground transition-transform group-hover/item:translate-x-0.5" />
+                        )}
+                      </Button>
+                    )
+                  },
+                )}
+              </nav>
+
+              {data?.user && (
+                <div className="mt-3 border-t border-border/70 pt-3">
+                  <Button
+                    variant="ghost"
+                    onClick={handleLogoutClick}
+                    className="w-full cursor-pointer justify-start rounded-xl text-red-500 hover:bg-red-500/10 hover:text-red-500"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sair da conta
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button
+            size="icon"
+            variant="secondary"
+            className={className ?? "cursor-pointer lg:hidden"}
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+        </SheetTrigger>
+
+        <SheetContent className="border-border bg-popover/95 text-foreground flex flex-col overflow-y-auto border-l px-5 shadow-[-20px_0_60px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
+          <SheetHeader className="mt-8 space-y-0">
+            {data?.user && (
+              <div className="border-border bg-card flex items-center gap-4 rounded-2xl border p-4">
+                <div className="relative flex-shrink-0">
+                  <Avatar className="h-13 w-13 rounded-2xl">
+                    <AvatarImage
+                      src={data.user.image ?? ""}
+                      alt="avatar"
+                      className="rounded-2xl object-cover"
+                    />
+                    <AvatarFallback className="rounded-2xl bg-[#C3F32C] text-base font-bold text-black">
+                      {data.user.name
+                        ?.split(" ")
+                        .slice(0, 2)
+                        .map((part: string) => part.charAt(0).toUpperCase())
+                        .join("") || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <span className="border-card absolute -right-1.5 -bottom-1.5 flex items-center gap-0.5 rounded-full border-2 bg-[#C3F32C] px-1.5 py-0.5 text-[9px] font-black text-black">
+                    {role === "BARBER" ? (
+                      <Scissors className="h-2 w-2" />
+                    ) : (
+                      <User className="h-2 w-2" />
+                    )}
+                    {role === "BARBER" ? "BAR" : "VIP"}
+                  </span>
+                </div>
+
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-foreground">
+                  <SheetTitle className="text-foreground truncate text-[15px] font-semibold">
                     {data.user.name}
-                  </p>
-                  <p className="truncate text-xs text-muted-foreground">
+                  </SheetTitle>
+                  <SheetDescription className="text-muted-foreground truncate text-xs">
                     {data.user.email}
-                  </p>
+                  </SheetDescription>
                 </div>
               </div>
-            ) : (
-              <Button
-                onClick={() => router.push("/login")}
-                className="mb-3 w-full cursor-pointer rounded-xl bg-[#C3F32C] font-bold text-[#254F50] hover:bg-[#d4f542]"
-              >
-                <LogInIcon className="mr-2 h-4 w-4" />
-                Entrar
-              </Button>
             )}
 
-            <nav className="flex flex-col gap-1">
-              {visibleItems.map(
-                ({ icon: Icon, label, description, href, requiresAuth }) => {
+            {!data?.user && (
+              <div className="border-border bg-card flex items-center justify-between rounded-2xl border px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <CircleUser className="text-muted-foreground h-5 w-5" />
+                  <SheetTitle className="text-muted-foreground text-sm font-normal">
+                    Faça o seu login
+                  </SheetTitle>
+                </div>
+
+                <Button
+                  onClick={() => router.push("/login")}
+                  size="sm"
+                  className="h-8 cursor-pointer rounded-xl bg-[#C3F32C] text-xs font-bold text-black hover:bg-[#d4f542]"
+                >
+                  <LogInIcon className="mr-1.5 h-3.5 w-3.5" />
+                  <p className="text-[#254F50]">Entrar</p>
+                </Button>
+              </div>
+            )}
+
+            <div className="border-border bg-card mt-4 rounded-2xl border border-l-[3px] border-l-[#C3F32C] px-5 py-[18px]">
+              <p className="text-foreground text-xl leading-tight font-black tracking-tight">
+                {!isLoggedIn
+                  ? "Venha entrar para o time da "
+                  : role === "BARBER"
+                    ? "Mais um cliente para deixar "
+                    : "Vai deixar o cabelo "}
+                {!isLoggedIn ? (
+                  <span className="text-[#C3F32C]">RéguaMáxima.</span>
+                ) : (
+                  <>
+                    na <span className="text-[#C3F32C]">régua?</span>
+                  </>
+                )}
+              </p>
+              <p className="text-muted-foreground mt-1 text-xs font-medium">
+                Régua <span className="text-[#C3F32C]/70">Máxima.</span>
+              </p>
+            </div>
+          </SheetHeader>
+
+          <div className="bg-border mt-6 h-px w-full" />
+
+          <nav className="mt-6">
+            <div className="mb-3 flex items-center gap-3 px-1">
+              <span className="text-muted-foreground text-[10px] font-bold tracking-[0.15em] uppercase">
+                Menu
+              </span>
+              <div className="bg-border h-px flex-1" />
+            </div>
+
+            {!data && (
+              <div className="border-border bg-card mb-4 rounded-2xl border p-4">
+                <div className="flex items-center gap-3">
+                  <div>
+                    <h3 className="text-foreground text-sm font-semibold">
+                      Acesso Completo
+                    </h3>
+                    <p className="text-muted-foreground text-xs">
+                      Entre na sua conta para acessar agendamentos e recursos
+                      exclusivos.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-0.5">
+              {visibleItems
+                .map(({ icon: Icon, label, description, href, requiresAuth }) => {
                   const locked = requiresAuth && !isLoggedIn
 
                   return (
                     <Button
                       key={label}
                       variant="ghost"
-                      disabled={locked}
                       onClick={() => !locked && href && router.push(href)}
-                      className="group/item h-auto w-full cursor-pointer justify-start gap-3 rounded-xl px-3 py-2.5 text-left hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
+                      className={`group flex h-auto w-full cursor-pointer items-center justify-between rounded-xl border px-3.5 py-3 transition-all ${locked
+                        ? "border-border/50 bg-muted cursor-default"
+                        : "border-border bg-card hover:border-border hover:bg-accent"
+                        }`}
                     >
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#C3F32C]/10">
-                        <Icon className="h-4 w-4 text-[#93b91c] dark:text-[#C3F32C]" />
-                      </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-semibold text-foreground">
-                          {label}
-                        </span>
-                        <span className="block truncate text-[11px] font-normal text-muted-foreground">
-                          {description}
-                        </span>
-                      </span>
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[10px] border ${locked
+                            ? "border-border/50 bg-muted"
+                            : "border-border bg-[#C3F32C]/10"
+                            }`}
+                        >
+                          <Icon
+                            className={`h-[17px] w-[17px] ${locked ? "text-muted-foreground" : "text-[#C3F32C]"}`}
+                          />
+                        </div>
+                        <div className="text-left">
+                          <p
+                            className={`text-[14px] font-semibold ${locked ? "text-muted-foreground" : "text-foreground"}`}
+                          >
+                            {label}
+                          </p>
+                          <p className="text-muted-foreground text-[11px]">
+                            {description}
+                          </p>
+                        </div>
+                      </div>
+
                       {locked ? (
-                        <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                        <Lock className="text-muted-foreground h-4 w-4 flex-shrink-0 transition-colors group-hover:text-[#C3F32C]" />
                       ) : (
-                        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground transition-transform group-hover/item:translate-x-0.5" />
+                        <ChevronRight className="text-muted-foreground h-4 w-4 flex-shrink-0 transition-all group-hover:translate-x-0.5 group-hover:text-[#C3F32C]" />
                       )}
                     </Button>
                   )
-                },
-              )}
-            </nav>
+                })}
+            </div>
+          </nav>
 
-            {data?.user && (
-              <div className="mt-3 border-t border-border/70 pt-3">
-                <Button
-                  variant="ghost"
-                  onClick={handleLogoutClick}
-                  className="w-full cursor-pointer justify-start rounded-xl text-red-500 hover:bg-red-500/10 hover:text-red-500"
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sair da conta
-                </Button>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    )}
-
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button
-          size="icon"
-          variant="secondary"
-          className={className ?? "cursor-pointer lg:hidden"}
-        >
-          <Menu className="h-5 w-5" />
-        </Button>
-      </SheetTrigger>
-
-      <SheetContent className="border-border bg-popover/95 text-foreground flex flex-col overflow-y-auto border-l px-5 shadow-[-20px_0_60px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
-        <SheetHeader className="mt-8 space-y-0">
           {data?.user && (
-            <div className="border-border bg-card flex items-center gap-4 rounded-2xl border p-4">
-              <div className="relative flex-shrink-0">
-                <Avatar className="h-13 w-13 rounded-2xl">
-                  <AvatarImage
-                    src={data.user.image ?? ""}
-                    alt="avatar"
-                    className="rounded-2xl object-cover"
-                  />
-                  <AvatarFallback className="rounded-2xl bg-[#C3F32C] text-base font-bold text-black">
-                    {data.user.name
-                      ?.split(" ")
-                      .slice(0, 2)
-                      .map((part: string) => part.charAt(0).toUpperCase())
-                      .join("") || "U"}
-                  </AvatarFallback>
-                </Avatar>
-
-                <span className="border-card absolute -right-1.5 -bottom-1.5 flex items-center gap-0.5 rounded-full border-2 bg-[#C3F32C] px-1.5 py-0.5 text-[9px] font-black text-black">
-                  {role === "BARBER" ? (
-                    <Scissors className="h-2 w-2" />
-                  ) : (
-                    <User className="h-2 w-2" />
-                  )}
-                  {role === "BARBER" ? "BAR" : "VIP"}
-                </span>
-              </div>
-
-              <div className="min-w-0">
-                <SheetTitle className="text-foreground truncate text-[15px] font-semibold">
-                  {data.user.name}
-                </SheetTitle>
-                <SheetDescription className="text-muted-foreground truncate text-xs">
-                  {data.user.email}
-                </SheetDescription>
-              </div>
-            </div>
-          )}
-
-          {!data?.user && (
-            <div className="border-border bg-card flex items-center justify-between rounded-2xl border px-4 py-3">
-              <div className="flex items-center gap-2">
-                <CircleUser className="text-muted-foreground h-5 w-5" />
-                <SheetTitle className="text-muted-foreground text-sm font-normal">
-                  Faça o seu login
-                </SheetTitle>
-              </div>
-
-              <Button
-                onClick={() => router.push("/login")}
-                size="sm"
-                className="h-8 cursor-pointer rounded-xl bg-[#C3F32C] text-xs font-bold text-black hover:bg-[#d4f542]"
-              >
-                <LogInIcon className="mr-1.5 h-3.5 w-3.5" />
-                <p className="text-[#254F50]">Entrar</p>
-              </Button>
-            </div>
-          )}
-
-          <div className="border-border bg-card mt-4 rounded-2xl border border-l-[3px] border-l-[#C3F32C] px-5 py-[18px]">
-            <p className="text-foreground text-xl leading-tight font-black tracking-tight">
-              {!isLoggedIn
-                ? "Venha entrar para o time da "
-                : role === "BARBER"
-                  ? "Mais um cliente para deixar "
-                  : "Vai deixar o cabelo "}
-              {!isLoggedIn ? (
-                <span className="text-[#C3F32C]">RéguaMáxima.</span>
-              ) : (
-                <>
-                  na <span className="text-[#C3F32C]">régua?</span>
-                </>
-              )}
-            </p>
-            <p className="text-muted-foreground mt-1 text-xs font-medium">
-              Régua <span className="text-[#C3F32C]/70">Máxima.</span>
-            </p>
-          </div>
-        </SheetHeader>
-
-        <div className="bg-border mt-6 h-px w-full" />
-
-        <nav className="mt-6">
-          <div className="mb-3 flex items-center gap-3 px-1">
-            <span className="text-muted-foreground text-[10px] font-bold tracking-[0.15em] uppercase">
-              Menu
-            </span>
-            <div className="bg-border h-px flex-1" />
-          </div>
-
-          {!data && (
-            <div className="border-border bg-card mb-4 rounded-2xl border p-4">
-              <div className="flex items-center gap-3">
-                <div>
-                  <h3 className="text-foreground text-sm font-semibold">
-                    Acesso Completo
-                  </h3>
-                  <p className="text-muted-foreground text-xs">
-                    Entre na sua conta para acessar agendamentos e recursos
-                    exclusivos.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="flex flex-col gap-0.5">
-            {visibleItems
-              .map(({ icon: Icon, label, description, href, requiresAuth }) => {
-                const locked = requiresAuth && !isLoggedIn
-
-                return (
+            <div className="border-border mt-auto border-t pt-4 pb-6">
+              <Dialog>
+                <DialogTrigger asChild>
                   <Button
-                    key={label}
                     variant="ghost"
-                    onClick={() => !locked && href && router.push(href)}
-                    className={`group flex h-auto w-full cursor-pointer items-center justify-between rounded-xl border px-3.5 py-3 transition-all ${
-                      locked
-                        ? "border-border/50 bg-muted cursor-default"
-                        : "border-border bg-card hover:border-border hover:bg-accent"
-                    }`}
+                    className="border-border w-full cursor-pointer justify-start gap-3 rounded-xl border hover:border-red-500/20 hover:bg-transparent hover:text-red-500"
                   >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[10px] border ${
-                          locked
-                            ? "border-border/50 bg-muted"
-                            : "border-border bg-[#C3F32C]/10"
-                        }`}
-                      >
-                        <Icon
-                          className={`h-[17px] w-[17px] ${locked ? "text-muted-foreground" : "text-[#C3F32C]"}`}
-                        />
-                      </div>
-                      <div className="text-left">
-                        <p
-                          className={`text-[14px] font-semibold ${locked ? "text-muted-foreground" : "text-foreground"}`}
-                        >
-                          {label}
-                        </p>
-                        <p className="text-muted-foreground text-[11px]">
-                          {description}
-                        </p>
-                      </div>
+                    <LogOut className="h-4 w-4 text-red-500" />
+                    <span className="text-sm font-medium text-red-500">
+                      Sair da conta
+                    </span>
+                  </Button>
+                </DialogTrigger>
+
+                <DialogContent className="border-border bg-popover text-foreground border">
+                  <DialogHeader className="space-y-5">
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-red-500/20 bg-red-500/10">
+                      <LogOut className="h-6 w-6 text-red-500" />
                     </div>
 
-                    {locked ? (
-                      <Lock className="text-muted-foreground h-4 w-4 flex-shrink-0 transition-colors group-hover:text-[#C3F32C]" />
-                    ) : (
-                      <ChevronRight className="text-muted-foreground h-4 w-4 flex-shrink-0 transition-all group-hover:translate-x-0.5 group-hover:text-[#C3F32C]" />
-                    )}
-                  </Button>
-                )
-              })}
-          </div>
-        </nav>
+                    <div className="space-y-1 text-center">
+                      <DialogTitle className="text-foreground text-lg font-bold">
+                        Sair da conta?
+                      </DialogTitle>
+                      <DialogDescription className="text-muted-foreground text-sm">
+                        Sua sessão será encerrada e você precisará entrar
+                        novamente.
+                      </DialogDescription>
+                    </div>
 
-        {data?.user && (
-          <div className="border-border mt-auto border-t pt-4 pb-6">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="border-border w-full cursor-pointer justify-start gap-3 rounded-xl border hover:border-red-500/20 hover:bg-transparent hover:text-red-500"
-                >
-                  <LogOut className="h-4 w-4 text-red-500" />
-                  <span className="text-sm font-medium text-red-500">
-                    Sair da conta
-                  </span>
-                </Button>
-              </DialogTrigger>
-
-              <DialogContent className="border-border bg-popover text-foreground border">
-                <DialogHeader className="space-y-5">
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-red-500/20 bg-red-500/10">
-                    <LogOut className="h-6 w-6 text-red-500" />
-                  </div>
-
-                  <div className="space-y-1 text-center">
-                    <DialogTitle className="text-foreground text-lg font-bold">
-                      Sair da conta?
-                    </DialogTitle>
-                    <DialogDescription className="text-muted-foreground text-sm">
-                      Sua sessão será encerrada e você precisará entrar
-                      novamente.
-                    </DialogDescription>
-                  </div>
-
-                  <Button
-                    onClick={handleLogoutClick}
-                    className="w-full cursor-pointer rounded-xl bg-red-500 font-bold text-white hover:bg-red-600"
-                  >
-                    Confirmar saída
-                  </Button>
-                </DialogHeader>
-              </DialogContent>
-            </Dialog>
-          </div>
-        )}
-      </SheetContent>
-    </Sheet>
+                    <Button
+                      onClick={handleLogoutClick}
+                      className="w-full cursor-pointer rounded-xl bg-red-500 font-bold text-white hover:bg-red-600"
+                    >
+                      Confirmar saída
+                    </Button>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
     </>
   )
 }

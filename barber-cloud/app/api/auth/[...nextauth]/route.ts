@@ -1,5 +1,4 @@
 import CredentialsProvider from "next-auth/providers/credentials"
-import bcrypt from "bcrypt"
 import { db } from "@/app/_lib/prisma"
 import NextAuth from "next-auth"
 import type { AuthOptions } from "next-auth"
@@ -7,18 +6,9 @@ import GoogleProvider from "next-auth/providers/google"
 import GitHubProvider from "next-auth/providers/github"
 import FacebookProvider from "next-auth/providers/facebook"
 import { PrismaAdapter } from "@auth/prisma-adapter"
-import {
-  createPasswordVersion,
-  isValidEmail,
-  normalizeEmail,
-} from "@/app/_lib/auth-security"
-import {
-  consumeRateLimit,
-  getClientIp,
-} from "@/app/_lib/server-rate-limit"
-
-const DUMMY_PASSWORD_HASH =
-  "$2b$12$/A1pv8xc9p9v9lJX92P/q.maUQ55FuvpfUbOhKWRF6YrEGGWgcbNy"
+import { createPasswordVersion } from "@/app/_lib/auth-security"
+import { verifyPasswordCredentials } from "@/app/_lib/credentials-auth"
+import { consumeRateLimit, getClientIp } from "@/app/_lib/server-rate-limit"
 
 function logAuthFailure(context: string, error: unknown) {
   const errorRecord =
@@ -30,17 +20,14 @@ function logAuthFailure(context: string, error: unknown) {
     name:
       error instanceof Error
         ? error.name
-        : errorRecord?.constructor?.name ?? "UnknownError",
+        : (errorRecord?.constructor?.name ?? "UnknownError"),
     message:
       error instanceof Error
         ? error.message
         : typeof errorRecord?.message === "string"
           ? errorRecord.message
           : String(error),
-    type:
-      typeof errorRecord?.type === "string"
-        ? errorRecord.type
-        : undefined,
+    type: typeof errorRecord?.type === "string" ? errorRecord.type : undefined,
   })
 }
 
@@ -59,8 +46,6 @@ export const authOptions: AuthOptions = {
         password: { label: "Senha", type: "password" },
       },
       async authorize(credentials, request) {
-        const email = normalizeEmail(credentials?.email)
-        const password = credentials?.password
         const rateLimit = consumeRateLimit({
           namespace: "credentials-login",
           identifier: getClientIp(request.headers ?? {}),
@@ -68,40 +53,17 @@ export const authOptions: AuthOptions = {
           windowMs: 15 * 60 * 1000,
         })
 
-        if (
-          !rateLimit.allowed ||
-          !isValidEmail(email) ||
-          typeof password !== "string" ||
-          password.length === 0 ||
-          Buffer.byteLength(password, "utf8") > 72
-        ) {
+        if (!rateLimit.allowed) {
           return null
         }
 
         try {
-          const user = await db.user.findFirst({
-            where: {
-              email: {
-                equals: email,
-                mode: "insensitive",
-              },
-            },
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              image: true,
-              role: true,
-              password: true,
-            },
-          })
-
-          const passwordMatch = await bcrypt.compare(
-            password,
-            user?.password ?? DUMMY_PASSWORD_HASH,
+          const user = await verifyPasswordCredentials(
+            credentials?.email,
+            credentials?.password,
           )
 
-          if (!user?.password || !passwordMatch) return null
+          if (!user) return null
 
           return {
             id: user.id,
@@ -111,7 +73,6 @@ export const authOptions: AuthOptions = {
             role: user.role,
           }
         } catch (error) {
-          await bcrypt.compare(password, DUMMY_PASSWORD_HASH).catch(() => false)
           logAuthFailure("Falha ao validar as credenciais", error)
           return null
         }
