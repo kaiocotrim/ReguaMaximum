@@ -1,9 +1,11 @@
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import type { ComponentProps } from "react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import {
+  ActivityIndicator,
   Alert,
   Image,
   KeyboardAvoidingView,
@@ -17,6 +19,8 @@ import {
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { loginWithEmail } from "../services/auth";
+
 type FontAwesomeName = ComponentProps<typeof FontAwesome>["name"];
 
 type SocialButtonProps = {
@@ -25,22 +29,28 @@ type SocialButtonProps = {
   label: string;
 };
 
-function SocialButton({ icon, iconColor, label }: SocialButtonProps) {
+function SocialButton({
+  icon,
+  iconColor = "#244C4E",
+  label,
+}: SocialButtonProps) {
+  function handleSocialLogin() {
+    Alert.alert(
+      label,
+      "A autenticação social será configurada posteriormente.",
+    );
+  }
+
   return (
     <Pressable
-      onPress={() =>
-        Alert.alert(
-          label,
-          "A autenticação social será configurada posteriormente.",
-        )
-      }
+      onPress={handleSocialLogin}
       className="h-14 w-full flex-row items-center rounded-[24px] bg-[#C3F32C] px-5 active:opacity-70"
     >
       <View className="w-7 items-start justify-center">
-        <FontAwesome name={icon} size={21} color={iconColor || "#FFFFFF"} />
+        <FontAwesome name={icon} size={21} color={iconColor} />
       </View>
 
-      <Text className="flex-1 text-center text-[15px] font-semibold text-[#244c4e]">
+      <Text className="flex-1 text-center text-[15px] font-semibold text-[#244C4E]">
         {label}
       </Text>
 
@@ -51,25 +61,55 @@ function SocialButton({ icon, iconColor, label }: SocialButtonProps) {
 
 export default function Index() {
   const insets = useSafeAreaInsets();
-  const [identifier, setIdentifier] = useState("");
+  const passwordInputRef = useRef<TextInput>(null);
 
-  function handleContinue() {
-    const value = identifier.trim();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-    if (!value) {
-      Alert.alert(
-        "Campo obrigatório",
-        "Digite seu e-mail ou nome de usuário.",
-      );
+  async function handleContinue() {
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail || !password) {
+      Alert.alert("Campos obrigatórios", "Digite seu e-mail e sua senha.");
       return;
     }
 
-    Alert.alert("Continuar", `Login com: ${value}`);
+    if (!normalizedEmail.includes("@")) {
+      Alert.alert("E-mail inválido", "Digite um endereço de e-mail válido.");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      await loginWithEmail(normalizedEmail, password);
+
+      router.replace("/home");
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Não foi possível realizar o login.";
+
+      Alert.alert("Erro ao entrar", message);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  function handleRegister() {
+    Alert.alert("Cadastro", "A tela de cadastro será criada posteriormente.");
+  }
+
+  function handleForgotPassword() {
+    router.push("/esqueci-senha");
   }
 
   return (
     <View className="flex-1 bg-[#F4F4F4]">
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
 
       <KeyboardAvoidingView
         className="flex-1 bg-[#F4F4F4]"
@@ -95,87 +135,130 @@ export default function Index() {
                 className="mb-8 h-[72px] w-[210px] self-center"
               />
 
-              <Text className="mb-8 text-center text-[29px] font-bold text-[#244c4e]">
+              <Text className="mb-8 text-center text-[29px] font-bold tracking-[-0.7px] text-[#244C4E]">
                 Entre na sua conta
               </Text>
 
               <View className="gap-3">
-                <SocialButton
-                  icon="google"
-                  iconColor="#244c4e"
-                  label="Continuar com Google"
-                />
+                <SocialButton icon="google" label="Continuar com Google" />
 
-                <SocialButton
-                  icon="facebook"
-                  iconColor="#244c4e"
-                  label="Continuar com Facebook"
-                />
+                <SocialButton icon="facebook" label="Continuar com Facebook" />
 
-                <SocialButton
-                  icon="apple"
-                  iconColor="#244c4e" 
-                  label="Continuar com Apple"
-                />
+                <SocialButton icon="apple" label="Continuar com Apple" />
 
-                <SocialButton
-                  icon="github"
-                  iconColor="#244c4e"
-                  label="Continuar com GitHub"
-                />
+                <SocialButton icon="github" label="Continuar com GitHub" />
               </View>
 
               <View className="my-7 flex-row items-center gap-4">
-                <View className="h-px flex-1 bg-gray-500" />
+                <View className="h-px flex-1 bg-gray-300" />
 
-                <Text className="text-sm text-gray-500">
-                  ou
-                </Text>
+                <Text className="text-sm text-gray-500">ou</Text>
 
-                <View className="h-px flex-1 bg-gray-500" />
+                <View className="h-px flex-1 bg-gray-300" />
               </View>
 
-              <Text className="mb-2 text-sm font-medium text-gray-500">
-                E-mail ou nome de usuário
+              <Text className="mb-2 text-sm font-medium text-[#244C4E]">
+                E-mail
               </Text>
 
               <TextInput
-                value={identifier}
-                onChangeText={setIdentifier}
-                placeholder="E-mail ou nome de usuário"
-                placeholderTextColor="#244c4e"
+                value={email}
+                onChangeText={setEmail}
+                placeholder="Digite seu e-mail"
+                placeholderTextColor="#9CA3AF"
                 autoCapitalize="none"
                 autoCorrect={false}
                 keyboardType="email-address"
-                returnKeyType="done"
-                selectionColor="black"
-                onSubmitEditing={handleContinue}
-                className="h-[58px] w-full rounded-2xl border border-[#F4F4F4] bg-white   px-[18px] text-base text-[#244c4e] placeholder:text-gray-500 focus:border-[#C3F32C] focus:ring-1 focus:ring-[#C3F32C]"
+                returnKeyType="next"
+                selectionColor="#244C4E"
+                onSubmitEditing={() => {
+                  passwordInputRef.current?.focus();
+                }}
+                editable={!isLoading}
+                className="h-[58px] w-full rounded-2xl border border-gray-200 bg-white px-[18px] text-base text-[#244C4E]"
               />
+
+              <View className="mb-2 mt-4 flex-row items-center justify-between">
+                <Text className="text-sm font-medium text-[#244C4E]">
+                  Senha
+                </Text>
+
+                <Pressable
+                  onPress={handleForgotPassword}
+                  disabled={isLoading}
+                  className="active:opacity-60"
+                >
+                  <Text className="text-sm font-semibold text-[#244C4E]">
+                    Esqueci minha senha
+                  </Text>
+                </Pressable>
+              </View>
+
+              <View className="h-[58px] w-full flex-row items-center rounded-2xl border border-gray-200 bg-white px-[18px]">
+                <TextInput
+                  ref={passwordInputRef}
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="Digite sua senha"
+                  placeholderTextColor="#9CA3AF"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  secureTextEntry={!showPassword}
+                  returnKeyType="done"
+                  selectionColor="#244C4E"
+                  onSubmitEditing={handleContinue}
+                  editable={!isLoading}
+                  className="h-full flex-1 text-base text-[#244C4E]"
+                />
+
+                <Pressable
+                  onPress={() => {
+                    setShowPassword((current) => !current);
+                  }}
+                  disabled={isLoading}
+                  className="ml-3 h-10 w-10 items-center justify-center active:opacity-60"
+                >
+                  <Ionicons
+                    name={showPassword ? "eye-off-outline" : "eye-outline"}
+                    size={22}
+                    color="#244C4E"
+                  />
+                </Pressable>
+              </View>
 
               <Pressable
                 onPress={handleContinue}
-                className="mt-3.5 h-[58px] w-full items-center justify-center rounded-[24px] bg-[#C3F32C]  active:opacity-80"
+                disabled={isLoading}
+                className={`mt-4 h-[58px] w-full flex-row items-center justify-center rounded-[24px] bg-[#C3F32C] active:opacity-80 ${
+                  isLoading ? "opacity-60" : ""
+                }`}
               >
-                <Text className="text-base font-extrabold text-[#244c4e]">
-                  Continuar
-                </Text>
+                {isLoading ? (
+                  <>
+                    <ActivityIndicator size="small" color="#244C4E" />
+
+                    <Text className="ml-3 text-base font-extrabold text-[#244C4E]">
+                      Entrando...
+                    </Text>
+                  </>
+                ) : (
+                  <Text className="text-base font-extrabold text-[#244C4E]">
+                    Entrar
+                  </Text>
+                )}
               </Pressable>
-              
+
               <View className="mt-7 flex-row items-center justify-center gap-1.5">
-                <Text className="text-sm text-[#244c4e]">
+                <Text className="text-sm text-[#244C4E]">
                   Não tem uma conta?
                 </Text>
 
                 <Pressable
-                  onPress={() =>
-                    Alert.alert(
-                      "Cadastro",
-                      "A tela de cadastro será criada posteriormente.",
-                    )
-                  }
+                  onPress={handleRegister}
+                  disabled={isLoading}
+                  className="active:opacity-60"
                 >
-                  <Text className="text-sm font-bold text-[#C3F32C]">
+                  <Text className="text-sm font-bold text-[#8EB800]">
                     Cadastre-se
                   </Text>
                 </Pressable>
