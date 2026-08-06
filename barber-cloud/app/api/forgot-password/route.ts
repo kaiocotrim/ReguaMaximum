@@ -426,7 +426,10 @@ export async function POST(request: Request) {
 
       const resend = new Resend(resendApiKey);
 
-      const baseUrl = new URL(request.url).origin;
+      const baseUrl =
+        process.env.APP_URL ??
+        process.env.NEXTAUTH_URL ??
+        new URL(request.url).origin;
 
       const resetUrl = new URL(
         "/reset-password",
