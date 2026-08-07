@@ -85,41 +85,44 @@ export default function CadastroScreen() {
   }
 
   async function handleRegister() {
-    if (!role) {
-      Alert.alert(
-        "Escolha seu perfil",
-        "Selecione se você é cliente ou barbeiro.",
-      );
+  if (!role) {
+    Alert.alert(
+      "Escolha seu perfil",
+      "Selecione se você é cliente ou barbeiro.",
+    );
+    return;
+  }
+
+  try {
+    setIsLoading(true);
+
+    await registerWithEmail(
+      name.trim(),
+      email.trim().toLowerCase(),
+      password,
+      role,
+    );
+
+    if (role === "BARBER") {
+      router.replace("/barber-onboarding");
       return;
     }
 
-    try {
-      setIsLoading(true);
+    router.replace("/client-onboarding");
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Não foi possível criar sua conta.";
 
-      await registerWithEmail(
-        name.trim(),
-        email.trim().toLowerCase(),
-        password,
-        role,
-      );
-
-      if (role === "BARBER") {
-        router.replace("/barber-onboarding");
-        return;
-      }
-
-      router.replace("/home");
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Não foi possível criar sua conta.";
-
-      Alert.alert("Erro no cadastro", message);
-    } finally {
-      setIsLoading(false);
-    }
+    Alert.alert(
+      "Erro no cadastro",
+      message,
+    );
+  } finally {
+    setIsLoading(false);
   }
+}
 
   function handleBack() {
     if (isLoading) {
