@@ -48,43 +48,7 @@
 // }
 
 // export async function POST(request: Request) {
-//   const rateLimit = consumeRateLimit({
-//     namespace: "forgot-password",
-//     identifier: getClientIp(request.headers),
-//     limit: 5,
-//     windowMs: 15 * 60 * 1000,
-//   });
 
-//   if (!rateLimit.allowed) {
-//     return rateLimitResponse(
-//       rateLimit.retryAfterSeconds,
-//     );
-//   }
-
-//   let email = "";
-
-//   try {
-//     const body = await request.json();
-
-//     email = normalizeEmail(body?.email);
-//   } catch {
-//     return genericResponse();
-//   }
-
-//   if (!isValidEmail(email)) {
-//     return genericResponse();
-//   }
-
-//   const emailRateLimit = consumeRateLimit({
-//     namespace: "forgot-password-email",
-//     identifier: email,
-//     limit: 3,
-//     windowMs: 60 * 60 * 1000,
-//   });
-
-//   if (!emailRateLimit.allowed) {
-//     return genericResponse();
-//   }
 
 //   try {
 //     const user = await db.user.findFirst({

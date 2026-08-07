@@ -47,7 +47,11 @@ function SocialButton({
       className="h-14 w-full flex-row items-center rounded-[24px] bg-[#C3F32C] px-5 active:opacity-70"
     >
       <View className="w-7 items-start justify-center">
-        <FontAwesome name={icon} size={21} color={iconColor} />
+        <FontAwesome
+          name={icon}
+          size={21}
+          color={iconColor}
+        />
       </View>
 
       <Text className="flex-1 text-center text-[15px] font-semibold text-[#244C4E]">
@@ -72,19 +76,30 @@ export default function Index() {
     const normalizedEmail = email.trim().toLowerCase();
 
     if (!normalizedEmail || !password) {
-      Alert.alert("Campos obrigatórios", "Digite seu e-mail e sua senha.");
+      Alert.alert(
+        "Campos obrigatórios",
+        "Digite seu e-mail e sua senha.",
+      );
+
       return;
     }
 
     if (!normalizedEmail.includes("@")) {
-      Alert.alert("E-mail inválido", "Digite um endereço de e-mail válido.");
+      Alert.alert(
+        "E-mail inválido",
+        "Digite um endereço de e-mail válido.",
+      );
+
       return;
     }
 
     try {
       setIsLoading(true);
 
-      await loginWithEmail(normalizedEmail, password);
+      await loginWithEmail(
+        normalizedEmail,
+        password,
+      );
 
       router.replace("/home");
     } catch (error) {
@@ -93,14 +108,17 @@ export default function Index() {
           ? error.message
           : "Não foi possível realizar o login.";
 
-      Alert.alert("Erro ao entrar", message);
+      Alert.alert(
+        "Erro ao entrar",
+        message,
+      );
     } finally {
       setIsLoading(false);
     }
   }
 
   function handleRegister() {
-    Alert.alert("Cadastro", "A tela de cadastro será criada posteriormente.");
+    router.push("/cadastro");
   }
 
   function handleForgotPassword() {
@@ -140,19 +158,33 @@ export default function Index() {
               </Text>
 
               <View className="gap-3">
-                <SocialButton icon="google" label="Continuar com Google" />
+                <SocialButton
+                  icon="google"
+                  label="Continuar com Google"
+                />
 
-                <SocialButton icon="facebook" label="Continuar com Facebook" />
+                <SocialButton
+                  icon="facebook"
+                  label="Continuar com Facebook"
+                />
 
-                <SocialButton icon="apple" label="Continuar com Apple" />
+                <SocialButton
+                  icon="apple"
+                  label="Continuar com Apple"
+                />
 
-                <SocialButton icon="github" label="Continuar com GitHub" />
+                <SocialButton
+                  icon="github"
+                  label="Continuar com GitHub"
+                />
               </View>
 
               <View className="my-7 flex-row items-center gap-4">
                 <View className="h-px flex-1 bg-gray-300" />
 
-                <Text className="text-sm text-gray-500">ou</Text>
+                <Text className="text-sm text-gray-500">
+                  ou
+                </Text>
 
                 <View className="h-px flex-1 bg-gray-300" />
               </View>
@@ -213,13 +245,19 @@ export default function Index() {
 
                 <Pressable
                   onPress={() => {
-                    setShowPassword((current) => !current);
+                    setShowPassword(
+                      (current) => !current,
+                    );
                   }}
                   disabled={isLoading}
                   className="ml-3 h-10 w-10 items-center justify-center active:opacity-60"
                 >
                   <Ionicons
-                    name={showPassword ? "eye-off-outline" : "eye-outline"}
+                    name={
+                      showPassword
+                        ? "eye-off-outline"
+                        : "eye-outline"
+                    }
                     size={22}
                     color="#244C4E"
                   />
@@ -235,7 +273,10 @@ export default function Index() {
               >
                 {isLoading ? (
                   <>
-                    <ActivityIndicator size="small" color="#244C4E" />
+                    <ActivityIndicator
+                      size="small"
+                      color="#244C4E"
+                    />
 
                     <Text className="ml-3 text-base font-extrabold text-[#244C4E]">
                       Entrando...
