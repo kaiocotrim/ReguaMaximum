@@ -38,8 +38,7 @@ export default function CadastroScreen() {
   const [role, setRole] = useState<Role | null>(null);
 
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,40 +46,20 @@ export default function CadastroScreen() {
     const normalizedName = name.trim();
     const normalizedEmail = email.trim().toLowerCase();
 
-    if (
-      !normalizedName ||
-      !normalizedEmail ||
-      !password ||
-      !confirmPassword
-    ) {
-      Alert.alert(
-        "Campos obrigatórios",
-        "Preencha todos os campos.",
-      );
+    if (!normalizedName || !normalizedEmail || !password || !confirmPassword) {
+      Alert.alert("Campos obrigatórios", "Preencha todos os campos.");
 
       return false;
     }
 
-    if (
-      normalizedName.length < 2 ||
-      normalizedName.length > 80
-    ) {
-      Alert.alert(
-        "Nome inválido",
-        "O nome deve ter entre 2 e 80 caracteres.",
-      );
+    if (normalizedName.length < 2 || normalizedName.length > 80) {
+      Alert.alert("Nome inválido", "O nome deve ter entre 2 e 80 caracteres.");
 
       return false;
     }
 
-    if (
-      !normalizedEmail.includes("@") ||
-      !normalizedEmail.includes(".")
-    ) {
-      Alert.alert(
-        "E-mail inválido",
-        "Digite um endereço de e-mail válido.",
-      );
+    if (!normalizedEmail.includes("@") || !normalizedEmail.includes(".")) {
+      Alert.alert("E-mail inválido", "Digite um endereço de e-mail válido.");
 
       return false;
     }
@@ -111,7 +90,6 @@ export default function CadastroScreen() {
         "Escolha seu perfil",
         "Selecione se você é cliente ou barbeiro.",
       );
-
       return;
     }
 
@@ -119,36 +97,25 @@ export default function CadastroScreen() {
       setIsLoading(true);
 
       await registerWithEmail(
-        name,
-        email,
+        name.trim(),
+        email.trim().toLowerCase(),
         password,
         role,
       );
 
-      Alert.alert(
-        "Conta criada",
-        role === "CLIENT"
-          ? "Sua conta de cliente foi criada com sucesso."
-          : "Sua conta de barbeiro foi criada com sucesso.",
-        [
-          {
-            text: "Continuar",
-            onPress: () => {
-              router.replace("/home");
-            },
-          },
-        ],
-      );
+      if (role === "BARBER") {
+        router.replace("/barber-onboarding");
+        return;
+      }
+
+      router.replace("/home");
     } catch (error) {
       const message =
         error instanceof Error
           ? error.message
           : "Não foi possível criar sua conta.";
 
-      Alert.alert(
-        "Erro no cadastro",
-        message,
-      );
+      Alert.alert("Erro no cadastro", message);
     } finally {
       setIsLoading(false);
     }
@@ -173,11 +140,7 @@ export default function CadastroScreen() {
 
       <KeyboardAvoidingView
         className="flex-1"
-        behavior={
-          Platform.OS === "ios"
-            ? "padding"
-            : undefined
-        }
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <ScrollView
           contentContainerStyle={{
@@ -194,11 +157,7 @@ export default function CadastroScreen() {
               disabled={isLoading}
               className="h-12 w-12 items-center justify-center rounded-2xl bg-white active:opacity-70"
             >
-              <Ionicons
-                name="arrow-back"
-                size={23}
-                color="#244C4E"
-              />
+              <Ionicons name="arrow-back" size={23} color="#244C4E" />
             </Pressable>
 
             {step === 1 ? (
@@ -217,8 +176,7 @@ export default function CadastroScreen() {
                   </Text>
 
                   <Text className="mt-3 text-base leading-6 text-gray-500">
-                    Preencha seus dados para começar a usar
-                    o Régua Máxima.
+                    Preencha seus dados para começar a usar o Régua Máxima.
                   </Text>
 
                   <View className="mt-8">
@@ -289,17 +247,13 @@ export default function CadastroScreen() {
 
                       <Pressable
                         onPress={() => {
-                          setShowPassword(
-                            (current) => !current,
-                          );
+                          setShowPassword((current) => !current);
                         }}
                         className="ml-3 h-10 w-10 items-center justify-center"
                       >
                         <Ionicons
                           name={
-                            showPassword
-                              ? "eye-off-outline"
-                              : "eye-outline"
+                            showPassword ? "eye-off-outline" : "eye-outline"
                           }
                           size={22}
                           color="#244C4E"
@@ -320,9 +274,7 @@ export default function CadastroScreen() {
                         placeholderTextColor="#9CA3AF"
                         autoCapitalize="none"
                         autoCorrect={false}
-                        secureTextEntry={
-                          !showConfirmPassword
-                        }
+                        secureTextEntry={!showConfirmPassword}
                         returnKeyType="done"
                         selectionColor="#244C4E"
                         editable={!isLoading}
@@ -332,9 +284,7 @@ export default function CadastroScreen() {
 
                       <Pressable
                         onPress={() => {
-                          setShowConfirmPassword(
-                            (current) => !current,
-                          );
+                          setShowConfirmPassword((current) => !current);
                         }}
                         className="ml-3 h-10 w-10 items-center justify-center"
                       >
@@ -364,11 +314,7 @@ export default function CadastroScreen() {
                         Já tem uma conta?
                       </Text>
 
-                      <Pressable
-                        onPress={() =>
-                          router.replace("/")
-                        }
-                      >
+                      <Pressable onPress={() => router.replace("/")}>
                         <Text className="text-sm font-bold text-[#8EB800]">
                           Entrar
                         </Text>
@@ -394,16 +340,13 @@ export default function CadastroScreen() {
                     </Text>
 
                     <Text className="mt-2 text-center text-base leading-6 text-gray-500">
-                      Vamos conhecer você para
-                      personalizar sua experiência.
+                      Vamos conhecer você para personalizar sua experiência.
                     </Text>
                   </View>
 
                   <View className="mt-10 gap-4">
                     <Pressable
-                      onPress={() =>
-                        setRole("CLIENT")
-                      }
+                      onPress={() => setRole("CLIENT")}
                       disabled={isLoading}
                       className={`rounded-[26px] border-2 bg-white p-6 ${
                         role === "CLIENT"
@@ -430,9 +373,8 @@ export default function CadastroScreen() {
                           </Text>
 
                           <Text className="mt-2 text-sm leading-5 text-gray-500">
-                            Encontre barbearias, escolha
-                            profissionais e faça seus
-                            agendamentos.
+                            Encontre barbearias, escolha profissionais e faça
+                            seus agendamentos.
                           </Text>
                         </View>
 
@@ -447,9 +389,7 @@ export default function CadastroScreen() {
                     </Pressable>
 
                     <Pressable
-                      onPress={() =>
-                        setRole("BARBER")
-                      }
+                      onPress={() => setRole("BARBER")}
                       disabled={isLoading}
                       className={`rounded-[26px] border-2 bg-white p-6 ${
                         role === "BARBER"
@@ -476,9 +416,8 @@ export default function CadastroScreen() {
                           </Text>
 
                           <Text className="mt-2 text-sm leading-5 text-gray-500">
-                            Organize seus atendimentos,
-                            agenda e sua presença no Régua
-                            Máxima.
+                            Organize seus atendimentos, agenda e sua presença no
+                            Régua Máxima.
                           </Text>
                         </View>
 
@@ -495,22 +434,14 @@ export default function CadastroScreen() {
 
                   <Pressable
                     onPress={handleRegister}
-                    disabled={
-                      !role ||
-                      isLoading
-                    }
+                    disabled={!role || isLoading}
                     className={`mt-8 h-[58px] w-full flex-row items-center justify-center rounded-[24px] bg-[#C3F32C] ${
-                      !role || isLoading
-                        ? "opacity-50"
-                        : "active:opacity-80"
+                      !role || isLoading ? "opacity-50" : "active:opacity-80"
                     }`}
                   >
                     {isLoading ? (
                       <>
-                        <ActivityIndicator
-                          size="small"
-                          color="#244C4E"
-                        />
+                        <ActivityIndicator size="small" color="#244C4E" />
 
                         <Text className="ml-3 text-base font-extrabold text-[#244C4E]">
                           Criando conta...
@@ -539,9 +470,7 @@ export default function CadastroScreen() {
                     disabled={isLoading}
                     className="mt-4 h-12 items-center justify-center"
                   >
-                    <Text className="font-semibold text-[#244C4E]">
-                      Voltar
-                    </Text>
+                    <Text className="font-semibold text-[#244C4E]">Voltar</Text>
                   </Pressable>
                 </View>
               </View>
